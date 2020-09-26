@@ -1,0 +1,9 @@
+{
+  "name": "pinger",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "author": "Sean Dodson",
+  "license": "ISC"
+}
