@@ -2,8 +2,14 @@
   "name": "pinger",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "scripts": {},
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
   "author": "Sean Dodson",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "bigint-buffer": "^1.1.5",
+    "varint": "^5.0.0"
+  }
 }
