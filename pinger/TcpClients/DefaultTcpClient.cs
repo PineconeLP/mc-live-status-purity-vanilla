@@ -1,8 +1,8 @@
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using MCLiveStatus.Pinger.Models.NetworkStreams;
+using MCLiveStatus.Pinger.NetworkStreams;
 
-namespace MCLiveStatus.Pinger.Models.TcpClients
+namespace MCLiveStatus.Pinger.TcpClients
 {
     public class DefaultTcpClient : ITcpClient
     {
@@ -16,11 +16,6 @@ namespace MCLiveStatus.Pinger.Models.TcpClients
         public Task ConnectAsync(string host, int port)
         {
             return _client.ConnectAsync(host, port);
-        }
-
-        public void Close()
-        {
-            _client.Close();
         }
 
         public INetworkStream GetStream()

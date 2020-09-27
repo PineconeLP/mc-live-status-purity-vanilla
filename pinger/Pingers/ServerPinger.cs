@@ -1,10 +1,7 @@
-using System;
-using System.Net.Sockets;
-using System.Text;
 using System.Threading.Tasks;
 using MCLiveStatus.Pinger.Models;
-using MCLiveStatus.Pinger.Models.NetworkStreams;
-using MCLiveStatus.Pinger.Models.TcpClients;
+using MCLiveStatus.Pinger.NetworkStreams;
+using MCLiveStatus.Pinger.TcpClients;
 
 namespace MCLiveStatus.Pinger.Services
 {

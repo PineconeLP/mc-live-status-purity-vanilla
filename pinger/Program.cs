@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using MCLiveStatus.Pinger.Models;
-using MCLiveStatus.Pinger.Models.TcpClients;
+using MCLiveStatus.Pinger.TcpClients;
 using MCLiveStatus.Pinger.Services;
 
 namespace MCLiveStatus.Pinger

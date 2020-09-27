@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace MCLiveStatus.Pinger.Models.NetworkStreams
+namespace MCLiveStatus.Pinger.NetworkStreams
 {
     public interface INetworkStream : IDisposable
     {

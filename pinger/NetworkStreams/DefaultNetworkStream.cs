@@ -1,7 +1,7 @@
 using System.Net.Sockets;
 using System.Threading.Tasks;
 
-namespace MCLiveStatus.Pinger.Models.NetworkStreams
+namespace MCLiveStatus.Pinger.NetworkStreams
 {
     public class DefaultNetworkStream : INetworkStream
     {

@@ -2,7 +2,7 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 using MCLiveStatus.Pinger.Models;
-using MCLiveStatus.Pinger.Models.NetworkStreams;
+using MCLiveStatus.Pinger.NetworkStreams;
 
 namespace MCLiveStatus.Pinger.Services
 {
