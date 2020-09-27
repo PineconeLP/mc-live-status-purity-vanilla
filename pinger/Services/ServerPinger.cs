@@ -4,28 +4,31 @@ using System.Text;
 using System.Threading.Tasks;
 using MCLiveStatus.Pinger.Models;
 using MCLiveStatus.Pinger.Models.NetworkStreams;
-using MCLiveStatus.Pinger.Models.ServerStatusClients;
 using MCLiveStatus.Pinger.Models.TcpClients;
 
 namespace MCLiveStatus.Pinger.Services
 {
     public class ServerPinger
     {
-        private readonly ServerStatusClientFactory _clientFactory;
+        private readonly CreateTcpClient _createClient;
+        private readonly ServerNetworkStreamPinger _streamPinger;
 
-        public ServerPinger(ServerStatusClientFactory clientFactory)
+        public ServerPinger(CreateTcpClient createClient, ServerNetworkStreamPinger streamPinger)
         {
-            _clientFactory = clientFactory;
+            _createClient = createClient;
+            _streamPinger = streamPinger;
         }
 
         public async Task<ServerStatus> Ping(string host, int port)
         {
-            using (ServerStatusClient client = _clientFactory.CreateClient())
+            using (ITcpClient client = _createClient())
             {
-                await client.Connect(host, port);
-                await client.SendPing();
+                await client.ConnectAsync(host, port);
 
-                return await client.ReadPingResponse();
+                using (INetworkStream stream = client.GetStream())
+                {
+                    return await _streamPinger.Ping(stream);
+                }
             }
         }
     }
