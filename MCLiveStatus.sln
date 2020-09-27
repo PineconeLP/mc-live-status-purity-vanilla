@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCLiveStatus.Blazor", "blazor\MCLiveStatus.Blazor.csproj", "{E8A95A79-4857-4B2B-9EA3-B66708F5EF91}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCLiveStatus.ServerPinger", "server-pinger\MCLiveStatus.ServerPinger.csproj", "{66D66002-B69A-4A77-B8AE-5E824DB14DBC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,17 @@ Global
 		{E8A95A79-4857-4B2B-9EA3-B66708F5EF91}.Release|x64.Build.0 = Release|Any CPU
 		{E8A95A79-4857-4B2B-9EA3-B66708F5EF91}.Release|x86.ActiveCfg = Release|Any CPU
 		{E8A95A79-4857-4B2B-9EA3-B66708F5EF91}.Release|x86.Build.0 = Release|Any CPU
+		{66D66002-B69A-4A77-B8AE-5E824DB14DBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66D66002-B69A-4A77-B8AE-5E824DB14DBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66D66002-B69A-4A77-B8AE-5E824DB14DBC}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{66D66002-B69A-4A77-B8AE-5E824DB14DBC}.Debug|x64.Build.0 = Debug|Any CPU
+		{66D66002-B69A-4A77-B8AE-5E824DB14DBC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{66D66002-B69A-4A77-B8AE-5E824DB14DBC}.Debug|x86.Build.0 = Debug|Any CPU
+		{66D66002-B69A-4A77-B8AE-5E824DB14DBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66D66002-B69A-4A77-B8AE-5E824DB14DBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66D66002-B69A-4A77-B8AE-5E824DB14DBC}.Release|x64.ActiveCfg = Release|Any CPU
+		{66D66002-B69A-4A77-B8AE-5E824DB14DBC}.Release|x64.Build.0 = Release|Any CPU
+		{66D66002-B69A-4A77-B8AE-5E824DB14DBC}.Release|x86.ActiveCfg = Release|Any CPU
+		{66D66002-B69A-4A77-B8AE-5E824DB14DBC}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
