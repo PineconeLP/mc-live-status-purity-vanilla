@@ -18,6 +18,11 @@ namespace MCLiveStatus.Pinger.Models.TcpClients
             return _client.ConnectAsync(host, port);
         }
 
+        public void Close()
+        {
+            _client.Close();
+        }
+
         public INetworkStream GetStream()
         {
             return new DefaultNetworkStream(_client.GetStream());

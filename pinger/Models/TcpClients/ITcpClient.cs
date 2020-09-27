@@ -9,6 +9,7 @@ namespace MCLiveStatus.Pinger.Models.TcpClients
     public interface ITcpClient : IDisposable
     {
         Task ConnectAsync(string host, int port);
+        void Close();
 
         INetworkStream GetStream();
     }
