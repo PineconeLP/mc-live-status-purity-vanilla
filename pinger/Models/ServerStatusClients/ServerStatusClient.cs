@@ -20,6 +20,11 @@ namespace MCLiveStatus.Pinger.Models.ServerStatusClients
 
         public async Task Connect(string host, int port)
         {
+            if (IsConnected)
+            {
+                throw new InvalidOperationException("Client already connected.");
+            }
+
             await _client.ConnectAsync(host, port);
             _stream = _client.GetStream();
 
@@ -28,8 +33,13 @@ namespace MCLiveStatus.Pinger.Models.ServerStatusClients
 
         public void Disconnect()
         {
-            _stream.Dispose();
-            _client.Close();
+            if (!IsConnected)
+            {
+                throw new InvalidOperationException("Client not connected.");
+            }
+
+            _stream?.Dispose();
+            _client?.Close();
         }
 
         public async Task SendPing()
@@ -82,8 +92,8 @@ namespace MCLiveStatus.Pinger.Models.ServerStatusClients
 
         public void Dispose()
         {
-            _stream.Dispose();
-            _client.Dispose();
+            _stream?.Dispose();
+            _client?.Dispose();
         }
     }
 }
