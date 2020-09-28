@@ -2,13 +2,12 @@ using System;
 using System.Threading.Tasks;
 using MCLiveStatus.Pinger.Models;
 using MCLiveStatus.Pinger.Schedulers;
-using Quartz;
 
 namespace MCLiveStatus.Pinger.Pingers
 {
     public class RepeatingServerPinger
     {
-        private readonly ServerPingerScheduler _scheduler;
+        private readonly IServerPingerScheduler _scheduler;
         private readonly ServerAddress _serverAddress;
 
         private Func<Task> _stop;
@@ -17,7 +16,7 @@ namespace MCLiveStatus.Pinger.Pingers
 
         public event Action<ServerPingResponse> PingCompleted;
 
-        public RepeatingServerPinger(ServerAddress serverAddress, ServerPingerScheduler scheduler)
+        public RepeatingServerPinger(ServerAddress serverAddress, IServerPingerScheduler scheduler)
         {
             _serverAddress = serverAddress;
             _scheduler = scheduler;

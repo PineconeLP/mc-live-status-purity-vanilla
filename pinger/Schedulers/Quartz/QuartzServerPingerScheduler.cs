@@ -4,27 +4,27 @@ using MCLiveStatus.Pinger.Models;
 using MCLiveStatus.Pinger.Pingers;
 using Quartz;
 
-namespace MCLiveStatus.Pinger.Schedulers
+namespace MCLiveStatus.Pinger.Schedulers.Quartz
 {
-    public class ServerPingerScheduler
+    public class QuartzServerPingerScheduler : IServerPingerScheduler
     {
         private readonly ISchedulerFactory _schedulerFactory;
         private readonly ServerPinger _serverPinger;
 
-        public ServerPingerScheduler(ISchedulerFactory schedulerFactory, ServerPinger serverPinger)
+        public QuartzServerPingerScheduler(ISchedulerFactory schedulerFactory, ServerPinger serverPinger)
         {
             _schedulerFactory = schedulerFactory;
             _serverPinger = serverPinger;
         }
 
-        public async Task<Func<Task>> Start(ServerAddress serverAddress, Action<ServerPingResponse> onPing)
+        public async Task<Func<Task>> Start(ServerAddress serverAddress, Action<ServerPingResponse> onPing = null)
         {
             IScheduler scheduler = await _schedulerFactory.GetScheduler();
             await scheduler.Start();
 
-            scheduler.JobFactory = new ServerPingerJobFactory(serverAddress, _serverPinger, onPing);
+            scheduler.JobFactory = new QuartzServerPingerJobFactory(serverAddress, _serverPinger, onPing);
 
-            IJobDetail job = JobBuilder.Create<ServerPingerJob>()
+            IJobDetail job = JobBuilder.Create<QuartzServerPingerJob>()
                 .Build();
 
             ITrigger trigger = TriggerBuilder.Create()

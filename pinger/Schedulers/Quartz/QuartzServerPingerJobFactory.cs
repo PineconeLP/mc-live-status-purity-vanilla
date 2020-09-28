@@ -4,15 +4,15 @@ using MCLiveStatus.Pinger.Pingers;
 using Quartz;
 using Quartz.Spi;
 
-namespace MCLiveStatus.Pinger.Schedulers
+namespace MCLiveStatus.Pinger.Schedulers.Quartz
 {
-    public class ServerPingerJobFactory : IJobFactory
+    public class QuartzServerPingerJobFactory : IJobFactory
     {
         private readonly ServerAddress _serverAddress;
         private readonly ServerPinger _serverPinger;
         private readonly Action<ServerPingResponse> _onPing;
 
-        public ServerPingerJobFactory(ServerAddress serverAddress, ServerPinger serverPinger, Action<ServerPingResponse> onPing = null)
+        public QuartzServerPingerJobFactory(ServerAddress serverAddress, ServerPinger serverPinger, Action<ServerPingResponse> onPing = null)
         {
             _serverAddress = serverAddress;
             _serverPinger = serverPinger;
@@ -21,7 +21,7 @@ namespace MCLiveStatus.Pinger.Schedulers
 
         public IJob NewJob(TriggerFiredBundle bundle, IScheduler scheduler)
         {
-            return new ServerPingerJob(_serverAddress, _serverPinger, _onPing);
+            return new QuartzServerPingerJob(_serverAddress, _serverPinger, _onPing);
         }
 
         public void ReturnJob(IJob job) { }

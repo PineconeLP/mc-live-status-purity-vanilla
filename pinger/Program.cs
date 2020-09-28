@@ -5,6 +5,7 @@ using MCLiveStatus.Pinger.TcpClients;
 using MCLiveStatus.Pinger.Pingers;
 using Quartz.Impl;
 using MCLiveStatus.Pinger.Schedulers;
+using MCLiveStatus.Pinger.Schedulers.Quartz;
 
 namespace MCLiveStatus.Pinger
 {
@@ -25,7 +26,7 @@ namespace MCLiveStatus.Pinger
             ServerPingResponse status = await pinger.Ping(address);
             Console.WriteLine(status.OnlinePlayers);
 
-            ServerPingerScheduler scheduler = new ServerPingerScheduler(new StdSchedulerFactory(), pinger);
+            IServerPingerScheduler scheduler = new QuartzServerPingerScheduler(new StdSchedulerFactory(), pinger);
             RepeatingServerPinger repeater = new RepeatingServerPinger(address, scheduler);
             repeater.PingCompleted += (s) => Console.WriteLine(s.OnlinePlayers);
 
