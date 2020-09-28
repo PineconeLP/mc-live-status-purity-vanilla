@@ -3,7 +3,7 @@ using MCLiveStatus.Pinger.Models;
 using MCLiveStatus.Pinger.NetworkStreams;
 using MCLiveStatus.Pinger.TcpClients;
 
-namespace MCLiveStatus.Pinger.Services
+namespace MCLiveStatus.Pinger.Pingers
 {
     public class ServerPinger
     {
@@ -16,7 +16,12 @@ namespace MCLiveStatus.Pinger.Services
             _streamPinger = streamPinger;
         }
 
-        public async Task<ServerStatus> Ping(string host, int port)
+        public async Task<ServerPingResponse> Ping(ServerAddress address)
+        {
+            return await Ping(address.Host, address.Port);
+        }
+
+        public async Task<ServerPingResponse> Ping(string host, int port)
         {
             using (ITcpClient client = _createClient())
             {

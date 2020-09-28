@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 using MCLiveStatus.Pinger.Models;
 using MCLiveStatus.Pinger.NetworkStreams;
 
-namespace MCLiveStatus.Pinger.Services
+namespace MCLiveStatus.Pinger.Pingers
 {
     public class ServerNetworkStreamPinger
     {
-        public async Task<ServerStatus> Ping(INetworkStream stream)
+        public async Task<ServerPingResponse> Ping(INetworkStream stream)
         {
             await SendPing(stream);
 
@@ -20,17 +20,17 @@ namespace MCLiveStatus.Pinger.Services
             await stream.WriteAsync(new byte[] { 0xFE, 0x01 });
         }
 
-        private async Task<ServerStatus> ReadPing(INetworkStream stream)
+        private async Task<ServerPingResponse> ReadPing(INetworkStream stream)
         {
             byte[] data = new byte[255];
             int length = await stream.ReadAsync(data, 0, data.Length);
 
             string response = Encoding.BigEndianUnicode.GetString(data, 3, length - 3);
 
-            return ConvertPingResponseToServerStatus(response);
+            return ConvertToServerPingResponse(response);
         }
 
-        private ServerStatus ConvertPingResponseToServerStatus(string pingResponse)
+        private ServerPingResponse ConvertToServerPingResponse(string pingResponse)
         {
             string[] splitResponse = pingResponse.Split('\u0000');
 
@@ -46,7 +46,7 @@ namespace MCLiveStatus.Pinger.Services
                 int.TryParse(splitResponse[5], out maxPlayers);
             }
 
-            return new ServerStatus()
+            return new ServerPingResponse()
             {
                 OnlinePlayers = onlinePlayers,
                 MaxPlayers = maxPlayers

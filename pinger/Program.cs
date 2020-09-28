@@ -2,7 +2,9 @@ using System;
 using System.Threading.Tasks;
 using MCLiveStatus.Pinger.Models;
 using MCLiveStatus.Pinger.TcpClients;
-using MCLiveStatus.Pinger.Services;
+using MCLiveStatus.Pinger.Pingers;
+using Quartz.Impl;
+using MCLiveStatus.Pinger.Schedulers;
 
 namespace MCLiveStatus.Pinger
 {
@@ -10,13 +12,27 @@ namespace MCLiveStatus.Pinger
     {
         public static async Task Main(string[] args)
         {
+            ServerAddress address = new ServerAddress()
+            {
+                Host = "purityvanilla.com",
+                Port = 25565
+            };
+
             CreateTcpClient createClient = () => new DefaultTcpClient();
             ServerNetworkStreamPinger streamPinger = new ServerNetworkStreamPinger();
             ServerPinger pinger = new ServerPinger(createClient, streamPinger);
 
-            ServerStatus status = await pinger.Ping("purityvanilla.com", 25565);
-
+            ServerPingResponse status = await pinger.Ping(address);
             Console.WriteLine(status.OnlinePlayers);
+
+            ServerPingerScheduler scheduler = new ServerPingerScheduler(new StdSchedulerFactory(), pinger);
+            RepeatingServerPinger repeater = new RepeatingServerPinger(address, scheduler);
+            repeater.PingCompleted += (s) => Console.WriteLine(s.OnlinePlayers);
+
+            await repeater.Start();
+            Console.ReadKey();
+            await repeater.Stop();
+            Console.ReadKey();
         }
     }
 }
