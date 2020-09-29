@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using ElectronNET.API;
+using MCLiveStatus.Pinger.Pingers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -21,6 +22,8 @@ namespace MCLiveStatus.Blazor
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
+
+            services.AddSingleton<RepeatingServerPingerFactory>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

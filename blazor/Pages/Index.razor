@@ -6,6 +6,13 @@
     @* <button class="btn btn-primary mt-3" type="button">Add Server</button> *@
 
     <div class="mt-3">
-        <ServerListing />
+        @if(HasServers)
+        {
+            <ServerListing Servers="Servers" />
+        }
+        else
+        {
+            <p>No servers available. Please add a server.</p>
+        }
     </div>
 </NavLayout>
