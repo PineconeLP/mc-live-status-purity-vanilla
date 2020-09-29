@@ -6,6 +6,6 @@ namespace MCLiveStatus.Pinger.Schedulers
 {
     public interface IServerPingerScheduler
     {
-        Task<Func<Task>> Start(ServerAddress serverAddress, Action<ServerPingResponse> onPing = null);
+        Task<Func<Task>> Schedule(ServerAddress serverAddress, int secondsInterval, Action<ServerPingResponse> onPing = null);
     }
 }

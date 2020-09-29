@@ -17,7 +17,7 @@ namespace MCLiveStatus.Pinger.Schedulers.Quartz
             _serverPinger = serverPinger;
         }
 
-        public async Task<Func<Task>> Start(ServerAddress serverAddress, Action<ServerPingResponse> onPing = null)
+        public async Task<Func<Task>> Schedule(ServerAddress serverAddress, int secondsInterval = 5, Action<ServerPingResponse> onPing = null)
         {
             IScheduler scheduler = await _schedulerFactory.GetScheduler();
             await scheduler.Start();
@@ -30,7 +30,7 @@ namespace MCLiveStatus.Pinger.Schedulers.Quartz
             ITrigger trigger = TriggerBuilder.Create()
                 .StartNow()
                 .WithSimpleSchedule(x => x
-                    .WithIntervalInSeconds(3)
+                    .WithIntervalInSeconds(secondsInterval)
                     .RepeatForever())
                 .Build();
 
