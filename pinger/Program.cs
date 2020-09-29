@@ -30,7 +30,7 @@ namespace MCLiveStatus.Pinger
             RepeatingServerPinger repeater = new RepeatingServerPinger(address, scheduler);
             repeater.PingCompleted += (s) => Console.WriteLine(s.OnlinePlayers);
 
-            await repeater.Start(10);
+            await repeater.Start(3);
             Console.ReadKey();
             await repeater.Stop();
             Console.ReadKey();

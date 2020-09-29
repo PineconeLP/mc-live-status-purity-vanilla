@@ -10,7 +10,7 @@ namespace MCLiveStatus.Pinger.Pingers
         private readonly IServerPingerScheduler _scheduler;
         private readonly ServerAddress _serverAddress;
 
-        private Func<Task> _stop;
+        private StopPingSchedule _stop;
 
         private bool IsRunning => _stop != null;
 

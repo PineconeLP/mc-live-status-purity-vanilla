@@ -17,7 +17,7 @@ namespace MCLiveStatus.Pinger.Schedulers.Quartz
             _serverPinger = serverPinger;
         }
 
-        public async Task<Func<Task>> Schedule(ServerAddress serverAddress, int secondsInterval = 5, Action<ServerPingResponse> onPing = null)
+        public async Task<StopPingSchedule> Schedule(ServerAddress serverAddress, int secondsInterval = 5, Action<ServerPingResponse> onPing = null)
         {
             IScheduler scheduler = await _schedulerFactory.GetScheduler();
             await scheduler.Start();
