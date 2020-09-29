@@ -3,4 +3,5 @@ obj/
 node_modules/
 scripts.txt
 secrets.txt
+todo.txt
 

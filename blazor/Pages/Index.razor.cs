@@ -18,7 +18,6 @@ namespace MCLiveStatus.Blazor.Pages
 
         private bool HasServers => Servers != null && Servers.Count() > 0;
 
-        // TODO: Group pinger (or pinger factory) and server in a model, use store pattern, listen to store in this component.
         private ServerListingItemViewModel _purityVanillaServer;
         private RepeatingServerPinger _repeatingPinger;
 
