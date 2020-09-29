@@ -17,7 +17,8 @@ namespace MCLiveStatus.Pinger.Pingers
 
         private async Task SendPing(INetworkStream stream)
         {
-            await stream.WriteAsync(new byte[] { 0xFE, 0x01 });
+            byte[] pingBytes = new byte[] { 0xFE, 0x01 };
+            await stream.WriteAsync(pingBytes, 0, pingBytes.Length);
         }
 
         private async Task<ServerPingResponse> ReadPing(INetworkStream stream)

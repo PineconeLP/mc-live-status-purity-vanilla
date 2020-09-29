@@ -17,9 +17,9 @@ namespace MCLiveStatus.Pinger.NetworkStreams
             return _networkStream.ReadAsync(data, offset, length);
         }
 
-        public async Task WriteAsync(byte[] data)
+        public async Task WriteAsync(byte[] data, int offset, int count)
         {
-            await _networkStream.WriteAsync(data);
+            await _networkStream.WriteAsync(data, offset, count);
         }
 
         public void Dispose()
