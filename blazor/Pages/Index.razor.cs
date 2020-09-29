@@ -9,15 +9,17 @@ using Microsoft.AspNetCore.Components;
 
 namespace MCLiveStatus.Blazor.Pages
 {
-    public partial class Index : IDisposable
+    public partial class Index : ComponentBase, IDisposable
     {
         [Inject]
         public RepeatingServerPingerFactory RepeatingServerPingerFactory { get; set; }
 
-        private IEnumerable<ServerListingItemViewModel> Servers { get; }
+        private ICollection<ServerListingItemViewModel> Servers { get; }
 
         private bool HasServers => Servers != null && Servers.Count() > 0;
 
+        // TODO: Group pinger (or pinger factory) and server in a model, use store pattern, listen to store in this component.
+        private ServerListingItemViewModel _purityVanillaServer;
         private RepeatingServerPinger _repeatingPinger;
 
         public Index()
@@ -33,6 +35,14 @@ namespace MCLiveStatus.Blazor.Pages
                 Port = 25565
             };
 
+            _purityVanillaServer = new ServerListingItemViewModel()
+            {
+                Id = Guid.NewGuid(),
+                Name = "Purity Vanilla",
+                Description = "A fun vanilla server without hacks."
+            };
+            Servers.Add(_purityVanillaServer);
+
             _repeatingPinger = RepeatingServerPingerFactory.CreateRepeatingServerPinger(serverAddress);
             _repeatingPinger.PingCompleted += OnPingCompleted;
             await _repeatingPinger.Start(5);
@@ -42,7 +52,9 @@ namespace MCLiveStatus.Blazor.Pages
 
         private void OnPingCompleted(ServerPingResponse response)
         {
-            Console.WriteLine(response.OnlinePlayers);
+            _purityVanillaServer.OnlinePlayers = response.OnlinePlayers;
+            _purityVanillaServer.MaxPlayers = response.MaxPlayers;
+            InvokeAsync(StateHasChanged);
         }
 
         public async void Dispose()
