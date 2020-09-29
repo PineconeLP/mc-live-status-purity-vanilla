@@ -10,4 +10,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\pinger\MCLiveStatus.Pinger.csproj" />
+  </ItemGroup>
 </Project>
