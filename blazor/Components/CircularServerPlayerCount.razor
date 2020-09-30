@@ -1,5 +1,5 @@
 <RadzenChart>
-    <RadzenDonutSeries Data="@PlayerDataItems" ValueProperty="@nameof(PlayerDataItem.Percentage)" Fills="@Fills">
+    <RadzenDonutSeries Data="@PlayerCountDataItems" ValueProperty="@nameof(PlayerCountDataItem.Percentage)" Fills="@Fills">
         <TitleTemplate>
             <div class="rz-donut-content">
                 @OnlinePlayers / @MaxPlayers
@@ -18,35 +18,53 @@
     public int MaxPlayers { get; set; }
 
     [Parameter]
-    public int MaxPlayersExcludingQueue { get; set; }
+    public bool IsFull { get; set; }
 
-    private IEnumerable<PlayerDataItem> PlayerDataItems => CalculatePlayerDataItems();
+    [Parameter]
+    public bool IsFullExcludingQueue { get; set; }
+
+    private IEnumerable<PlayerCountDataItem> PlayerCountDataItems => CalculatePlayerCountDataItems();
 
     private IEnumerable<string> Fills => CalculateFills();
 
-    private IEnumerable<PlayerDataItem> CalculatePlayerDataItems()
+    private IEnumerable<PlayerCountDataItem> CalculatePlayerCountDataItems()
     {
-        List<PlayerDataItem> playerDataItems = new List<PlayerDataItem>();
+        List<PlayerCountDataItem> playerCountDataItems = new List<PlayerCountDataItem>();
 
         double onlinePlayersPercent = (double)OnlinePlayers / (double)MaxPlayers;
         double maxPlayersPercent = 1 - onlinePlayersPercent;
 
-        playerDataItems.Add(new PlayerDataItem(onlinePlayersPercent));
-        playerDataItems.Add(new PlayerDataItem(maxPlayersPercent));
+        playerCountDataItems.Add(new PlayerCountDataItem(onlinePlayersPercent));
+        playerCountDataItems.Add(new PlayerCountDataItem(maxPlayersPercent));
 
-        return playerDataItems;
+        return playerCountDataItems;
     }
 
     private IEnumerable<string> CalculateFills()
     {
-        return new string[] { "green", "#f2f2f2" };
+        string onlinePlayersFill;
+
+        if (IsFull)
+        {
+            onlinePlayersFill = "red";
+        }
+        else if (IsFullExcludingQueue)
+        {
+            onlinePlayersFill = "yellow";
+        }
+        else
+        {
+            onlinePlayersFill = "green";
+        }
+
+        return new string[] { onlinePlayersFill, "#f2f2f2" };
     }
 
-    private class PlayerDataItem
+    private class PlayerCountDataItem
     {
         public double Percentage { get; }
 
-        public PlayerDataItem(double percentage)
+        public PlayerCountDataItem(double percentage)
         {
             Percentage = percentage;
         }

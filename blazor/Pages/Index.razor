@@ -1,19 +1,5 @@
 ﻿@page "/"
 
 <NavLayout>
-    <h1>Servers</h1>
-
-    @* <button class="btn btn-primary mt-3" type="button">Add Server</button> *@
-
-    <div class="mt-3">
-        @if(HasServers)
-        {
-            <ServerListing Servers="Servers" />
-            <CircularServerPlayerCount OnlinePlayers="51" MaxPlayers="150" MaxPlayersExcludingQueue="75"/>
-        }
-        else
-        {
-            <p>No servers available. Please add a server.</p>
-        }
-    </div>
+    <ServerLiveStatus Host="purityvanilla.com" />
 </NavLayout>

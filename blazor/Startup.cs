@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using ElectronNET.API;
+using ElectronNET.API.Entities;
 using MCLiveStatus.Pinger.Pingers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
