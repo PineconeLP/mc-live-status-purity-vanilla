@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ElectronNET.API;
+using ElectronNET.API.Entities;
 using MCLiveStatus.Blazor.ViewModels;
 using MCLiveStatus.Pinger.Models;
 using MCLiveStatus.Pinger.Pingers;
@@ -38,7 +40,8 @@ namespace MCLiveStatus.Blazor.Pages
             {
                 Id = Guid.NewGuid(),
                 Name = "Purity Vanilla",
-                Description = "A fun vanilla server without hacks."
+                Description = "A fun vanilla server without hacks.",
+                MaxPlayersExcludingQueue = 75
             };
             Servers.Add(_purityVanillaServer);
 
@@ -51,9 +54,26 @@ namespace MCLiveStatus.Blazor.Pages
 
         private void OnPingCompleted(ServerPingResponse response)
         {
+            bool wasFullExcludingQueue = _purityVanillaServer.IsFullExcludingQueue;
+
             _purityVanillaServer.OnlinePlayers = response.OnlinePlayers;
             _purityVanillaServer.MaxPlayers = response.MaxPlayers;
+
+            bool isFullExcludingQueue = _purityVanillaServer.IsFullExcludingQueue;
+
+            if (wasFullExcludingQueue && !isFullExcludingQueue)
+            {
+                PushIsJoinableExcludingQueue(_purityVanillaServer);
+            }
+
             InvokeAsync(StateHasChanged);
+        }
+
+        private void PushIsJoinableExcludingQueue(ServerListingItemViewModel server)
+        {
+            Electron.Notification.Show(new NotificationOptions(
+                $"{server.Name} is now joinable!",
+                $"{server.OnlinePlayers} out of the max {server.MaxPlayersExcludingQueue} players (excluding queue space) are online."));
         }
 
         public async void Dispose()

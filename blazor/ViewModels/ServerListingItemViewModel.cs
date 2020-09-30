@@ -10,7 +10,10 @@ namespace MCLiveStatus.Blazor.ViewModels
         public string Host { get; set; }
         public int Port { get; set; }
         public int OnlinePlayers { get; set; }
+        public int MaxPlayersExcludingQueue { get; set; }
         public int MaxPlayers { get; set; }
         public bool IsSelected { get; set; }
+        public bool IsFull => OnlinePlayers >= MaxPlayers;
+        public bool IsFullExcludingQueue => OnlinePlayers >= MaxPlayersExcludingQueue;
     }
 }
