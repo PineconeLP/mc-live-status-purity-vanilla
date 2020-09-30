@@ -4,6 +4,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="ElectronNET.API" Version="9.31.2" />
+    <PackageReference Include="Radzen.Blazor" Version="2.15.5" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="electron.manifest.json">

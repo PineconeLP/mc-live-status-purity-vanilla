@@ -1,0 +1,54 @@
+<RadzenChart>
+    <RadzenDonutSeries Data="@PlayerDataItems" ValueProperty="@nameof(PlayerDataItem.Percentage)" Fills="@Fills">
+        <TitleTemplate>
+            <div class="rz-donut-content">
+                @OnlinePlayers / @MaxPlayers
+            </div>
+        </TitleTemplate>
+    </RadzenDonutSeries>
+    <RadzenChartTooltipOptions Visible="false"/>
+    <RadzenLegend Visible="false" />
+</RadzenChart>
+
+@code {
+    [Parameter]
+    public int OnlinePlayers { get; set; }
+
+    [Parameter]
+    public int MaxPlayers { get; set; }
+
+    [Parameter]
+    public int MaxPlayersExcludingQueue { get; set; }
+
+    private IEnumerable<PlayerDataItem> PlayerDataItems => CalculatePlayerDataItems();
+
+    private IEnumerable<string> Fills => CalculateFills();
+
+    private IEnumerable<PlayerDataItem> CalculatePlayerDataItems()
+    {
+        List<PlayerDataItem> playerDataItems = new List<PlayerDataItem>();
+
+        double onlinePlayersPercent = (double)OnlinePlayers / (double)MaxPlayers;
+        double maxPlayersPercent = 1 - onlinePlayersPercent;
+
+        playerDataItems.Add(new PlayerDataItem(onlinePlayersPercent));
+        playerDataItems.Add(new PlayerDataItem(maxPlayersPercent));
+
+        return playerDataItems;
+    }
+
+    private IEnumerable<string> CalculateFills()
+    {
+        return new string[] { "green", "#f2f2f2" };
+    }
+
+    private class PlayerDataItem
+    {
+        public double Percentage { get; }
+
+        public PlayerDataItem(double percentage)
+        {
+            Percentage = percentage;
+        }
+    }
+}
