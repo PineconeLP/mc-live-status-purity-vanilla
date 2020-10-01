@@ -27,7 +27,13 @@ namespace MCLiveStatus.Blazor.Components
         public string Description { get; set; }
 
         [Parameter]
+        public bool HasQueue { get; set; }
+
+        [Parameter]
         public int MaxPlayersExcludingQueue { get; set; }
+
+        private bool AllowNotifyJoinable { get; set; }
+        private bool AllowNotifyQueueJoinable { get; set; }
 
         private int OnlinePlayers { get; set; }
         private int MaxPlayers { get; set; }
@@ -49,26 +55,60 @@ namespace MCLiveStatus.Blazor.Components
 
         private void OnPingCompleted(ServerPingResponse response)
         {
+            bool wasFull = IsFull;
             bool wasFullExcludingQueue = IsFullExcludingQueue;
 
             OnlinePlayers = response.OnlinePlayers;
             MaxPlayers = response.MaxPlayers;
 
-            bool isFullExcludingQueue = IsFullExcludingQueue;
-
-            if (wasFullExcludingQueue && !isFullExcludingQueue)
-            {
-                PushIsJoinableExcludingQueue();
-            }
+            TryNotify(wasFull, wasFullExcludingQueue);
 
             InvokeAsync(StateHasChanged);
         }
 
-        private void PushIsJoinableExcludingQueue()
+        private void TryNotify(bool wasFull, bool wasFullExcludingQueue)
+        {
+            if (HasQueue)
+            {
+                if (AllowNotifyJoinable && wasFullExcludingQueue && !IsFullExcludingQueue)
+                {
+                    NotifyJoinable();
+                }
+                else if (AllowNotifyQueueJoinable && wasFull && !IsFull)
+                {
+                    NotifyQueueJoinable();
+                }
+            }
+            else
+            {
+                if (AllowNotifyJoinable && wasFull && !IsFull)
+                {
+                    NotifyJoinable();
+                }
+            }
+        }
+
+        private void NotifyJoinable()
         {
             Electron.Notification.Show(new NotificationOptions(
                 $"{Name} is now joinable!",
                 $"{OnlinePlayers} out of the max {MaxPlayersExcludingQueue} players (excluding queue space) are online."));
+        }
+
+        private void NotifyQueueJoinable()
+        {
+            Electron.Notification.Show(new NotificationOptions(
+                $"{Name} queue is now joinable!",
+                $"{OnlinePlayers} out of the max {MaxPlayers} players are online."));
+        }
+
+        private void test()
+        {
+            OnPingCompleted(new ServerPingResponse()
+            {
+                OnlinePlayers = 151,
+                MaxPlayers = 150
+            });
         }
 
         public async void Dispose()

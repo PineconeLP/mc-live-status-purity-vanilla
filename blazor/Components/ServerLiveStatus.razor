@@ -1,6 +1,50 @@
 <div>
-    <CircularServerPlayerCount OnlinePlayers="@OnlinePlayers" 
-                            MaxPlayers="@MaxPlayers" 
-                            IsFull="@IsFull" 
-                            IsFullExcludingQueue="@IsFullExcludingQueue" />
+    <h1 class="text-center text-sm-left">Status</h1>
+    <div class="row align-items-center">
+        <div class="ml-3 ml-sm-0 col-md-auto">
+            <CircularServerPlayerCount OnlinePlayers="@OnlinePlayers" 
+                                        MaxPlayers="@MaxPlayers" 
+                                        IsFull="@IsFull" 
+                                        IsFullExcludingQueue="@IsFullExcludingQueue" />
+        </div>
+        <div class="col-md">
+            <div class="text-center text-sm-left">
+                <h2>
+                    @if(IsFull)
+                    {
+                        <div>@Name is full.</div>
+                    }
+                    else if (HasQueue && IsFullExcludingQueue)
+                    {
+                        <div>@Name is joinable, but there are players in the queue.</div>
+                    }
+                    else
+                    {
+                        <div>@Name is joinable. Play now!</div>
+                    }
+                </h2>
+
+                <p class="lead">@Description</p>
+            </div>
+        </div>
+    </div>
 </div>
+
+<div class="mt-3">
+    <h1 class="text-center text-sm-left">Settings</h1>
+    <form class="mt-3 mx-md-4">
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="cbNotify" @bind="AllowNotifyJoinable">
+            <label class="form-check-label" for="cbNotify">Notify on joinable</label>
+        </div>
+
+        <div class="mt-3 form-check">
+            <input type="checkbox" class="form-check-input" id="cbQueueNotify" @bind="AllowNotifyQueueJoinable">
+            <label class="form-check-label" for="cbQueueNotify">Notify on queue joinable</label>
+        </div>
+
+        <button type="button" @onclick="test">test</button>
+    </form>
+</div>
+
+
