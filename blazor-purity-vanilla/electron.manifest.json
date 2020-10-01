@@ -1,21 +1,22 @@
 {
-  "executable": "MCLiveStatus.PurityVanilla",
+  "executable": "MCLiveStatus.PurityVanilla.Blazor",
   "splashscreen": {
     "imageFile": ""
   },
-  "name": "MCLiveStatus.PurityVanilla",
-  "author": "",
+  "author": "PineconeLP",
   "singleInstance": false,
   "environment": "Production",
   "build": {
-    "appId": "com.MCLiveStatus.PurityVanilla.app",
-    "productName": "MCLiveStatus.PurityVanilla",
+    "appId": "com.MCLiveStatus.PurityVanilla.Blazor.app",
+    "productName": "MCLiveStatus PurityVanilla",
     "copyright": "Copyright © 2020",
     "buildVersion": "1.0.0",
     "compression": "maximum",
     "directories": {
-      "buildResources": "Assets",
       "output": "../../../bin/Desktop"
+    },
+    "win": {
+      "icon": "bin/wwwroot/icon.jpg"
     },
     "mac": {
       "icon": "bin/wwwroot/icon.jpg"
