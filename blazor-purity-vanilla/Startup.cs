@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace MCLiveStatus.Blazor
+namespace MCLiveStatus.PurityVanilla.Blazor
 {
     public class Startup
     {

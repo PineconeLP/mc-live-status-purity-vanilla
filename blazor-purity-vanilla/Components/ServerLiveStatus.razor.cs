@@ -6,7 +6,7 @@ using MCLiveStatus.Pinger.Models;
 using MCLiveStatus.Pinger.Pingers;
 using Microsoft.AspNetCore.Components;
 
-namespace MCLiveStatus.Blazor.Components
+namespace MCLiveStatus.PurityVanilla.Blazor.Components
 {
     public partial class ServerLiveStatus : ComponentBase, IDisposable
     {

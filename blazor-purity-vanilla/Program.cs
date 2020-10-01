@@ -2,7 +2,7 @@ using ElectronNET.API;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace MCLiveStatus.Blazor
+namespace MCLiveStatus.PurityVanilla.Blazor
 {
     public class Program
     {

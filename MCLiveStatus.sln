@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCLiveStatus.Blazor", "blazor\MCLiveStatus.Blazor.csproj", "{E8A95A79-4857-4B2B-9EA3-B66708F5EF91}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCLiveStatus.PurityVanilla.Blazor", "blazor-purity-vanilla\MCLiveStatus.PurityVanilla.Blazor.csproj", "{E8A95A79-4857-4B2B-9EA3-B66708F5EF91}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCLiveStatus.Pinger", "pinger\MCLiveStatus.Pinger.csproj", "{66D66002-B69A-4A77-B8AE-5E824DB14DBC}"
 EndProject
