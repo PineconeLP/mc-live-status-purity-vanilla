@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using ElectronNET.API;
 using ElectronNET.API.Entities;
-using MCLiveStatus.Blazor.ViewModels;
 using MCLiveStatus.Pinger.Models;
 using MCLiveStatus.Pinger.Pingers;
 using Microsoft.AspNetCore.Components;
@@ -38,7 +37,7 @@ namespace MCLiveStatus.Blazor.Components
         private int OnlinePlayers { get; set; }
         private int MaxPlayers { get; set; }
         private bool IsFull => OnlinePlayers >= MaxPlayers;
-        private bool IsFullExcludingQueue => OnlinePlayers >= MaxPlayersExcludingQueue;
+        private bool IsFullExcludingQueue => HasQueue ? OnlinePlayers >= MaxPlayersExcludingQueue : IsFull;
 
         private RepeatingServerPinger _repeatingPinger;
 
@@ -72,7 +71,7 @@ namespace MCLiveStatus.Blazor.Components
             {
                 if (AllowNotifyJoinable && wasFullExcludingQueue && !IsFullExcludingQueue)
                 {
-                    NotifyJoinable();
+                    NotifyJoinableExludingQueue();
                 }
                 else if (AllowNotifyQueueJoinable && wasFull && !IsFull)
                 {
@@ -88,7 +87,7 @@ namespace MCLiveStatus.Blazor.Components
             }
         }
 
-        private void NotifyJoinable()
+        private void NotifyJoinableExludingQueue()
         {
             Electron.Notification.Show(new NotificationOptions(
                 $"{Name} is now joinable!",
@@ -102,13 +101,11 @@ namespace MCLiveStatus.Blazor.Components
                 $"{OnlinePlayers} out of the max {MaxPlayers} players are online."));
         }
 
-        private void test()
+        private void NotifyJoinable()
         {
-            OnPingCompleted(new ServerPingResponse()
-            {
-                OnlinePlayers = 151,
-                MaxPlayers = 150
-            });
+            Electron.Notification.Show(new NotificationOptions(
+                $"{Name} is now joinable!",
+                $"{OnlinePlayers} out of the max {MaxPlayers} players are online."));
         }
 
         public async void Dispose()

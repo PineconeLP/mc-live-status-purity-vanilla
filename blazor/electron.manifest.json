@@ -1,15 +1,15 @@
 {
-  "executable": "MCLiveStatus.Blazor",
+  "executable": "MCLiveStatus.PurityVanilla",
   "splashscreen": {
     "imageFile": ""
   },
-  "name": "MCLiveStatus.Blazor",
+  "name": "MCLiveStatus.PurityVanilla",
   "author": "",
   "singleInstance": false,
   "environment": "Production",
   "build": {
-    "appId": "com.MCLiveStatus.Blazor.app",
-    "productName": "MCLiveStatus.Blazor",
+    "appId": "com.MCLiveStatus.PurityVanilla.app",
+    "productName": "MCLiveStatus.PurityVanilla",
     "copyright": "Copyright © 2020",
     "buildVersion": "1.0.0",
     "compression": "maximum",
@@ -20,14 +20,14 @@
       {
         "from": "./bin",
         "to": "bin",
-        "filter": [ "**/*" ]
+        "filter": ["**/*"]
       }
     ],
     "files": [
       {
         "from": "./ElectronHostHook/node_modules",
         "to": "ElectronHostHook/node_modules",
-        "filter": [ "**/*" ]
+        "filter": ["**/*"]
       },
       "**/*"
     ]
