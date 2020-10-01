@@ -14,7 +14,11 @@
     "buildVersion": "1.0.0",
     "compression": "maximum",
     "directories": {
+      "buildResources": "Assets",
       "output": "../../../bin/Desktop"
+    },
+    "mac": {
+      "icon": "Assets/favicon.ico"
     },
     "extraResources": [
       {
