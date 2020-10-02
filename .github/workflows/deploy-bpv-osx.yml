@@ -41,11 +41,8 @@ jobs:
           release_name: Release ${{ github.ref }}
 
       - name: Upload Release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: csexton/release-asset-action@v2
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_name: 'MCLiveStatus PurityVanilla.dmg'
           pattern: ${{ env.DMG_PATH }}
-          asset_content_type: application/x-apple-diskimage
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          release-url: ${{ steps.create_release.outputs.upload_url }}
