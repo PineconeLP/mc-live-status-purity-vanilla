@@ -1,6 +1,6 @@
 name: Build
 
-on: [pull_request]
+on: [push]
 
 env:
   PINGER_PROJECT_DIRECTORY: ./pinger

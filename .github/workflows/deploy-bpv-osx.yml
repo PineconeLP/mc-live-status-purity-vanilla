@@ -30,7 +30,8 @@ jobs:
         working-directory: ${{ env.BLAZOR_PURITY_VANILLA_PROJECT_DIRECTORY }}
 
       # Release
-      - uses: olegtarasov/get-tag@v2
+      - name: Extract Tag
+        uses: olegtarasov/get-tag@v2
         id: tagName
         with:
           tagRegex: 'bpv-osx/(.*)'
