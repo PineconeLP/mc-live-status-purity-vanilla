@@ -1,14 +1,13 @@
 name: Deploy Blazor Purity Vanilla (Windows)
 
-# on:
-#   push:
-#     tags:
-#       - 'bpv-win/v*'
-
-on: [pull_request]
+on:
+  push:
+    tags:
+      - 'bpv-win/v*'
 
 env:
   BLAZOR_PURITY_VANILLA_PROJECT_DIRECTORY: ./blazor-purity-vanilla
+  EXE_PATH: ./blazor-purity-vanilla/bin/Desktop/*.exe
 
 jobs:
   build:
@@ -29,3 +28,25 @@ jobs:
       - name: Build Blazor Purity Vanilla
         run: electronize build /target win
         working-directory: ${{ env.BLAZOR_PURITY_VANILLA_PROJECT_DIRECTORY }}
+
+      # Release
+      - uses: olegtarasov/get-tag@v2
+        id: tagName
+        with:
+          tagRegex: 'bpv-win/(.*)'
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ steps.tagName.outputs.tag }} (Windows)
+
+      - name: Upload Release
+        uses: csexton/release-asset-action@v2
+        with:
+          pattern: ${{ env.EXE_PATH }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          release-url: ${{ steps.create_release.outputs.upload_url }}
