@@ -1,0 +1,50 @@
+name: Deploy Blazor Purity Vanilla (OSX)
+
+# on:
+#   push:
+#     tags:
+#       - 'bpv-osx/v*'
+
+on: [push]
+
+env:
+  BLAZOR_PURITY_VANILLA_PROJECT_DIRECTORY: ./blazor-purity-vanilla
+  DMG_PATH: ./blazor-purity-vanilla/bin/Desktop/*.dmg
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      # Setup
+      - uses: actions/checkout@v2
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.x
+
+      - name: Setup Electron.NET CLI
+        run: dotnet tool install ElectronNET.CLI -g
+
+      # Blazor Purity Vanilla
+      - name: Build Blazor Purity Vanilla
+        run: electronize build /target osx
+        working-directory: ${{ env.BLAZOR_PURITY_VANILLA_PROJECT_DIRECTORY }}
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+
+      - name: Upload Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ env.DMG_PATH }}
+          asset_content_type: application/x-apple-diskimage

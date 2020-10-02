@@ -8,7 +8,6 @@ name: Deploy Blazor Purity Vanilla (Windows)
 on: [push]
 
 env:
-  PINGER_PROJECT_DIRECTORY: ./pinger
   BLAZOR_PURITY_VANILLA_PROJECT_DIRECTORY: ./blazor-purity-vanilla
 
 jobs:
