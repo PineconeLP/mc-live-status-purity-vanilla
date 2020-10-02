@@ -1,11 +1,9 @@
 name: Deploy Blazor Purity Vanilla (OSX)
 
-# on:
-#   push:
-#     tags:
-#       - 'bpv-osx/v*'
-
-on: [push]
+on:
+  push:
+    tags:
+      - 'bpv-osx/v*'
 
 env:
   BLAZOR_PURITY_VANILLA_PROJECT_DIRECTORY: ./blazor-purity-vanilla
@@ -31,6 +29,12 @@ jobs:
         run: electronize build /target osx
         working-directory: ${{ env.BLAZOR_PURITY_VANILLA_PROJECT_DIRECTORY }}
 
+      # Release
+      - uses: olegtarasov/get-tag@v2
+        id: tagName
+        with:
+          tagRegex: 'bpv-osx/(.*)'
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -38,7 +42,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          release_name: Release ${{ steps.tagName.outputs.tag }} (OSX)
 
       - name: Upload Release
         uses: csexton/release-asset-action@v2
