@@ -47,5 +47,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_name: 'MCLiveStatus PurityVanilla.dmg'
-          asset_path: ${{ env.DMG_PATH }}
+          pattern: ${{ env.DMG_PATH }}
           asset_content_type: application/x-apple-diskimage
