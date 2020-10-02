@@ -1,0 +1,40 @@
+name: Build
+
+on: [push, pull_request]
+
+env:
+  PINGER_PROJECT_DIRECTORY: ./pinger
+  BLAZOR_PURITY_VANILLA_PROJECT_DIRECTORY: ./blazor-purity-vanilla
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      # Setup
+      - uses: actions/checkout@v2
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.x
+
+      - name: Install ElectronNET CLI
+        run: dotnet tool install ElectronNET.CLI -g
+
+      # Pinger
+      - name: Restore Pinger packages
+        run: dotnet restore
+        working-directory: ${{ env.PINGER_PROJECT_DIRECTORY }}
+
+      - name: Build Pinger
+        run: dotnet build --no-restore --configuration Release
+        working-directory: ${{ env.PINGER_PROJECT_DIRECTORY }}
+
+      # Blazor Purity Vanilla
+      - name: Restore Blazor Purity Vanilla packages
+        run: dotnet restore
+        working-directory: ${{ env.BLAZOR_PURITY_VANILLA_PROJECT_DIRECTORY }}
+
+      - name: Build Blazor Purity Vanilla
+        run: electronize build /target win
+        working-directory: ${{ env.BLAZOR_PURITY_VANILLA_PROJECT_DIRECTORY }}
