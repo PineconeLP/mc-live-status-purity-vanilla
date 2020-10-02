@@ -18,9 +18,6 @@ jobs:
         with:
           dotnet-version: 3.1.x
 
-      - name: Install ElectronNET CLI
-        run: dotnet tool install ElectronNET.CLI -g
-
       # Pinger
       - name: Restore Pinger packages
         run: dotnet restore
@@ -36,5 +33,5 @@ jobs:
         working-directory: ${{ env.BLAZOR_PURITY_VANILLA_PROJECT_DIRECTORY }}
 
       - name: Build Blazor Purity Vanilla
-        run: electronize build /target win
+        run: dotnet build --no-restore --configuration Release
         working-directory: ${{ env.BLAZOR_PURITY_VANILLA_PROJECT_DIRECTORY }}
