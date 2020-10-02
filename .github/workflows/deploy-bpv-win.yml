@@ -1,0 +1,32 @@
+name: Deploy Blazor Purity Vanilla (Windows)
+
+# on:
+#   push:
+#     tags:
+#       - 'bpv-win/v*'
+
+on: [push]
+
+env:
+  PINGER_PROJECT_DIRECTORY: ./pinger
+  BLAZOR_PURITY_VANILLA_PROJECT_DIRECTORY: ./blazor-purity-vanilla
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      # Setup
+      - uses: actions/checkout@v2
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.x
+
+      - name: Setup Electron.NET CLI
+        run: dotnet tool install ElectronNET.CLI -g
+
+      # Blazor Purity Vanilla
+      - name: Build Blazor Purity Vanilla
+        run: electronize build /target win
+        working-directory: ${{ env.BLAZOR_PURITY_VANILLA_PROJECT_DIRECTORY }}
