@@ -17,7 +17,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components
         public string Host { get; set; }
 
         [Parameter]
-        public int Port { get; set; } = 25565;
+        public int Port { get; set; }
 
         [Parameter]
         public string Name { get; set; }
