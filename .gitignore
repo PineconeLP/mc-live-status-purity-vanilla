@@ -1,7 +1,9 @@
 bin/
 obj/
+dist/
 node_modules/
 scripts.txt
 secrets.txt
 todo.txt
 .DS_Store
+.venv/
