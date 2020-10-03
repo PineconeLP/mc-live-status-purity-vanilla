@@ -21,7 +21,7 @@ namespace MCLiveStatus.Pinger.Pingers.TcpClient
             return await Ping(address.Host, address.Port);
         }
 
-        public async Task<ServerPingResponse> Ping(string host, int port)
+        public async Task<ServerPingResponse> Ping(string host, int port = 0)
         {
             using (ITcpClient client = _createClient())
             {
