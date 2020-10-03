@@ -31,13 +31,23 @@
     {
         List<PlayerCountDataItem> playerCountDataItems = new List<PlayerCountDataItem>();
 
-        double onlinePlayersPercent = (double)OnlinePlayers / (double)MaxPlayers;
-        if (onlinePlayersPercent > 1)
+        double onlinePlayersPercent;
+        double maxPlayersPercent;
+        if (MaxPlayers == 0)
         {
-            onlinePlayersPercent = 1;
+            onlinePlayersPercent = 0;
+            maxPlayersPercent = 100;
         }
+        else
+        {
+            onlinePlayersPercent = (double)OnlinePlayers / (double)MaxPlayers;
+            if (onlinePlayersPercent > 1)
+            {
+                onlinePlayersPercent = 1;
+            }
 
-        double maxPlayersPercent = 1 - onlinePlayersPercent;
+            maxPlayersPercent = 1 - onlinePlayersPercent;
+        }
 
         playerCountDataItems.Add(new PlayerCountDataItem(onlinePlayersPercent));
         playerCountDataItems.Add(new PlayerCountDataItem(maxPlayersPercent));
