@@ -1,0 +1,12 @@
+altgraph==0.17
+autopep8==1.5.4
+click==7.1.2
+dnspython==1.15.0
+dnspython3==1.15.0
+macholib==1.14
+mcstatus==4.0.0
+pycodestyle==2.6.0
+pyinstaller==4.0
+pyinstaller-hooks-contrib==2020.9
+six==1.15.0
+toml==0.10.1
