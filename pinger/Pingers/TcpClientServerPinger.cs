@@ -5,12 +5,12 @@ using MCLiveStatus.Pinger.TcpClients;
 
 namespace MCLiveStatus.Pinger.Pingers
 {
-    public class ServerPinger
+    public class TcpClientServerPinger : IServerPinger
     {
         private readonly CreateTcpClient _createClient;
         private readonly ServerNetworkStreamPinger _streamPinger;
 
-        public ServerPinger(CreateTcpClient createClient, ServerNetworkStreamPinger streamPinger)
+        public TcpClientServerPinger(CreateTcpClient createClient, ServerNetworkStreamPinger streamPinger)
         {
             _createClient = createClient;
             _streamPinger = streamPinger;

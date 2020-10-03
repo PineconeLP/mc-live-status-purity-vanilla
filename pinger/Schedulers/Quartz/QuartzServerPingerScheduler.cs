@@ -9,9 +9,9 @@ namespace MCLiveStatus.Pinger.Schedulers.Quartz
     public class QuartzServerPingerScheduler : IServerPingerScheduler
     {
         private readonly ISchedulerFactory _schedulerFactory;
-        private readonly ServerPinger _serverPinger;
+        private readonly IServerPinger _serverPinger;
 
-        public QuartzServerPingerScheduler(ISchedulerFactory schedulerFactory, ServerPinger serverPinger)
+        public QuartzServerPingerScheduler(ISchedulerFactory schedulerFactory, IServerPinger serverPinger)
         {
             _schedulerFactory = schedulerFactory;
             _serverPinger = serverPinger;
