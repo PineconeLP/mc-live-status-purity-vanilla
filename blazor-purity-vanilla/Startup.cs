@@ -50,7 +50,18 @@ namespace MCLiveStatus.PurityVanilla.Blazor
                 endpoints.MapFallbackToPage("/_Host");
             });
 
-            Task.Run(() => Electron.WindowManager.CreateWindowAsync());
+            StartElectron(env);
+        }
+
+        private async void StartElectron(IWebHostEnvironment env)
+        {
+            BrowserWindow window = await Electron.WindowManager.CreateWindowAsync();
+
+            if (env.IsProduction())
+            {
+                window.SetMenuBarVisibility(false);
+                window.RemoveMenu();
+            }
         }
     }
 }
