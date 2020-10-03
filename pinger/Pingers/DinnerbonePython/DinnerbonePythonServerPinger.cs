@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 using MCLiveStatus.Pinger.Models;
 using Newtonsoft.Json;
@@ -16,7 +17,8 @@ namespace MCLiveStatus.Pinger.Pingers.DinnerbonePython
 
         public Task<ServerPingResponse> Ping(string host, int port)
         {
-            ProcessStartInfo processInfo = new ProcessStartInfo("./Scripts/dist/main/main")
+            string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Scripts/dist/main/main");
+            ProcessStartInfo processInfo = new ProcessStartInfo(path)
             {
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
