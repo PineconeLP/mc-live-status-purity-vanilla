@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using MCLiveStatus.Pinger.Models;
 using MCLiveStatus.Pinger.NetworkStreams;
 
-namespace MCLiveStatus.Pinger.Pingers
+namespace MCLiveStatus.Pinger.Pingers.TcpClient
 {
     public class ServerNetworkStreamPinger
     {

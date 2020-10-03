@@ -3,7 +3,7 @@ using MCLiveStatus.Pinger.Models;
 using MCLiveStatus.Pinger.NetworkStreams;
 using MCLiveStatus.Pinger.TcpClients;
 
-namespace MCLiveStatus.Pinger.Pingers
+namespace MCLiveStatus.Pinger.Pingers.TcpClient
 {
     public class TcpClientServerPinger : IServerPinger
     {
