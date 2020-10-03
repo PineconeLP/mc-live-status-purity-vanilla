@@ -9,6 +9,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Scripts\**\*" CopyToOutputDirectory="Always"/>
+    <Content Include="Scripts\dist\**\*" CopyToOutputDirectory="Always"/>
   </ItemGroup>
 </Project>
