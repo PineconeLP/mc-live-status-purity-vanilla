@@ -1,5 +1,6 @@
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using ElectronNET.API;
 using ElectronNET.API.Entities;
@@ -65,18 +66,32 @@ namespace MCLiveStatus.PurityVanilla.Blazor
             // when the window is closed.
             options.Show = false;
 
-            string iconPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "wwwroot", "icon.ico");
-            options.Icon = iconPath;
-
             if (env.IsProduction())
             {
                 options.AutoHideMenuBar = true;
+                options.Icon = GetIconPath();
             }
 
             BrowserWindow window = await Electron.WindowManager.CreateWindowAsync(options);
 
             window.OnReadyToShow += window.Show;
             window.OnClosed += lifetime.StopApplication;
+        }
+
+        private string GetIconPath()
+        {
+            string iconFileName;
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                iconFileName = "icon.ico";
+            }
+            else
+            {
+                iconFileName = "icon.jpg";
+            }
+
+            return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "wwwroot", iconFileName);
         }
     }
 }
