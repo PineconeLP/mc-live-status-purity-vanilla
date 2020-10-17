@@ -17,7 +17,7 @@ namespace MCLiveStatus.Pinger.Pingers.DinnerbonePython
 
         public Task<ServerPingResponse> Ping(string host, int port)
         {
-            string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Scripts/dist/main");
+            string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "pinger.exe");
             ProcessStartInfo processInfo = new ProcessStartInfo(path)
             {
                 UseShellExecute = false,
