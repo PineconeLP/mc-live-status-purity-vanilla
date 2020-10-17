@@ -10,4 +10,5 @@ todo.txt
 .DS_Store
 main.spec
 .venv/
+.vs/
 
