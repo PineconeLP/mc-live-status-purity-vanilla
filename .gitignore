@@ -8,7 +8,7 @@ scripts.txt
 secrets.txt
 todo.txt
 .DS_Store
-main.spec
+*.spec
 .venv/
 .vs/
 
