@@ -1,7 +1,7 @@
 {
   "executable": "MCLiveStatus.PurityVanilla.Blazor",
   "splashscreen": {
-    "imageFile": ""
+    "imageFile": "wwwroot/icon.jpg"
   },
   "author": "PineconeLP",
   "singleInstance": false,
@@ -16,7 +16,7 @@
       "output": "../../../bin/Desktop"
     },
     "win": {
-      "icon": "bin/wwwroot/icon.jpg"
+      "icon": "bin/wwwroot/icon.ico"
     },
     "mac": {
       "icon": "bin/wwwroot/icon.jpg"

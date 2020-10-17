@@ -1,3 +1,5 @@
+using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 using ElectronNET.API;
 using ElectronNET.API.Entities;
@@ -27,7 +29,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor
             services.AddSingleton<RepeatingServerPingerFactory>();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime lifetime)
         {
             if (env.IsDevelopment())
             {
@@ -50,18 +52,31 @@ namespace MCLiveStatus.PurityVanilla.Blazor
                 endpoints.MapFallbackToPage("/_Host");
             });
 
-            StartElectron(env);
+            StartElectron(env, lifetime);
         }
 
-        private async void StartElectron(IWebHostEnvironment env)
+        private async void StartElectron(IWebHostEnvironment env, IHostApplicationLifetime lifetime)
         {
-            BrowserWindow window = await Electron.WindowManager.CreateWindowAsync();
+            BrowserWindowOptions options = new BrowserWindowOptions();
+
+            // Default to not showing in order to manually control show/hide status.
+            //
+            // This needs to be manually controlled in order to properly stop the application
+            // when the window is closed.
+            options.Show = false;
+
+            string iconPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "wwwroot", "icon.ico");
+            options.Icon = iconPath;
 
             if (env.IsProduction())
             {
-                window.SetMenuBarVisibility(false);
-                window.RemoveMenu();
+                options.AutoHideMenuBar = true;
             }
+
+            BrowserWindow window = await Electron.WindowManager.CreateWindowAsync(options);
+
+            window.OnReadyToShow += window.Show;
+            window.OnClosed += lifetime.StopApplication;
         }
     }
 }
