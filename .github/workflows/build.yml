@@ -3,6 +3,7 @@ name: Build
 on: [push]
 
 env:
+  PYTHON_PINGER_PROJECT_DIRECTORY: ./pinger/Scripts
   PINGER_PROJECT_DIRECTORY: ./pinger
   BLAZOR_PURITY_VANILLA_PROJECT_DIRECTORY: ./blazor-purity-vanilla
 
@@ -13,10 +14,27 @@ jobs:
       # Setup
       - uses: actions/checkout@v2
 
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 3.1.x
+
+      # Python Pinger
+      - name: Install pipenv
+        run: pip install pipenv
+
+      - name: Install Python Pinger dependencies
+        run: pipenv install
+        working-directory: ${{ env.PYTHON_PINGER_PROJECT_DIRECTORY }}
+
+      - name: Build Python Pinger
+        run: pipenv run build
+        working-directory: ${{ env.PYTHON_PINGER_PROJECT_DIRECTORY }}
 
       # Pinger
       - name: Restore Pinger packages
