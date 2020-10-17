@@ -1,14 +1,8 @@
 import sys
 import json
-from mcstatus import MinecraftServer
+from get_server import get_server
 
-host = sys.argv[1]
-port = int(sys.argv[2])
-
-if(port == 0):
-    server = MinecraftServer.lookup(host)
-else:
-    server = MinecraftServer(host, port)
+server = get_server(sys.argv)
 
 info = server.status()
 
