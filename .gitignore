@@ -1,7 +1,14 @@
 bin/
 obj/
+dist/
+build/
+__pycache__/
 node_modules/
 scripts.txt
 secrets.txt
 todo.txt
 .DS_Store
+*.spec
+.venv/
+.vs/
+
