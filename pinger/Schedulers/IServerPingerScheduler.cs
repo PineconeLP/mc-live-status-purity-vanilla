@@ -8,7 +8,7 @@ namespace MCLiveStatus.Pinger.Schedulers
 
     public interface IServerPingerScheduler
     {
-        Task<StopPingSchedule> Schedule(ServerAddress serverAddress, int secondsInterval,
+        Task<StopPingSchedule> Schedule(ServerAddress serverAddress, double secondsInterval,
             Action<ServerPingResponse> onPing = null,
             Action<Exception> onException = null);
     }
