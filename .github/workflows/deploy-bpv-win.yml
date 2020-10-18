@@ -6,6 +6,7 @@ on:
       - 'bpv-win/v*'
 
 env:
+  PYTHON_PINGER_PROJECT_DIRECTORY: ./pinger/Scripts
   BLAZOR_PURITY_VANILLA_PROJECT_DIRECTORY: ./blazor-purity-vanilla
   EXE_PATH: ./blazor-purity-vanilla/bin/Desktop/*.exe
 
@@ -16,6 +17,11 @@ jobs:
       # Setup
       - uses: actions/checkout@v2
 
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
@@ -23,6 +29,18 @@ jobs:
 
       - name: Setup Electron.NET CLI
         run: dotnet tool install ElectronNET.CLI -g
+
+      # Python Pinger
+      - name: Install pipenv
+        run: pip install pipenv
+
+      - name: Install Python Pinger dependencies
+        run: pipenv install
+        working-directory: ${{ env.PYTHON_PINGER_PROJECT_DIRECTORY }}
+
+      - name: Build Python Pinger
+        run: pipenv run build
+        working-directory: ${{ env.PYTHON_PINGER_PROJECT_DIRECTORY }}
 
       # Blazor Purity Vanilla
       - name: Build Blazor Purity Vanilla
