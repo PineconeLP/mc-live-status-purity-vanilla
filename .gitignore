@@ -9,6 +9,7 @@ secrets.txt
 todo.txt
 .DS_Store
 *.spec
+*.pyc
 .venv/
 .vs/
 
