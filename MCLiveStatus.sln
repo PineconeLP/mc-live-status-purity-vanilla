@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCLiveStatus.PurityVanilla.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCLiveStatus.Pinger", "pinger\MCLiveStatus.Pinger.csproj", "{66D66002-B69A-4A77-B8AE-5E824DB14DBC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCLiveStatus.Pinger.Tests", "pinger-tests\MCLiveStatus.Pinger.Tests.csproj", "{E475AB38-0165-42D9-895A-44366301136E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,5 +46,17 @@ Global
 		{66D66002-B69A-4A77-B8AE-5E824DB14DBC}.Release|x64.Build.0 = Release|Any CPU
 		{66D66002-B69A-4A77-B8AE-5E824DB14DBC}.Release|x86.ActiveCfg = Release|Any CPU
 		{66D66002-B69A-4A77-B8AE-5E824DB14DBC}.Release|x86.Build.0 = Release|Any CPU
+		{E475AB38-0165-42D9-895A-44366301136E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E475AB38-0165-42D9-895A-44366301136E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E475AB38-0165-42D9-895A-44366301136E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E475AB38-0165-42D9-895A-44366301136E}.Debug|x64.Build.0 = Debug|Any CPU
+		{E475AB38-0165-42D9-895A-44366301136E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E475AB38-0165-42D9-895A-44366301136E}.Debug|x86.Build.0 = Debug|Any CPU
+		{E475AB38-0165-42D9-895A-44366301136E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E475AB38-0165-42D9-895A-44366301136E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E475AB38-0165-42D9-895A-44366301136E}.Release|x64.ActiveCfg = Release|Any CPU
+		{E475AB38-0165-42D9-895A-44366301136E}.Release|x64.Build.0 = Release|Any CPU
+		{E475AB38-0165-42D9-895A-44366301136E}.Release|x86.ActiveCfg = Release|Any CPU
+		{E475AB38-0165-42D9-895A-44366301136E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
