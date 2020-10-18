@@ -9,10 +9,10 @@ namespace MCLiveStatus.Pinger.Schedulers.Quartz
     public class QuartzServerPingerJobFactory : IJobFactory
     {
         private readonly ServerAddress _serverAddress;
-        private readonly ServerPinger _serverPinger;
+        private readonly IServerPinger _serverPinger;
         private readonly Action<ServerPingResponse> _onPing;
 
-        public QuartzServerPingerJobFactory(ServerAddress serverAddress, ServerPinger serverPinger, Action<ServerPingResponse> onPing = null)
+        public QuartzServerPingerJobFactory(ServerAddress serverAddress, IServerPinger serverPinger, Action<ServerPingResponse> onPing = null)
         {
             _serverAddress = serverAddress;
             _serverPinger = serverPinger;

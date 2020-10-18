@@ -1,7 +1,7 @@
 using MCLiveStatus.Pinger.Models;
+using MCLiveStatus.Pinger.Pingers.DinnerbonePython;
 using MCLiveStatus.Pinger.Schedulers;
 using MCLiveStatus.Pinger.Schedulers.Quartz;
-using MCLiveStatus.Pinger.TcpClients;
 using Quartz.Impl;
 
 namespace MCLiveStatus.Pinger.Pingers
@@ -12,9 +12,7 @@ namespace MCLiveStatus.Pinger.Pingers
 
         public RepeatingServerPingerFactory()
         {
-            CreateTcpClient createClient = () => new DefaultTcpClient();
-            ServerNetworkStreamPinger streamPinger = new ServerNetworkStreamPinger();
-            ServerPinger pinger = new ServerPinger(createClient, streamPinger);
+            IServerPinger pinger = new DinnerbonePythonServerPinger();
 
             _scheduler = new QuartzServerPingerScheduler(new StdSchedulerFactory(), pinger);
         }

@@ -1,3 +1,6 @@
+using System.IO;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using ElectronNET.API;
 using ElectronNET.API.Entities;
@@ -27,7 +30,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor
             services.AddSingleton<RepeatingServerPingerFactory>();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime lifetime)
         {
             if (env.IsDevelopment())
             {
@@ -50,7 +53,45 @@ namespace MCLiveStatus.PurityVanilla.Blazor
                 endpoints.MapFallbackToPage("/_Host");
             });
 
-            Task.Run(() => Electron.WindowManager.CreateWindowAsync());
+            StartElectron(env, lifetime);
+        }
+
+        private async void StartElectron(IWebHostEnvironment env, IHostApplicationLifetime lifetime)
+        {
+            BrowserWindowOptions options = new BrowserWindowOptions();
+
+            // Default to not showing in order to manually control show/hide status.
+            //
+            // This needs to be manually controlled in order to properly stop the application
+            // when the window is closed.
+            options.Show = false;
+
+            if (env.IsProduction())
+            {
+                options.AutoHideMenuBar = true;
+                options.Icon = GetIconPath();
+            }
+
+            BrowserWindow window = await Electron.WindowManager.CreateWindowAsync(options);
+
+            window.OnReadyToShow += window.Show;
+            window.OnClosed += lifetime.StopApplication;
+        }
+
+        private string GetIconPath()
+        {
+            string iconFileName;
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                iconFileName = "icon.ico";
+            }
+            else
+            {
+                iconFileName = "icon.jpg";
+            }
+
+            return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "wwwroot", iconFileName);
         }
     }
 }
