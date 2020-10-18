@@ -6,6 +6,9 @@ using MCLiveStatus.Pinger.Pingers;
 
 namespace MCLiveStatus.Pinger.Schedulers
 {
+    /// <summary>
+    /// TODO: Adapt Timer class to interface for testing purposes.
+    /// </summary>
     public class TimerServerPingerScheduler : IServerPingerScheduler
     {
         private readonly IServerPinger _serverPinger;

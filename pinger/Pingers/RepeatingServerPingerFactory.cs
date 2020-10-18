@@ -4,6 +4,9 @@ using MCLiveStatus.Pinger.Schedulers;
 
 namespace MCLiveStatus.Pinger.Pingers
 {
+    /// <summary>
+    /// TODO: Replace with a DI extension, use ServiceProvider here.
+    /// </summary>
     public class RepeatingServerPingerFactory
     {
         private readonly IServerPingerScheduler _scheduler;
@@ -11,7 +14,6 @@ namespace MCLiveStatus.Pinger.Pingers
         public RepeatingServerPingerFactory()
         {
             IServerPinger pinger = new DinnerbonePythonServerPinger();
-
             _scheduler = new TimerServerPingerScheduler(pinger);
         }
 
