@@ -51,6 +51,10 @@ jobs:
         run: dotnet build --no-restore --configuration Release
         working-directory: ${{ env.PINGER_PROJECT_DIRECTORY }}
 
+      - name: Test Pinger
+        run: dotnet test --no-restore --no-build --configuration Release
+        working-directory: ${{ env.PINGER_PROJECT_DIRECTORY }}
+
       # Blazor Purity Vanilla
       - name: Restore Blazor Purity Vanilla packages
         run: dotnet restore
