@@ -31,6 +31,9 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components
         [Parameter]
         public int MaxPlayersExcludingQueue { get; set; }
 
+        private bool IsLoading { get; set; }
+        private DateTime LastUpdateTime { get; set; }
+
         private bool AllowNotifyJoinable { get; set; }
         private bool AllowNotifyQueueJoinable { get; set; }
         private double ServerStatusPingIntervalSeconds { get; set; }
@@ -44,6 +47,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components
 
         protected override async Task OnInitializedAsync()
         {
+            IsLoading = true;
             ServerStatusPingIntervalSeconds = 5;
             ServerAddress serverAddress = new ServerAddress(Host, Port);
 
@@ -56,6 +60,9 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components
 
         private void OnPingCompleted(ServerPingResponse response)
         {
+            IsLoading = false;
+            LastUpdateTime = DateTime.Now;
+
             bool wasFull = IsFull;
             bool wasFullExcludingQueue = IsFullExcludingQueue;
 
