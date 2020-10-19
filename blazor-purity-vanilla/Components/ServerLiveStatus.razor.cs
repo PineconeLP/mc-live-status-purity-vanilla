@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Threading.Tasks;
 using ElectronNET.API;
 using ElectronNET.API.Entities;
@@ -30,6 +31,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components
 
         private bool IsLoading { get; set; }
         private DateTime LastUpdateTime { get; set; }
+        private string LastUpdateTimeDisplay => LastUpdateTime.ToString("MMM d 'at' hh:mm:ss tt", CultureInfo.InvariantCulture);
 
         private bool AllowNotifyJoinable { get; set; }
         private bool AllowNotifyQueueJoinable { get; set; }
