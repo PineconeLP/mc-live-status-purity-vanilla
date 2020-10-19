@@ -26,6 +26,19 @@ namespace MCLiveStatus.Pinger.Tests.Schedulers
         }
 
         [Test]
+        public async Task UpdatePingScheduleInterval_SetsTimerInterval()
+        {
+            double expectedInterval = 10000;
+            double intervalSeconds = expectedInterval / 1000;
+
+            await _handler.UpdatePingScheduleInterval(intervalSeconds);
+            double actualInterval = _timer.Interval;
+
+            Assert.AreEqual(expectedInterval, actualInterval);
+            await _handler.StopPingSchedule();
+        }
+
+        [Test]
         public async Task StopPingSchedule_DisposesTimer()
         {
             bool disposed = false;

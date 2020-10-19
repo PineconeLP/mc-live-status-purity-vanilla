@@ -6,6 +6,8 @@ namespace MCLiveStatus.Pinger.Schedulers
     {
         bool IsStopped { get; }
 
+        Task UpdatePingScheduleInterval(double intervalInSeconds);
+
         Task StopPingSchedule();
     }
 }
