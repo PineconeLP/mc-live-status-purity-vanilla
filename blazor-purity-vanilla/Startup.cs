@@ -1,10 +1,9 @@
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using ElectronNET.API;
 using ElectronNET.API.Entities;
-using MCLiveStatus.Pinger.Pingers;
+using MCLiveStatus.Pinger.Containers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -27,7 +26,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor
             services.AddRazorPages();
             services.AddServerSideBlazor();
 
-            services.AddSingleton<RepeatingServerPingerFactory>();
+            services.AddServerPinger();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime lifetime)
