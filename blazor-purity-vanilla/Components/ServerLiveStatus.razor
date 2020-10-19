@@ -2,15 +2,13 @@
     <h1 class="text-center text-sm-left">Status</h1>
     <div class="row align-items-center">
         <div class="ml-3 ml-sm-0 col-md-auto">
-            <CircularServerPlayerCount OnlinePlayers="@OnlinePlayers" 
-                                        MaxPlayers="@MaxPlayers" 
-                                        IsFull="@IsFull" 
-                                        IsFullExcludingQueue="@IsFullExcludingQueue" />
+            <CircularServerPlayerCount OnlinePlayers="@OnlinePlayers" MaxPlayers="@MaxPlayers" IsFull="@IsFull"
+IsFullExcludingQueue="@IsFullExcludingQueue" />
         </div>
         <div class="col-md">
             <div class="text-center text-sm-left">
                 <h2>
-                    @if(IsFull)
+                    @if (IsFull)
                     {
                         <div>@Name is full.</div>
                     }
@@ -33,25 +31,32 @@
 <div class="mt-3">
     <h1 class="text-center text-sm-left">Settings</h1>
     <form class="mt-3 mx-md-4">
-        <div class="form-check">
-            <input type="checkbox" class="form-check-input" id="cbNotify" @bind="AllowNotifyJoinable">
-            <label class="form-check-label" for="cbNotify">
-                Notify on joinable 
-                <span class="font-weight-light">(less than @MaxPlayersExcludingQueue online players)</span>
-            </label>
-        </div>
-
-        @if(HasQueue) 
+        @if (HasQueue)
         {
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="cbNotify" @bind="AllowNotifyJoinable">
+                <label class="form-check-label" for="cbNotify">
+                    Notify on joinable
+                    <span class="font-weight-light">(less than @MaxPlayersExcludingQueue online players)</span>
+                </label>
+            </div>
             <div class="mt-3 form-check">
                 <input type="checkbox" class="form-check-input" id="cbQueueNotify" @bind="AllowNotifyQueueJoinable">
                 <label class="form-check-label" for="cbQueueNotify">
-                    Notify on queue joinable 
+                    Notify on queue joinable
+                    <span class="font-weight-light">(less than @MaxPlayers online players)</span>
+                </label>
+            </div>
+        }
+        else
+        {
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="cbNotify" @bind="AllowNotifyJoinable">
+                <label class="form-check-label" for="cbNotify">
+                    Notify on joinable
                     <span class="font-weight-light">(less than @MaxPlayers online players)</span>
                 </label>
             </div>
         }
     </form>
 </div>
-
-
