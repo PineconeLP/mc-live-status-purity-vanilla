@@ -23,9 +23,6 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components
         public string Name { get; set; }
 
         [Parameter]
-        public string Description { get; set; }
-
-        [Parameter]
         public bool HasQueue { get; set; }
 
         [Parameter]
