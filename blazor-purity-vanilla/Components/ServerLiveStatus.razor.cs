@@ -29,6 +29,10 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components
         [Parameter]
         public int MaxPlayersExcludingQueue { get; set; }
 
+        private int OnlinePlayers { get; set; }
+        private int MaxPlayers { get; set; }
+        private bool IsFull => OnlinePlayers >= MaxPlayers;
+        private bool IsFullExcludingQueue => HasQueue ? OnlinePlayers >= MaxPlayersExcludingQueue : IsFull;
         private bool IsLoading { get; set; }
         private DateTime LastUpdateTime { get; set; }
         private string LastUpdateTimeDisplay => LastUpdateTime.ToString("MMM d 'at' hh:mm:ss tt", CultureInfo.InvariantCulture);
@@ -36,11 +40,8 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components
         private bool AllowNotifyJoinable { get; set; }
         private bool AllowNotifyQueueJoinable { get; set; }
         private double ServerStatusPingIntervalSeconds { get; set; }
-
-        private int OnlinePlayers { get; set; }
-        private int MaxPlayers { get; set; }
-        private bool IsFull => OnlinePlayers >= MaxPlayers;
-        private bool IsFullExcludingQueue => HasQueue ? OnlinePlayers >= MaxPlayersExcludingQueue : IsFull;
+        private bool IsInvalidServerStatusPingIntervalSeconds { get; set; }
+        private string InvalidServerStatusPingIntervalSecondsClass => IsInvalidServerStatusPingIntervalSeconds ? "is-invalid" : "";
 
         private RepeatingServerPinger _repeatingPinger;
 
@@ -118,7 +119,16 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components
 
         private async Task UpdatePingInterval()
         {
-            await _repeatingPinger.UpdateServerPingSecondsInterval(ServerStatusPingIntervalSeconds);
+            IsInvalidServerStatusPingIntervalSeconds = false;
+
+            try
+            {
+                await _repeatingPinger.UpdateServerPingSecondsInterval(ServerStatusPingIntervalSeconds);
+            }
+            catch (ArgumentException)
+            {
+                IsInvalidServerStatusPingIntervalSeconds = true;
+            }
         }
 
         public async void Dispose()
