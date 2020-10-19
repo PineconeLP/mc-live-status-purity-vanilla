@@ -14,6 +14,7 @@ namespace MCLiveStatus.Pinger.Tests.Pingers
         private RepeatingServerPinger _repeatingPinger;
 
         private Mock<IServerPingerScheduler> _mockScheduler;
+        private Mock<IServerPingerSchedulerHandler> _mockSchedulerHandler;
 
         private ServerAddress _serverAddress = new ServerAddress(It.IsAny<string>(), 25565);
 
@@ -21,6 +22,7 @@ namespace MCLiveStatus.Pinger.Tests.Pingers
         public void SetUp()
         {
             _mockScheduler = new Mock<IServerPingerScheduler>();
+            _mockSchedulerHandler = new Mock<IServerPingerSchedulerHandler>();
 
             _repeatingPinger = new RepeatingServerPinger(_serverAddress, _mockScheduler.Object);
         }
@@ -39,7 +41,7 @@ namespace MCLiveStatus.Pinger.Tests.Pingers
         public async Task Start_WithRunning_DoesNotStartScheduler()
         {
             int seconds = 10;
-            _mockScheduler.Setup(s => s.Schedule(_serverAddress, seconds, It.IsAny<Action<ServerPingResponse>>(), It.IsAny<Action<Exception>>())).ReturnsAsync(() => Task.CompletedTask);
+            _mockScheduler.Setup(s => s.Schedule(_serverAddress, seconds, It.IsAny<Action<ServerPingResponse>>(), It.IsAny<Action<Exception>>())).ReturnsAsync(_mockSchedulerHandler.Object);
 
             await _repeatingPinger.Start(seconds);
             await _repeatingPinger.Start(seconds);
@@ -50,27 +52,25 @@ namespace MCLiveStatus.Pinger.Tests.Pingers
         [Test]
         public async Task Stop_WithRunning_StopsScheduler()
         {
-            bool stopped = false;
             int seconds = 10;
-            _mockScheduler.Setup(s => s.Schedule(_serverAddress, seconds, It.IsAny<Action<ServerPingResponse>>(), It.IsAny<Action<Exception>>())).ReturnsAsync(() => Task.Run(() => stopped = true));
+            _mockScheduler.Setup(s => s.Schedule(_serverAddress, seconds, It.IsAny<Action<ServerPingResponse>>(), It.IsAny<Action<Exception>>())).ReturnsAsync(_mockSchedulerHandler.Object);
 
             await _repeatingPinger.Start(seconds);
             await _repeatingPinger.Stop();
 
             _mockScheduler.Verify(s => s.Schedule(_serverAddress, seconds, It.IsAny<Action<ServerPingResponse>>(), It.IsAny<Action<Exception>>()), Times.Once);
-            Assert.IsTrue(stopped);
+            _mockSchedulerHandler.Verify(s => s.StopPingSchedule(), Times.Once);
         }
 
         [Test]
         public async Task Stop_WithoutRunning_DoesNotStopScheduler()
         {
-            bool stopped = false;
             int seconds = 10;
-            _mockScheduler.Setup(s => s.Schedule(_serverAddress, seconds, It.IsAny<Action<ServerPingResponse>>(), It.IsAny<Action<Exception>>())).ReturnsAsync(() => Task.Run(() => stopped = true));
+            _mockScheduler.Setup(s => s.Schedule(_serverAddress, seconds, It.IsAny<Action<ServerPingResponse>>(), It.IsAny<Action<Exception>>())).ReturnsAsync(_mockSchedulerHandler.Object);
 
             await _repeatingPinger.Stop();
 
-            Assert.IsFalse(stopped);
+            _mockSchedulerHandler.Verify(s => s.StopPingSchedule(), Times.Never);
         }
 
         [Test]

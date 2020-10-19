@@ -10,9 +10,9 @@ namespace MCLiveStatus.Pinger.Pingers
         private readonly IServerPingerScheduler _scheduler;
         private readonly ServerAddress _serverAddress;
 
-        private StopPingSchedule _stop;
+        private IServerPingerSchedulerHandler _schedulerHandler;
 
-        private bool IsRunning => _stop != null;
+        private bool IsRunning => _schedulerHandler != null && !_schedulerHandler.IsStopped;
 
         public event Action<ServerPingResponse> PingCompleted;
 
@@ -26,7 +26,7 @@ namespace MCLiveStatus.Pinger.Pingers
         {
             if (!IsRunning)
             {
-                _stop = await _scheduler.Schedule(_serverAddress, secondsInterval, OnPingCompleted);
+                _schedulerHandler = await _scheduler.Schedule(_serverAddress, secondsInterval, OnPingCompleted);
             }
         }
 
@@ -34,7 +34,7 @@ namespace MCLiveStatus.Pinger.Pingers
         {
             if (IsRunning)
             {
-                await _stop();
+                await _schedulerHandler.StopPingSchedule();
             }
         }
 

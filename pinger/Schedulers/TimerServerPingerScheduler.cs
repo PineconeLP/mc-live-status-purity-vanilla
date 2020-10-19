@@ -18,7 +18,7 @@ namespace MCLiveStatus.Pinger.Schedulers
             _serverPinger = serverPinger;
         }
 
-        public Task<StopPingSchedule> Schedule(ServerAddress serverAddress, double secondsInterval,
+        public Task<IServerPingerSchedulerHandler> Schedule(ServerAddress serverAddress, double secondsInterval,
             Action<ServerPingResponse> onPing = null,
             Action<Exception> onException = null)
         {
@@ -29,7 +29,7 @@ namespace MCLiveStatus.Pinger.Schedulers
             ElapsedEventHandler onTimerElapsed = (s, e) => ExecutePing(serverAddress, onPing, onException);
             timer.Elapsed += onTimerElapsed;
 
-            StopPingSchedule stopPingSchedule = () => Task.Run(timer.Dispose);
+            IServerPingerSchedulerHandler stopPingSchedule = new TimerServerPingerSchedulerHandler(timer);
 
             timer.Start();
 
