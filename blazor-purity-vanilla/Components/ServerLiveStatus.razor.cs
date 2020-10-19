@@ -44,11 +44,12 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components
 
         protected override async Task OnInitializedAsync()
         {
+            ServerStatusPingIntervalSeconds = 5;
             ServerAddress serverAddress = new ServerAddress(Host, Port);
 
             _repeatingPinger = RepeatingServerPingerFactory.CreateRepeatingServerPinger(serverAddress);
             _repeatingPinger.PingCompleted += OnPingCompleted;
-            await _repeatingPinger.Start(5);
+            await _repeatingPinger.Start(ServerStatusPingIntervalSeconds);
 
             await base.OnInitializedAsync();
         }
@@ -107,6 +108,11 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components
             Electron.Notification.Show(new NotificationOptions(
                 $"{Name} is now joinable!",
                 $"{OnlinePlayers} out of the max {MaxPlayers} players are online."));
+        }
+
+        private async Task UpdatePingInterval()
+        {
+            await _repeatingPinger.UpdateServerPingSecondsInterval(ServerStatusPingIntervalSeconds);
         }
 
         public async void Dispose()
