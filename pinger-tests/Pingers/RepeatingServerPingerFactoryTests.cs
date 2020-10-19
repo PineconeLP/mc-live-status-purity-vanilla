@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using MCLiveStatus.Pinger.Models;
 using MCLiveStatus.Pinger.Pingers;
+using MCLiveStatus.Pinger.Schedulers;
 using Moq;
 using NUnit.Framework;
 
@@ -16,7 +17,7 @@ namespace MCLiveStatus.Pinger.Tests.Pingers
         [SetUp]
         public void SetUp()
         {
-            _factory = new RepeatingServerPingerFactory();
+            _factory = new RepeatingServerPingerFactory(It.IsAny<IServerPingerScheduler>());
         }
 
         [Test]
