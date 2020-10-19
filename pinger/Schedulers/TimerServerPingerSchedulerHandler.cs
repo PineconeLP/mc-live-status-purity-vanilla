@@ -14,6 +14,13 @@ namespace MCLiveStatus.Pinger.Schedulers
             _timer = timer;
         }
 
+        public Task UpdatePingScheduleInterval(double intervalInSeconds)
+        {
+            _timer.Interval = intervalInSeconds * 1000;
+
+            return Task.CompletedTask;
+        }
+
         public Task StopPingSchedule()
         {
             _timer.Dispose();
@@ -21,5 +28,7 @@ namespace MCLiveStatus.Pinger.Schedulers
 
             return Task.CompletedTask;
         }
+
+
     }
 }
