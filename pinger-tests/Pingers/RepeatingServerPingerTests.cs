@@ -42,11 +42,34 @@ namespace MCLiveStatus.Pinger.Tests.Pingers
         {
             int seconds = 10;
             _mockScheduler.Setup(s => s.Schedule(_serverAddress, seconds, It.IsAny<Action<ServerPingResponse>>(), It.IsAny<Action<Exception>>())).ReturnsAsync(_mockSchedulerHandler.Object);
-
             await _repeatingPinger.Start(seconds);
+
             await _repeatingPinger.Start(seconds);
 
             _mockScheduler.Verify(s => s.Schedule(_serverAddress, seconds, It.IsAny<Action<ServerPingResponse>>(), It.IsAny<Action<Exception>>()), Times.Once);
+        }
+
+        [Test]
+        public async Task UpdateServerPingSecondsInterval_WithRunning_UpdatesSchedulerHandler()
+        {
+            double initialIntervalInSeconds = 5;
+            double intervalInSeconds = 10;
+            _mockScheduler.Setup(s => s.Schedule(_serverAddress, initialIntervalInSeconds, It.IsAny<Action<ServerPingResponse>>(), It.IsAny<Action<Exception>>())).ReturnsAsync(_mockSchedulerHandler.Object);
+            await _repeatingPinger.Start(initialIntervalInSeconds);
+
+            await _repeatingPinger.UpdateServerPingSecondsInterval(intervalInSeconds);
+
+            _mockSchedulerHandler.Verify(h => h.UpdatePingScheduleInterval(intervalInSeconds), Times.Once);
+        }
+
+        [Test]
+        public async Task UpdateServerPingSecondsInterval_WithoutRunning_DoesNotUpdateSchedulerHandler()
+        {
+            double intervalInSeconds = 10;
+
+            await _repeatingPinger.UpdateServerPingSecondsInterval(intervalInSeconds);
+
+            _mockSchedulerHandler.Verify(h => h.UpdatePingScheduleInterval(intervalInSeconds), Times.Never);
         }
 
         [Test]
@@ -54,8 +77,8 @@ namespace MCLiveStatus.Pinger.Tests.Pingers
         {
             int seconds = 10;
             _mockScheduler.Setup(s => s.Schedule(_serverAddress, seconds, It.IsAny<Action<ServerPingResponse>>(), It.IsAny<Action<Exception>>())).ReturnsAsync(_mockSchedulerHandler.Object);
-
             await _repeatingPinger.Start(seconds);
+
             await _repeatingPinger.Stop();
 
             _mockScheduler.Verify(s => s.Schedule(_serverAddress, seconds, It.IsAny<Action<ServerPingResponse>>(), It.IsAny<Action<Exception>>()), Times.Once);

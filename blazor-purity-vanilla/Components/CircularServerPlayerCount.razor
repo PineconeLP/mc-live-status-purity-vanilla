@@ -1,12 +1,13 @@
 <RadzenChart>
-    <RadzenDonutSeries Data="@PlayerCountDataItems" ValueProperty="@nameof(PlayerCountDataItem.Percentage)" Fills="@Fills">
+    <RadzenDonutSeries Data="@PlayerCountDataItems" ValueProperty="@nameof(PlayerCountDataItem.Percentage)"
+Fills="@Fills">
         <TitleTemplate>
             <div class="rz-donut-content">
                 @OnlinePlayers / @MaxPlayers
             </div>
         </TitleTemplate>
     </RadzenDonutSeries>
-    <RadzenChartTooltipOptions Visible="false"/>
+    <RadzenChartTooltipOptions Visible="false" />
     <RadzenLegend Visible="false" />
 </RadzenChart>
 
@@ -72,7 +73,9 @@
             onlinePlayersFill = "green";
         }
 
-        return new string[] { onlinePlayersFill, "#f2f2f2" };
+        string openFill = "#f2f2f2";
+
+        return new string[] { onlinePlayersFill, openFill };
     }
 
     private class PlayerCountDataItem
