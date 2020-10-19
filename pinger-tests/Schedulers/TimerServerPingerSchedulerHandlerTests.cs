@@ -25,8 +25,14 @@ namespace MCLiveStatus.Pinger.Tests.Schedulers
             _handler = new TimerServerPingerSchedulerHandler(_timer);
         }
 
+        [TearDown]
+        public void TearDown()
+        {
+            _timer.Dispose();
+        }
+
         [Test]
-        public async Task UpdatePingScheduleInterval_SetsTimerInterval()
+        public async Task UpdatePingScheduleInterval__WithIntervalGreaterThanZero_SetsTimerInterval()
         {
             double expectedInterval = 10000;
             double intervalSeconds = expectedInterval / 1000;
@@ -35,7 +41,20 @@ namespace MCLiveStatus.Pinger.Tests.Schedulers
             double actualInterval = _timer.Interval;
 
             Assert.AreEqual(expectedInterval, actualInterval);
-            await _handler.StopPingSchedule();
+        }
+
+        [Test]
+        public void UpdatePingScheduleInterval__WithIntervalZero_ThrowsArgumentException()
+        {
+            double intervalSeconds = 0;
+            Assert.ThrowsAsync<ArgumentException>(() => _handler.UpdatePingScheduleInterval(intervalSeconds));
+        }
+
+        [Test]
+        public void UpdatePingScheduleInterval__WithIntervalLessThanZero_ThrowsArgumentException()
+        {
+            double intervalSeconds = -1;
+            Assert.ThrowsAsync<ArgumentException>(() => _handler.UpdatePingScheduleInterval(intervalSeconds));
         }
 
         [Test]
