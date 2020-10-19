@@ -33,6 +33,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components
 
         private bool AllowNotifyJoinable { get; set; }
         private bool AllowNotifyQueueJoinable { get; set; }
+        private double ServerStatusPingIntervalSeconds { get; set; }
 
         private int OnlinePlayers { get; set; }
         private int MaxPlayers { get; set; }

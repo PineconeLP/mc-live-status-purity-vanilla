@@ -22,11 +22,19 @@ namespace MCLiveStatus.Pinger.Pingers
             _scheduler = scheduler;
         }
 
-        public async Task Start(int secondsInterval)
+        public async Task Start(double secondsInterval)
         {
             if (!IsRunning)
             {
                 _schedulerHandler = await _scheduler.Schedule(_serverAddress, secondsInterval, OnPingCompleted);
+            }
+        }
+
+        public async Task UpdateServerPingSecondsInterval(double intervalInSeconds)
+        {
+            if (IsRunning)
+            {
+                await _schedulerHandler.UpdatePingScheduleInterval(intervalInSeconds);
             }
         }
 
