@@ -31,11 +31,11 @@ namespace MCLiveStatus.Pinger.Tests.Schedulers
             Action<ServerPingResponse> onPing = (r) => executed = true;
             _mockPinger.Setup(s => s.Ping(validServerAddress)).ReturnsAsync(new ServerPingResponse());
 
-            StopPingSchedule stop = await _scheduler.Schedule(validServerAddress, 0.1, onPing);
+            IServerPingerSchedulerHandler handler = await _scheduler.Schedule(validServerAddress, 0.1, onPing);
             await Task.Delay(150);
 
             Assert.IsTrue(executed);
-            await stop();
+            await handler.StopPingSchedule();
         }
 
         [Test]
@@ -46,11 +46,11 @@ namespace MCLiveStatus.Pinger.Tests.Schedulers
             Action<Exception> onException = (e) => executed = true;
             _mockPinger.Setup(s => s.Ping(invalidServerAddress)).ThrowsAsync(new Exception());
 
-            StopPingSchedule stop = await _scheduler.Schedule(invalidServerAddress, 0.1, null, onException);
+            IServerPingerSchedulerHandler handler = await _scheduler.Schedule(invalidServerAddress, 0.1, null, onException);
             await Task.Delay(150);
 
             Assert.IsTrue(executed);
-            await stop();
+            await handler.StopPingSchedule();
         }
 
         [Test]
@@ -62,11 +62,11 @@ namespace MCLiveStatus.Pinger.Tests.Schedulers
             ServerAddress invalidServerAddress = new ServerAddress(It.IsAny<string>(), It.IsAny<int>());
             Action<ServerPingResponse> onPing = (e) => executed = true;
 
-            StopPingSchedule stop = await _scheduler.Schedule(invalidServerAddress, 0.1, onPing);
+            IServerPingerSchedulerHandler handler = await _scheduler.Schedule(invalidServerAddress, 0.1, onPing);
             await Task.Delay(150);
             executedBeforeStop = executed;
             executed = false; // Reset executed flag.
-            await stop();
+            await handler.StopPingSchedule();
             await Task.Delay(150);
             executedAfterStop = executed;
 
