@@ -92,20 +92,5 @@ namespace MCLiveStatus.Pinger.Tests.Pingers
 
             _mockSchedulerHandler.Verify(s => s.StopPingSchedule(), Times.Never);
         }
-
-        [Test]
-        public async Task Start_OnPingCompleted_RaisesPingCompletedFromScheduler()
-        {
-            ServerPingResponse expectedPingResponse = new ServerPingResponse();
-            ServerPingResponse actualPingResponse = null;
-            _mockScheduler.Setup(s => s.Schedule(_serverAddress, It.IsAny<double>(), It.IsAny<Action<ServerPingResponse>>(), It.IsAny<Action<Exception>>()))
-                .Callback<ServerAddress, double, Action<ServerPingResponse>, Action<Exception>>((a, s, onPing, onEx) => onPing?.Invoke(expectedPingResponse));
-            _repeatingPinger.PingCompleted += (r) => actualPingResponse = r;
-
-            await _repeatingPinger.Start(It.IsAny<double>());
-
-            Assert.IsNotNull(actualPingResponse);
-            Assert.AreEqual(expectedPingResponse, actualPingResponse);
-        }
     }
 }
