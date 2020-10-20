@@ -26,9 +26,13 @@ MCLiveStatus - Purity Vanilla is a desktop application for observing the player 
 
 2. Run the installer
 
-3. At your own risk, accept security warnings. If you are unsure about the application's security, feel free to check out the source code in this repository
+- On Windows, you may need to accept security warnings
 
-4. Run MCLiveStatus - Purity Vanilla. That's it!
+3. Run MCLiveStatus - Purity Vanilla. That's it!
+
+- On Mac/OSX, you may need to [configure security preferences](https://www.youtube.com/watch?v=X_VbIRSz8Fg)
+
+Accept any of the above security warnings at your own risk. If you are unsure about the application's security, feel free to check out the source code in this repository.
 
 ## Features
 
