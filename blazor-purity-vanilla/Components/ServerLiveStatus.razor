@@ -72,15 +72,29 @@
             </div>
         }
 
-        <div class="mt-3 form-group row align-items-center">
-            <label for="inputPingInterval" class="col-auto col-form-label pr-0">Server ping interval</label>
-            <div class="col-auto d-flex flex-wrap align-items-center pr-0">
-                <input id="inputPingInterval"
+        <div class="mt-3 form-group">
+            <div class="row align-items-center">
+                <label for="inputPingInterval" class="col-auto col-form-label pr-0">Server ping interval</label>
+                <div class="col-auto d-flex flex-wrap align-items-center pr-0">
+                    <input id="inputPingInterval"
 class="form-control form-control-sm @InvalidServerStatusPingIntervalSecondsClass" type="number"
 style="width: 75px; text-align: center;" @bind="ServerStatusPingIntervalSeconds"
-                @onfocusout="UpdatePingInterval" @oninput="() => IsInvalidServerStatusPingIntervalSeconds = false">
-                <div class="pl-2 font-weight-light">seconds</div>
+                    @onfocusout="UpdatePingInterval"
+                    @oninput="() => IsInvalidServerStatusPingIntervalSeconds = false">
+                    <div class="pl-2 font-weight-light">seconds</div>
+                </div>
             </div>
+
+            @if (IsInvalidServerStatusPingIntervalSeconds)
+            {
+                <div class="row mt-1">
+                    <div class="col">
+                        <div class="small text-danger">
+                            * Must be greater than 0 seconds.
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     </form>
 </div>
