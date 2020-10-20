@@ -15,6 +15,7 @@ namespace MCLiveStatus.Pinger.Pingers
         private bool IsRunning => _schedulerHandler != null && !_schedulerHandler.IsStopped;
 
         public event Action<ServerPingResponse> PingCompleted;
+        public event Action<Exception> PingFailed;
 
         public RepeatingServerPinger(ServerAddress serverAddress, IServerPingerScheduler scheduler)
         {
@@ -26,7 +27,7 @@ namespace MCLiveStatus.Pinger.Pingers
         {
             if (!IsRunning)
             {
-                _schedulerHandler = await _scheduler.Schedule(_serverAddress, secondsInterval, OnPingCompleted);
+                _schedulerHandler = await _scheduler.Schedule(_serverAddress, secondsInterval, PingCompleted, PingFailed);
             }
         }
 
@@ -49,11 +50,6 @@ namespace MCLiveStatus.Pinger.Pingers
             {
                 await _schedulerHandler.StopPingSchedule();
             }
-        }
-
-        private void OnPingCompleted(ServerPingResponse response)
-        {
-            PingCompleted?.Invoke(response);
         }
     }
 }

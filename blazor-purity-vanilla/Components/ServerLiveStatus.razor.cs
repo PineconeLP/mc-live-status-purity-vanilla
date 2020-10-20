@@ -35,7 +35,10 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components
         private bool IsFullExcludingQueue => HasQueue ? OnlinePlayers >= MaxPlayersExcludingQueue : IsFull;
         private bool IsLoading { get; set; }
         private DateTime LastUpdateTime { get; set; }
-        private string LastUpdateTimeDisplay => LastUpdateTime.ToString("MMM d 'at' hh:mm:ss tt", CultureInfo.InvariantCulture);
+        private string LastUpdateTimeDisplay => ToDisplayString(LastUpdateTime);
+        private bool HasUpdateError { get; set; }
+        private DateTime LastUpdateErrorTime { get; set; }
+        private string LastUpdateErrorTimeDisplay => ToDisplayString(LastUpdateErrorTime);
 
         private bool AllowNotifyJoinable { get; set; }
         private bool AllowNotifyQueueJoinable { get; set; }
@@ -53,6 +56,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components
 
             _repeatingPinger = RepeatingServerPingerFactory.CreateRepeatingServerPinger(serverAddress);
             _repeatingPinger.PingCompleted += OnPingCompleted;
+            _repeatingPinger.PingFailed += OnPingFailed;
             await _repeatingPinger.Start(ServerStatusPingIntervalSeconds);
 
             await base.OnInitializedAsync();
@@ -60,7 +64,9 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components
 
         private void OnPingCompleted(ServerPingResponse response)
         {
+            ClearUpdateError();
             IsLoading = false;
+
             LastUpdateTime = DateTime.Now;
 
             bool wasFull = IsFull;
@@ -71,6 +77,13 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components
 
             TryNotify(wasFull, wasFullExcludingQueue);
 
+            InvokeAsync(StateHasChanged);
+        }
+
+        private void OnPingFailed(Exception ex)
+        {
+            HasUpdateError = true;
+            LastUpdateErrorTime = DateTime.Now;
             InvokeAsync(StateHasChanged);
         }
 
@@ -131,9 +144,24 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components
             }
         }
 
+        private void ClearUpdateError()
+        {
+            HasUpdateError = false;
+        }
+
+        private string ToDisplayString(DateTime dateTime)
+        {
+            return dateTime.ToString("MMM d 'at' hh:mm:ss tt", CultureInfo.InvariantCulture);
+        }
+
         public async void Dispose()
         {
-            await _repeatingPinger?.Stop();
+            if (_repeatingPinger != null)
+            {
+                _repeatingPinger.PingCompleted -= OnPingCompleted;
+                _repeatingPinger.PingFailed -= OnPingFailed;
+                await _repeatingPinger?.Stop();
+            }
         }
     }
 }
