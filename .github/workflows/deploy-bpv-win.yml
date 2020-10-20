@@ -4,6 +4,8 @@ on:
   push:
     tags:
       - 'bpv-win/v*'
+    paths-ignore:
+      - '**/README.md'
 
 env:
   PYTHON_PINGER_PROJECT_DIRECTORY: ./pinger/Scripts

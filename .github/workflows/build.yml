@@ -7,6 +7,8 @@ on:
     tags-ignore:
       - 'bpv-win/v*'
       - 'bpv-osx/v*'
+    paths-ignore:
+      - '**/README.md'
 
 env:
   PYTHON_PINGER_PROJECT_DIRECTORY: ./pinger/Scripts
