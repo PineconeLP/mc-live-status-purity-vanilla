@@ -18,7 +18,7 @@ MCLiveStatus - Purity Vanilla is a desktop application for observing the player 
 
 ## Downloads
 
-### [Windows Latest](https://github.com/PineconeLP/mc-live-status-purity-vanilla/releases/download/bpv-win%2Fv1.2.0/MCLiveStatus.PurityVanilla.Setup.1.2.0.exe) | [Mac/OSX Latest](https://github.com/PineconeLP/mc-live-status-purity-vanilla/releases/download/bpv-osx%2Fv1.2.0/MCLiveStatus.PurityVanilla-1.2.0.dmg)
+### [Windows Latest](https://github.com/PineconeLP/mc-live-status-purity-vanilla/releases/download/bpv-win%2Fv1.2.1/MCLiveStatus.PurityVanilla.Setup.1.2.1.exe) | [Mac/OSX Latest](https://github.com/PineconeLP/mc-live-status-purity-vanilla/releases/download/bpv-osx%2Fv1.2.1/MCLiveStatus.PurityVanilla-1.2.1.dmg)
 
 ## Installation
 

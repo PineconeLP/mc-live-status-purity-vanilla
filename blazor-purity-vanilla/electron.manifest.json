@@ -10,7 +10,7 @@
     "appId": "com.MCLiveStatus.PurityVanilla.Blazor.app",
     "productName": "MCLiveStatus PurityVanilla",
     "copyright": "Copyright © 2020",
-    "buildVersion": "1.2.0",
+    "buildVersion": "1.2.1",
     "compression": "maximum",
     "directories": {
       "output": "../../../bin/Desktop"
