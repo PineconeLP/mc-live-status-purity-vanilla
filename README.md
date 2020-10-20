@@ -1,5 +1,14 @@
 # MCLiveStatus - Purity Vanilla
 
+Observe and receive notifications about Purity Vanilla's player count.
+
+# Table of Contents
+
+- [Description](#description)
+- [Downloads](#downloads)
+- [Installation](#installation)
+- [Features](#features)
+
 ## Description
 
 MCLiveStatus - Purity Vanilla is a desktop application for observing the player count, server capacity, and queue capacity of Purity Vanilla. If you answer yes to any of the following questions, MCLiveStatus - Purity Vanilla is the perfect application for you!
