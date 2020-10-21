@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using ElectronNET.API;
 using ElectronNET.API.Entities;
 using MCLiveStatus.Pinger.Containers;
+using MCLiveStatus.PurityVanilla.Blazor.Services.ServerStatusNotifiers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -27,6 +28,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor
             services.AddServerSideBlazor();
 
             services.AddServerPinger();
+            services.AddSingleton<IServerStatusNotifier, ElectronServerStatusNotifier>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime lifetime)
