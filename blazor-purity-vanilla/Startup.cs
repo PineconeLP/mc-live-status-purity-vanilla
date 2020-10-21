@@ -4,7 +4,10 @@ using System.Runtime.InteropServices;
 using ElectronNET.API;
 using ElectronNET.API.Entities;
 using MCLiveStatus.Pinger.Containers;
+using MCLiveStatus.PurityVanilla.Blazor.Models;
 using MCLiveStatus.PurityVanilla.Blazor.Services.ServerStatusNotifiers;
+using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers;
+using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingerSettingsStores;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -27,8 +30,19 @@ namespace MCLiveStatus.PurityVanilla.Blazor
             services.AddRazorPages();
             services.AddServerSideBlazor();
 
+            services.AddTransient<ServerDetails>(s => new ServerDetails()
+            {
+                Host = "purityvanilla.com",
+                Port = 25565,
+                Name = "Purity Vanilla",
+                HasQueue = true,
+                MaxPlayersExcludingQueue = 75
+            });
+
             services.AddServerPinger();
             services.AddSingleton<IServerStatusNotifier, ElectronServerStatusNotifier>();
+            services.AddSingleton<ServerStatusPingerSettingsStore>();
+            services.AddSingleton<ServerStatusPingerStore>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime lifetime)
