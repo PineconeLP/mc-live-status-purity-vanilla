@@ -4,14 +4,14 @@ namespace MCLiveStatus.Domain.Models
 {
     public class ServerPingerSettings
     {
-        public Guid Id { get; }
+        public int Id { get; }
         public bool AllowNotifyJoinable { get; set; }
         public bool AllowNotifyQueueJoinable { get; set; }
         public double PingIntervalSeconds { get; set; }
 
-        public ServerPingerSettings() : this(Guid.Empty) { }
+        public ServerPingerSettings() : this(0) { }
 
-        public ServerPingerSettings(Guid id)
+        public ServerPingerSettings(int id)
         {
             Id = id;
         }

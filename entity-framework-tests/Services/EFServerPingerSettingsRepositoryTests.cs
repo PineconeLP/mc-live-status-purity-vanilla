@@ -86,7 +86,7 @@ namespace MCLiveStatus.EntityFramework.Tests.Services
         public async Task Save_WithExistingSettings_UpdatesSettings()
         {
             double expectedPingIntervalSeconds = 100;
-            Guid id = Guid.NewGuid();
+            int id = 1;
             using (MCLiveStatusDbContext context = _contextFactory.CreateDbContext())
             {
                 context.ServerPingerSettings.Add(new ServerPingerSettingsDTO() { Id = id });
@@ -125,7 +125,7 @@ namespace MCLiveStatus.EntityFramework.Tests.Services
 
             ServerPingerSettings settings = await _repository.Save(new ServerPingerSettings() { PingIntervalSeconds = expectedPingIntervalSeconds });
 
-            Assert.AreNotEqual(settings.Id, Guid.Empty);
+            Assert.AreNotEqual(settings.Id, 0);
         }
 
         [Test]

@@ -41,14 +41,7 @@ namespace MCLiveStatus.EntityFramework.Services
             {
                 ServerPingerSettingsDTO settingsDTO = _mapper.Map<ServerPingerSettingsDTO>(settings);
 
-                if (settingsDTO.Id == Guid.Empty)
-                {
-                    context.ServerPingerSettings.Add(settingsDTO);
-                }
-                else
-                {
-                    context.ServerPingerSettings.Update(settingsDTO);
-                }
+                context.ServerPingerSettings.Update(settingsDTO);
 
                 await context.SaveChangesAsync();
 

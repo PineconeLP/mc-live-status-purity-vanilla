@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MCLiveStatus.EntityFramework.Migrations
 {
@@ -11,7 +10,8 @@ namespace MCLiveStatus.EntityFramework.Migrations
                 name: "ServerPingerSettings",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
                     AllowNotifyJoinable = table.Column<bool>(nullable: false),
                     AllowNotifyQueueJoinable = table.Column<bool>(nullable: false),
                     PingIntervalSeconds = table.Column<double>(nullable: false)
