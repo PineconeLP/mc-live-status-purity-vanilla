@@ -9,10 +9,12 @@ on:
       - 'bpv-osx/v*'
     paths-ignore:
       - '**/README.md'
+  pull_request:
+    branches:
+      - '*'
 
 env:
   PYTHON_PINGER_PROJECT_DIRECTORY: ./pinger/Scripts
-  PINGER_PROJECT_DIRECTORY: ./pinger
   BLAZOR_PURITY_VANILLA_PROJECT_DIRECTORY: ./blazor-purity-vanilla
 
 jobs:
@@ -44,24 +46,12 @@ jobs:
         run: pipenv run build
         working-directory: ${{ env.PYTHON_PINGER_PROJECT_DIRECTORY }}
 
-      # Pinger
-      - name: Restore Pinger packages
+      # .NET
+      - name: Restore packages
         run: dotnet restore
-        working-directory: ${{ env.PINGER_PROJECT_DIRECTORY }}
 
-      - name: Build Pinger
+      - name: Build
         run: dotnet build --no-restore --configuration Release
-        working-directory: ${{ env.PINGER_PROJECT_DIRECTORY }}
 
-      - name: Test Pinger
+      - name: Test
         run: dotnet test --no-restore --no-build --configuration Release
-        working-directory: ${{ env.PINGER_PROJECT_DIRECTORY }}
-
-      # Blazor Purity Vanilla
-      - name: Restore Blazor Purity Vanilla packages
-        run: dotnet restore
-        working-directory: ${{ env.BLAZOR_PURITY_VANILLA_PROJECT_DIRECTORY }}
-
-      - name: Build Blazor Purity Vanilla
-        run: dotnet build --no-restore --configuration Release
-        working-directory: ${{ env.BLAZOR_PURITY_VANILLA_PROJECT_DIRECTORY }}
