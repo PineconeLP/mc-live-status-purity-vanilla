@@ -7,7 +7,7 @@ using MCLiveStatus.Pinger.Containers;
 using MCLiveStatus.PurityVanilla.Blazor.Models;
 using MCLiveStatus.PurityVanilla.Blazor.Services.ServerStatusNotifiers;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers;
-using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingerSettingsStores;
+using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -41,7 +41,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor
 
             services.AddServerPinger();
             services.AddSingleton<IServerStatusNotifier, ElectronServerStatusNotifier>();
-            services.AddSingleton<ServerStatusPingerSettingsStore>();
+            services.AddSingleton<ServerPingerSettingsStore>();
             services.AddSingleton<ServerStatusPingerStore>();
         }
 

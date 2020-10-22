@@ -4,7 +4,7 @@ using MCLiveStatus.Pinger.Models;
 using MCLiveStatus.Pinger.Pingers;
 using MCLiveStatus.PurityVanilla.Blazor.Models;
 using MCLiveStatus.PurityVanilla.Blazor.Services.ServerStatusNotifiers;
-using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingerSettingsStores;
+using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers
 {
@@ -12,7 +12,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers
     {
         private readonly PingedServerDetails _serverDetails;
         private readonly RepeatingServerPinger _repeatingPinger;
-        private readonly ServerStatusPingerSettingsStore _settingsStore;
+        private readonly ServerPingerSettingsStore _settingsStore;
         private readonly IServerStatusNotifier _serverStatusNotifier;
 
         private bool _isInitialized;
@@ -27,7 +27,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers
 
         public ServerStatusPingerStore(ServerDetails serverDetails,
             RepeatingServerPingerFactory repeatingServerPingerFactory,
-            ServerStatusPingerSettingsStore settingsStore,
+            ServerPingerSettingsStore settingsStore,
             IServerStatusNotifier serverStatusNotifier)
         {
             _serverDetails = new PingedServerDetails(serverDetails);
@@ -49,7 +49,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers
                 IsLoading = true;
                 OnStateChanged();
 
-                await _repeatingPinger.Start(_settingsStore.ServerStatusPingIntervalSeconds);
+                await _repeatingPinger.Start(_settingsStore.PingIntervalSeconds);
 
                 _isInitialized = true;
             }
@@ -104,15 +104,15 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers
 
         private async void UpdatePingInterval()
         {
-            _settingsStore.IsInvalidServerStatusPingIntervalSeconds = false;
+            _settingsStore.IsInvalidPingIntervalSeconds = false;
 
             try
             {
-                await _repeatingPinger.UpdateServerPingSecondsInterval(_settingsStore.ServerStatusPingIntervalSeconds);
+                await _repeatingPinger.UpdateServerPingSecondsInterval(_settingsStore.PingIntervalSeconds);
             }
             catch (ArgumentException)
             {
-                _settingsStore.IsInvalidServerStatusPingIntervalSeconds = true;
+                _settingsStore.IsInvalidPingIntervalSeconds = true;
             }
         }
 

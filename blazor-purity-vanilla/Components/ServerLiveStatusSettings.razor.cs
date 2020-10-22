@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingerSettingsStores;
+using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores;
 using Microsoft.AspNetCore.Components;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.Components
@@ -17,7 +17,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components
         public int MaxPlayers { get; set; }
 
         [Inject]
-        public ServerStatusPingerSettingsStore SettingsStore { get; set; }
+        public ServerPingerSettingsStore SettingsStore { get; set; }
 
         private bool AllowNotifyJoinable
         {
@@ -31,14 +31,14 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components
             set => SettingsStore.AllowNotifyQueueJoinable = value;
         }
 
-        private double ServerStatusPingIntervalSeconds
+        private double PingIntervalSeconds
         {
-            get => SettingsStore.ServerStatusPingIntervalSeconds;
-            set => SettingsStore.ServerStatusPingIntervalSeconds = value;
+            get => SettingsStore.PingIntervalSeconds;
+            set => SettingsStore.PingIntervalSeconds = value;
         }
 
-        private bool IsInvalidServerStatusPingIntervalSeconds => SettingsStore.IsInvalidServerStatusPingIntervalSeconds;
-        private string InvalidServerStatusPingIntervalSecondsClass => IsInvalidServerStatusPingIntervalSeconds ? "is-invalid" : "";
+        private bool IsInvalidPingIntervalSeconds => SettingsStore.IsInvalidPingIntervalSeconds;
+        private string InvalidPingIntervalSecondsClass => IsInvalidPingIntervalSeconds ? "is-invalid" : "";
 
         protected override Task OnInitializedAsync()
         {
@@ -48,9 +48,9 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components
             return base.OnInitializedAsync();
         }
 
-        private void ClearIsInvalidServerStatusPingIntervalSeconds()
+        private void ClearIsInvalidPingIntervalSeconds()
         {
-            SettingsStore.IsInvalidServerStatusPingIntervalSeconds = false;
+            SettingsStore.IsInvalidPingIntervalSeconds = false;
         }
 
         private void OnSettingsChanged()

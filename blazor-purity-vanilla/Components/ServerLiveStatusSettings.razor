@@ -31,15 +31,14 @@
         <div class="row align-items-center">
             <label for="inputPingInterval" class="col-auto col-form-label pr-0">Server ping interval</label>
             <div class="col-auto d-flex flex-wrap align-items-center pr-0">
-                <input id="inputPingInterval"
-                class="form-control form-control-sm @InvalidServerStatusPingIntervalSecondsClass" type="number"
-                style="width: 75px; text-align: center;" @bind="ServerStatusPingIntervalSeconds"
-                @oninput="ClearIsInvalidServerStatusPingIntervalSeconds">
+                <input id="inputPingInterval" class="form-control form-control-sm @InvalidPingIntervalSecondsClass"
+                type="number" style="width: 75px; text-align: center;" @bind="PingIntervalSeconds"
+                @oninput="ClearIsInvalidPingIntervalSeconds">
                 <div class="pl-2 font-weight-light">seconds</div>
             </div>
         </div>
 
-        @if (IsInvalidServerStatusPingIntervalSeconds)
+        @if (IsInvalidPingIntervalSeconds)
         {
             <div class="row mt-1">
                 <div class="col">

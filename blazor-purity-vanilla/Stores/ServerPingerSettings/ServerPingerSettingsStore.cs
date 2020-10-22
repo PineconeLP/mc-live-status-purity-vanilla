@@ -1,11 +1,11 @@
 using System;
-using MCLiveStatus.PurityVanilla.Blazor.Models;
+using MCLiveStatus.Domain.Models;
 
-namespace MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingerSettingsStores
+namespace MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores
 {
-    public class ServerStatusPingerSettingsStore
+    public class ServerPingerSettingsStore
     {
-        private readonly ServerStatusPingerSettings _settings;
+        private readonly ServerPingerSettings _settings;
 
         public bool AllowNotifyJoinable
         {
@@ -25,23 +25,23 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingerSettingsSto
                 OnSettingsChanged();
             }
         }
-        public double ServerStatusPingIntervalSeconds
+        public double PingIntervalSeconds
         {
-            get => _settings.ServerStatusPingIntervalSeconds;
+            get => _settings.PingIntervalSeconds;
             set
             {
-                _settings.ServerStatusPingIntervalSeconds = value;
+                _settings.PingIntervalSeconds = value;
                 OnSettingsChanged();
             }
         }
 
-        private bool _isInvalidServerStatusPingIntervalSeconds;
-        public bool IsInvalidServerStatusPingIntervalSeconds
+        private bool _isInvalidPingIntervalSeconds;
+        public bool IsInvalidPingIntervalSeconds
         {
-            get => _isInvalidServerStatusPingIntervalSeconds;
+            get => _isInvalidPingIntervalSeconds;
             set
             {
-                _isInvalidServerStatusPingIntervalSeconds = value;
+                _isInvalidPingIntervalSeconds = value;
                 OnValidationChanged();
             }
         }
@@ -49,11 +49,11 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingerSettingsSto
         public event Action SettingsChanged;
         public event Action ValidationChanged;
 
-        public ServerStatusPingerSettingsStore()
+        public ServerPingerSettingsStore()
         {
-            _settings = new ServerStatusPingerSettings()
+            _settings = new ServerPingerSettings()
             {
-                ServerStatusPingIntervalSeconds = 5
+                PingIntervalSeconds = 5
             };
         }
 
