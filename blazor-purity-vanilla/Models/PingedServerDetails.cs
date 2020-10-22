@@ -13,6 +13,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Models
         public int MaxPlayers { get; set; }
         public bool IsFull => OnlinePlayers >= MaxPlayers;
         public bool IsFullExcludingQueue => HasQueue ? OnlinePlayers >= MaxPlayersExcludingQueue : IsFull;
+        public bool HasData { get; set; }
 
         public PingedServerDetails(ServerDetails serverDetails, int onlinePlayers = 0, int maxPlayers = 0)
         {

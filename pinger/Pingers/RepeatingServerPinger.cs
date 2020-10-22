@@ -12,7 +12,7 @@ namespace MCLiveStatus.Pinger.Pingers
 
         private IServerPingerSchedulerHandler _schedulerHandler;
 
-        private bool IsRunning => _schedulerHandler != null && !_schedulerHandler.IsStopped;
+        public bool IsRunning => _schedulerHandler != null && !_schedulerHandler.IsStopped;
 
         public event Action<ServerPingResponse> PingCompleted;
         public event Action<Exception> PingFailed;

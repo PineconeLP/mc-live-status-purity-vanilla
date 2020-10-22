@@ -1,11 +1,24 @@
 using System;
+using System.Threading.Tasks;
 using MCLiveStatus.Domain.Models;
+using MCLiveStatus.Domain.Services;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores
 {
     public class ServerPingerSettingsStore
     {
-        private readonly ServerPingerSettings _settings;
+        private readonly IServerPingerSettingsRepository _settingsRepository;
+
+        private ServerPingerSettings _settings;
+        private ServerPingerSettings Settings
+        {
+            get => _settings;
+            set
+            {
+                _settings = value;
+                OnSettingsChanged();
+            }
+        }
 
         public bool AllowNotifyJoinable
         {
@@ -46,15 +59,57 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores
             }
         }
 
+        private bool _isLoading;
+        public bool IsLoading
+        {
+            get => _isLoading;
+            private set
+            {
+                _isLoading = value;
+                OnIsLoadingChanged();
+            }
+        }
+
         public event Action SettingsChanged;
         public event Action ValidationChanged;
+        public event Action IsLoadingChanged;
 
-        public ServerPingerSettingsStore()
+        public ServerPingerSettingsStore(IServerPingerSettingsRepository settingsRepository)
         {
-            _settings = new ServerPingerSettings()
+            _settingsRepository = settingsRepository;
+            _settings = new ServerPingerSettings() { PingIntervalSeconds = 5 };
+        }
+
+        /// <summary>
+        /// Load the server pinger settings.
+        /// </summary>
+        /// <exception cref="Exception">Thrown if load fails.</exception>
+        public async Task Load()
+        {
+            IsLoading = true;
+
+            try
             {
-                PingIntervalSeconds = 5
-            };
+                ServerPingerSettings storedSettings = await _settingsRepository.Load();
+
+                if (storedSettings != null)
+                {
+                    Settings = storedSettings;
+                }
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
+        /// <summary>
+        /// Save the server pinger settings.
+        /// </summary>
+        /// <exception cref="Exception">Thrown if save fails.</exception>
+        public async Task Save()
+        {
+            Settings = await _settingsRepository.Save(Settings);
         }
 
         private void OnSettingsChanged()
@@ -65,6 +120,11 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores
         private void OnValidationChanged()
         {
             ValidationChanged?.Invoke();
+        }
+
+        private void OnIsLoadingChanged()
+        {
+            IsLoadingChanged?.Invoke();
         }
     }
 }

@@ -3,19 +3,8 @@
 
     @if (IsLoading)
     {
-        <div class="d-flex flex-column align-items-center mt-3">
-            <div class="spinner-border" role="status" style="width: 5em; height: 5em;">
-                <span class="sr-only">Loading...</span>
-            </div>
-            <p class="mt-3 lead">Pinging @Host...</p>
-
-            @if (HasUpdateError)
-            {
-                <div class="small text-danger">
-                    @LastUpdateErrorTimeDisplay: Failed to ping @Host. Retrying...
-                </div>
-            }
-        </div>
+        <Loading Message="@($"Pinging {Host}...")" HasError="HasUpdateError"
+        ErrorMessage="@($"{LastUpdateErrorTimeDisplay}: Failed to ping {Host}. Retrying...")" />
     }
     else
     {

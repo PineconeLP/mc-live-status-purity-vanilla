@@ -16,6 +16,8 @@ using Microsoft.Extensions.Hosting;
 using MCLiveStatus.EntityFramework.Containers;
 using Microsoft.EntityFrameworkCore;
 using System;
+using MCLiveStatus.EntityFramework.Mappers;
+using AutoMapper;
 
 namespace MCLiveStatus.PurityVanilla.Blazor
 {
@@ -33,6 +35,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor
             services.AddRazorPages();
             services.AddServerSideBlazor();
 
+            services.AddAutoMapper(typeof(DTOMappingProfile));
             services.AddDataServices(o => o.UseSqlite("Data Source=MCLiveStatus.db"));
 
             services.AddTransient<ServerDetails>(s => new ServerDetails()

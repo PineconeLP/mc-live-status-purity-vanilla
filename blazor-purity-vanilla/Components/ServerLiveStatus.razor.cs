@@ -20,7 +20,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components
         private int MaxPlayersExcludingQueue => ServerStatusPingerStore.ServerDetails.MaxPlayersExcludingQueue;
         private bool IsFull => ServerStatusPingerStore.ServerDetails.IsFull;
         private bool IsFullExcludingQueue => ServerStatusPingerStore.ServerDetails.IsFullExcludingQueue;
-        private bool IsLoading => ServerStatusPingerStore.IsLoading;
+        private bool IsLoading => !ServerStatusPingerStore.ServerDetails.HasData; 
         private string LastUpdateTimeDisplay => ToDisplayString(ServerStatusPingerStore.LastUpdateTime);
         private bool HasUpdateError => ServerStatusPingerStore.HasUpdateError;
         private string LastUpdateErrorTimeDisplay => ToDisplayString(ServerStatusPingerStore.LastUpdateErrorTime);
@@ -36,7 +36,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components
 
         private async Task InitializePingerStore()
         {
-            await ServerStatusPingerStore.Initialize();
+            await ServerStatusPingerStore.Load();
         }
 
         private string ToDisplayString(DateTime dateTime)

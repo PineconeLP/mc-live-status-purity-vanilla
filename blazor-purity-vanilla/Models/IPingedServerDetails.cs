@@ -11,5 +11,6 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Models
         int MaxPlayers { get; }
         bool IsFull { get; }
         bool IsFullExcludingQueue { get; }
+        bool HasData { get; }
     }
 }

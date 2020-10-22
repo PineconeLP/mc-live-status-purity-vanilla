@@ -15,10 +15,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers
         private readonly ServerPingerSettingsStore _settingsStore;
         private readonly IServerStatusNotifier _serverStatusNotifier;
 
-        private bool _isInitialized;
-
         public IPingedServerDetails ServerDetails => _serverDetails;
-        public bool IsLoading { get; private set; }
         public DateTime LastUpdateTime { get; private set; }
         public bool HasUpdateError { get; private set; }
         public DateTime LastUpdateErrorTime { get; private set; }
@@ -42,24 +39,25 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers
             _settingsStore.SettingsChanged += UpdatePingInterval;
         }
 
-        public async Task Initialize()
+        public async Task Load()
         {
-            if (!_isInitialized && !IsLoading)
+            await _settingsStore.Load();
+
+            try
             {
-                IsLoading = true;
-                OnStateChanged();
-
                 await _repeatingPinger.Start(_settingsStore.PingIntervalSeconds);
-
-                _isInitialized = true;
+            }
+            catch (ArgumentException)
+            {
+                _settingsStore.IsInvalidPingIntervalSeconds = true;
             }
         }
 
         private void OnPingCompleted(ServerPingResponse response)
         {
             HasUpdateError = false;
-            IsLoading = false;
 
+            _serverDetails.HasData = true;
             LastUpdateTime = DateTime.Now;
 
             bool wasFull = _serverDetails.IsFull;
@@ -108,7 +106,14 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers
 
             try
             {
-                await _repeatingPinger.UpdateServerPingSecondsInterval(_settingsStore.PingIntervalSeconds);
+                if (!_repeatingPinger.IsRunning)
+                {
+                    await _repeatingPinger.Start(_settingsStore.PingIntervalSeconds);
+                }
+                else
+                {
+                    await _repeatingPinger.UpdateServerPingSecondsInterval(_settingsStore.PingIntervalSeconds);
+                }
             }
             catch (ArgumentException)
             {
