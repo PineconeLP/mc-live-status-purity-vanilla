@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using MCLiveStatus.Domain.Models;
@@ -24,7 +25,9 @@ namespace MCLiveStatus.EntityFramework.Services
         {
             using (MCLiveStatusDbContext context = _contextFactory.CreateDbContext())
             {
-                ServerPingerSettingsDTO settingsDTO = await context.ServerPingerSettings.FirstOrDefaultAsync();
+                ServerPingerSettingsDTO settingsDTO = await context.ServerPingerSettings
+                    .OrderByDescending(s => s.Id) // Get the newest record.
+                    .FirstOrDefaultAsync();
 
                 return _mapper.Map<ServerPingerSettings>(settingsDTO);
             }

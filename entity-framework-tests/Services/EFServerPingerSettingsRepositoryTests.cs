@@ -60,6 +60,24 @@ namespace MCLiveStatus.EntityFramework.Tests.Services
 
             Assert.IsNotNull(settings);
         }
+        [Test]
+        public async Task Load_WithMultipleExistingSettings_ReturnsNewestSettings()
+        {
+            ServerPingerSettingsDTO settings1 = new ServerPingerSettingsDTO();
+            ServerPingerSettingsDTO settings2 = new ServerPingerSettingsDTO();
+            ServerPingerSettingsDTO settings3 = new ServerPingerSettingsDTO();
+            using (MCLiveStatusDbContext context = _contextFactory.CreateDbContext())
+            {
+                context.ServerPingerSettings.Add(settings1);
+                context.ServerPingerSettings.Add(settings2);
+                context.ServerPingerSettings.Add(settings3);
+                await context.SaveChangesAsync();
+            }
+
+            ServerPingerSettings settings = await _repository.Load();
+
+            Assert.AreEqual(settings.Id, settings3.Id);
+        }
 
         [Test]
         public async Task Load_WithNonExistingSettings_ReturnsNull()
