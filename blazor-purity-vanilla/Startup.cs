@@ -13,6 +13,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MCLiveStatus.EntityFramework.Contexts;
+using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace MCLiveStatus.PurityVanilla.Blazor
 {
@@ -29,6 +32,10 @@ namespace MCLiveStatus.PurityVanilla.Blazor
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
+
+            Action<DbContextOptionsBuilder> configureDbContext = o => o.UseSqlite("Data Source=MCLiveStatus.db");
+            services.AddDbContext<MCLiveStatusDbContext>(configureDbContext);
+            services.AddSingleton<MCLiveStatusDbContextFactory>(new MCLiveStatusDbContextFactory(configureDbContext));
 
             services.AddTransient<ServerDetails>(s => new ServerDetails()
             {

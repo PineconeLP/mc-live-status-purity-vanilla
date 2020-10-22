@@ -4,6 +4,11 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="ElectronNET.API" Version="9.31.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.9">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.9" />
     <PackageReference Include="Radzen.Blazor" Version="2.15.5" />
   </ItemGroup>
   <ItemGroup>
@@ -14,5 +19,6 @@
   <ItemGroup>
     <ProjectReference Include="..\pinger\MCLiveStatus.Pinger.csproj" />
     <ProjectReference Include="..\domain\MCLiveStatus.Domain.csproj" />
+    <ProjectReference Include="..\entity-framework\MCLiveStatus.EntityFramework.csproj" />
   </ItemGroup>
 </Project>

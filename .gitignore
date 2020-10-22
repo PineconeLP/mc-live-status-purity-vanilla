@@ -12,4 +12,5 @@ todo.txt
 *.pyc
 .venv/
 .vs/
+*.db
 
