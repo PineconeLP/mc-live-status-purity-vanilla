@@ -26,11 +26,6 @@ namespace MCLiveStatus.EntityFramework.Services
             {
                 ServerPingerSettingsDTO settingsDTO = await context.ServerPingerSettings.FirstOrDefaultAsync();
 
-                if (settingsDTO == null)
-                {
-                    return null;
-                }
-
                 return _mapper.Map<ServerPingerSettings>(settingsDTO);
             }
         }
