@@ -47,11 +47,11 @@ jobs:
         working-directory: ${{ env.PYTHON_PINGER_PROJECT_DIRECTORY }}
 
       # .NET
-      - name: Restore packages
+      - name: Restore .NET packages
         run: dotnet restore
 
-      - name: Build
+      - name: Build .NET projects
         run: dotnet build --no-restore --configuration Release
 
-      - name: Test
+      - name: Test .NET projects
         run: dotnet test --no-restore --no-build --configuration Release
