@@ -39,10 +39,10 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components
 
         private bool IsInvalidPingIntervalSeconds => SettingsStore.IsInvalidPingIntervalSeconds;
         private string InvalidPingIntervalSecondsClass => IsInvalidPingIntervalSeconds ? "is-invalid" : "";
+        private bool HasDirtySettings { get; set; }
 
         private bool IsLoading => SettingsStore.IsLoading;
-
-        private bool CanSave { get; set; }
+        private bool CanSave => HasDirtySettings && !IsInvalidPingIntervalSeconds;
 
         protected override Task OnInitializedAsync()
         {
@@ -55,7 +55,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components
 
         private void OnSettingsInput()
         {
-            CanSave = true;
+            HasDirtySettings = true;
         }
 
         private void OnPingIntervalSecondsInput()
@@ -67,7 +67,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components
         private async Task SaveSettings()
         {
             await SettingsStore.Save();
-            CanSave = false;
+            HasDirtySettings = false;
         }
 
         private void OnSettingsChanged()
