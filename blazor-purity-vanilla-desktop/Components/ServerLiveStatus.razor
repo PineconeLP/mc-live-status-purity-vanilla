@@ -31,6 +31,8 @@
                     </h2>
 
                     <p class="lead">last updated @LastUpdateTimeDisplay</p>
+
+                    <button class="btn btn-outline-secondary" type="button" @onclick="Refresh" disabled="@(!CanRefresh)">Refresh</button>
                 </div>
             </div>
         </div>

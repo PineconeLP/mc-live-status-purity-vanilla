@@ -48,21 +48,25 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerStatusPingers
 
             try
             {
-                try
-                {
-                    ServerPingResponse initialResponse = await _pinger.Ping(_serverAddress);
-                    OnPingCompleted(initialResponse);
-                }
-                catch (Exception ex)
-                {
-                    OnPingFailed(ex);
-                }
-
+                await RefreshServerStatus();
                 await _repeatingPinger.Start(_settingsStore.PingIntervalSeconds);
             }
             catch (ArgumentException)
             {
                 _settingsStore.IsInvalidPingIntervalSeconds = true;
+            }
+        }
+
+        public async Task RefreshServerStatus()
+        {
+            try
+            {
+                ServerPingResponse initialResponse = await _pinger.Ping(_serverAddress);
+                OnPingCompleted(initialResponse);
+            }
+            catch (Exception ex)
+            {
+                OnPingFailed(ex);
             }
         }
 
