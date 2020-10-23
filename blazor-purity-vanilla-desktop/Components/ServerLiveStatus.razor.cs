@@ -25,13 +25,16 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Components
         private bool HasUpdateError => ServerStatusPingerStore.HasUpdateError;
         private string LastUpdateErrorTimeDisplay => ToDisplayString(ServerStatusPingerStore.LastUpdateErrorTime);
 
-        protected override async Task OnInitializedAsync()
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            ServerStatusPingerStore.StateChanged += OnPingerStoreStateChanged;
+            if (firstRender)
+            {
+                ServerStatusPingerStore.StateChanged += OnPingerStoreStateChanged;
 
-            await InitializePingerStore();
+                await InitializePingerStore();
+            }
 
-            await base.OnInitializedAsync();
+            await base.OnAfterRenderAsync(firstRender);
         }
 
         private async Task InitializePingerStore()
