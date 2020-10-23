@@ -4,10 +4,6 @@ using System.Runtime.InteropServices;
 using ElectronNET.API;
 using ElectronNET.API.Entities;
 using MCLiveStatus.Pinger.Containers;
-using MCLiveStatus.PurityVanilla.Blazor.Models;
-using MCLiveStatus.PurityVanilla.Blazor.Services.ServerStatusNotifiers;
-using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers;
-using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -15,11 +11,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MCLiveStatus.EntityFramework.Containers;
 using Microsoft.EntityFrameworkCore;
-using System;
 using MCLiveStatus.EntityFramework.Mappers;
 using AutoMapper;
+using MCLiveStatus.PurityVanilla.Blazor.Desktop.Services.ServerStatusNotifiers;
+using MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerPingerSettingsStores;
+using MCLiveStatus.PurityVanilla.Blazor.Desktop.Models;
+using MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerStatusPingers;
 
-namespace MCLiveStatus.PurityVanilla.Blazor
+namespace MCLiveStatus.PurityVanilla.Blazor.Desktop
 {
     public class Startup
     {

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using MCLiveStatus.Domain.Models;
 using MCLiveStatus.Domain.Services;
 
-namespace MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores
+namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerPingerSettingsStores
 {
     public class ServerPingerSettingsStore
     {

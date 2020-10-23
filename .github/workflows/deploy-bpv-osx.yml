@@ -9,8 +9,8 @@ on:
 
 env:
   PYTHON_PINGER_PROJECT_DIRECTORY: ./pinger/Scripts
-  BLAZOR_PURITY_VANILLA_PROJECT_DIRECTORY: ./blazor-purity-vanilla
-  DMG_PATH: ./blazor-purity-vanilla/bin/Desktop/*.dmg
+  BLAZOR_PURITY_VANILLA_PROJECT_DIRECTORY: ./blazor-purity-vanilla-desktop
+  DMG_PATH: ./blazor-purity-vanilla-desktop/bin/Desktop/*.dmg
 
 jobs:
   build:

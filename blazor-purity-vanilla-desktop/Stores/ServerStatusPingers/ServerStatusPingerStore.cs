@@ -2,11 +2,11 @@ using System;
 using System.Threading.Tasks;
 using MCLiveStatus.Pinger.Models;
 using MCLiveStatus.Pinger.Pingers;
-using MCLiveStatus.PurityVanilla.Blazor.Models;
-using MCLiveStatus.PurityVanilla.Blazor.Services.ServerStatusNotifiers;
-using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores;
+using MCLiveStatus.PurityVanilla.Blazor.Desktop.Models;
+using MCLiveStatus.PurityVanilla.Blazor.Desktop.Services.ServerStatusNotifiers;
+using MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerPingerSettingsStores;
 
-namespace MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers
+namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerStatusPingers
 {
     public class ServerStatusPingerStore : IDisposable
     {

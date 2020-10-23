@@ -1,10 +1,10 @@
 using System;
 using System.Globalization;
 using System.Threading.Tasks;
-using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers;
+using MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerStatusPingers;
 using Microsoft.AspNetCore.Components;
 
-namespace MCLiveStatus.PurityVanilla.Blazor.Components
+namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Components
 {
     public partial class ServerLiveStatus : ComponentBase, IDisposable
     {
@@ -20,7 +20,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components
         private int MaxPlayersExcludingQueue => ServerStatusPingerStore.ServerDetails.MaxPlayersExcludingQueue;
         private bool IsFull => ServerStatusPingerStore.ServerDetails.IsFull;
         private bool IsFullExcludingQueue => ServerStatusPingerStore.ServerDetails.IsFullExcludingQueue;
-        private bool IsLoading => !ServerStatusPingerStore.ServerDetails.HasData; 
+        private bool IsLoading => !ServerStatusPingerStore.ServerDetails.HasData;
         private string LastUpdateTimeDisplay => ToDisplayString(ServerStatusPingerStore.LastUpdateTime);
         private bool HasUpdateError => ServerStatusPingerStore.HasUpdateError;
         private string LastUpdateErrorTimeDisplay => ToDisplayString(ServerStatusPingerStore.LastUpdateErrorTime);

@@ -1,4 +1,4 @@
-namespace MCLiveStatus.PurityVanilla.Blazor.Services.ServerStatusNotifiers
+namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Services.ServerStatusNotifiers
 {
     public interface IServerStatusNotifier
     {

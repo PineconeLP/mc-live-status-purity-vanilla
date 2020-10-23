@@ -1,9 +1,9 @@
 using System;
 using System.Threading.Tasks;
-using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores;
+using MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerPingerSettingsStores;
 using Microsoft.AspNetCore.Components;
 
-namespace MCLiveStatus.PurityVanilla.Blazor.Components
+namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Components
 {
     public partial class ServerLiveStatusSettings : ComponentBase, IDisposable
     {

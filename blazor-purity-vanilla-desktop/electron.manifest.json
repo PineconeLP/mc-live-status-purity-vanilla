@@ -1,5 +1,5 @@
 {
-  "executable": "MCLiveStatus.PurityVanilla.Blazor",
+  "executable": "MCLiveStatus.PurityVanilla.Blazor.Desktop",
   "splashscreen": {
     "imageFile": "wwwroot/icon.jpg"
   },
@@ -7,7 +7,7 @@
   "singleInstance": false,
   "environment": "Production",
   "build": {
-    "appId": "com.MCLiveStatus.PurityVanilla.Blazor.app",
+    "appId": "com.MCLiveStatus.PurityVanilla.Blazor.Desktop.app",
     "productName": "MCLiveStatus PurityVanilla",
     "copyright": "Copyright © 2020",
     "buildVersion": "1.3.0",

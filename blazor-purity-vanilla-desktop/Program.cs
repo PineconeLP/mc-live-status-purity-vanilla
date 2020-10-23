@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace MCLiveStatus.PurityVanilla.Blazor
+namespace MCLiveStatus.PurityVanilla.Blazor.Desktop
 {
     public class Program
     {
