@@ -1,4 +1,4 @@
-namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Models
+namespace MCLiveStatus.PurityVanilla.Blazor.Models
 {
     public class PingedServerDetails : IPingedServerDetails
     {
