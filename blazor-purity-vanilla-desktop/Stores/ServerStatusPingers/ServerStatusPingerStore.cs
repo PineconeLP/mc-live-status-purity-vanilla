@@ -4,7 +4,7 @@ using MCLiveStatus.Pinger.Models;
 using MCLiveStatus.Pinger.Pingers;
 using MCLiveStatus.PurityVanilla.Blazor.Desktop.Models;
 using MCLiveStatus.PurityVanilla.Blazor.Desktop.Services.ServerStatusNotifiers;
-using MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerPingerSettingsStores;
+using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerStatusPingers
 {
@@ -14,7 +14,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerStatusPingers
         private readonly ServerAddress _serverAddress;
         private readonly IServerPinger _pinger;
         private readonly RepeatingServerPinger _repeatingPinger;
-        private readonly ServerPingerSettingsStore _settingsStore;
+        private readonly IServerPingerSettingsStore _settingsStore;
         private readonly IServerStatusNotifier _serverStatusNotifier;
 
         public IPingedServerDetails ServerDetails => _serverDetails;
@@ -27,7 +27,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerStatusPingers
         public ServerStatusPingerStore(ServerDetails serverDetails,
             IServerPinger pinger,
             RepeatingServerPingerFactory repeatingServerPingerFactory,
-            ServerPingerSettingsStore settingsStore,
+            IServerPingerSettingsStore settingsStore,
             IServerStatusNotifier serverStatusNotifier)
         {
             _serverDetails = new PingedServerDetails(serverDetails);

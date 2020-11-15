@@ -2,10 +2,11 @@ using System;
 using System.Threading.Tasks;
 using MCLiveStatus.Domain.Models;
 using MCLiveStatus.Domain.Services;
+using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerPingerSettingsStores
 {
-    public class ServerPingerSettingsStore
+    public class ServerPingerSettingsStore : IServerPingerSettingsStore
     {
         private readonly IServerPingerSettingsRepository _settingsRepository;
 
