@@ -1,0 +1,18 @@
+{
+  "scriptFile": "__init__.py",
+  "bindings": [
+    {
+      "name": "mytimer",
+      "type": "timerTrigger",
+      "runOnStartup": false,
+      "direction": "in",
+      "schedule": "0/30 * * * * *"
+    },
+    {
+      "type": "signalR",
+      "name": "outMessage",
+      "hubName": "pinger",
+      "direction": "out"
+    }
+  ]
+}

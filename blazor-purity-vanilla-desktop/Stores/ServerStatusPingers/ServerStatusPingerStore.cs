@@ -47,9 +47,10 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerStatusPingers
         {
             await _settingsStore.Load();
 
+            await RefreshServerStatus();
+
             try
             {
-                await RefreshServerStatus();
                 await _repeatingPinger.Start(_settingsStore.PingIntervalSeconds);
             }
             catch (ArgumentException)

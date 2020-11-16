@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCLiveStatus.PurityVanilla.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCLiveStatus.PurityVanilla.Blazor.Desktop", "blazor-purity-vanilla-desktop\MCLiveStatus.PurityVanilla.Blazor.Desktop.csproj", "{B1C59499-9E40-4B94-8EAA-CBBFC17E4DF4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCLiveStatus.PurityVanilla.Blazor.WASM", "blazor-purity-vanilla-wasm\MCLiveStatus.PurityVanilla.Blazor.WASM.csproj", "{4B8C35A9-FDC2-4075-9CF4-FB46BAE2FE93}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -114,5 +116,17 @@ Global
 		{B1C59499-9E40-4B94-8EAA-CBBFC17E4DF4}.Release|x64.Build.0 = Release|Any CPU
 		{B1C59499-9E40-4B94-8EAA-CBBFC17E4DF4}.Release|x86.ActiveCfg = Release|Any CPU
 		{B1C59499-9E40-4B94-8EAA-CBBFC17E4DF4}.Release|x86.Build.0 = Release|Any CPU
+		{4B8C35A9-FDC2-4075-9CF4-FB46BAE2FE93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B8C35A9-FDC2-4075-9CF4-FB46BAE2FE93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B8C35A9-FDC2-4075-9CF4-FB46BAE2FE93}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4B8C35A9-FDC2-4075-9CF4-FB46BAE2FE93}.Debug|x64.Build.0 = Debug|Any CPU
+		{4B8C35A9-FDC2-4075-9CF4-FB46BAE2FE93}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4B8C35A9-FDC2-4075-9CF4-FB46BAE2FE93}.Debug|x86.Build.0 = Debug|Any CPU
+		{4B8C35A9-FDC2-4075-9CF4-FB46BAE2FE93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B8C35A9-FDC2-4075-9CF4-FB46BAE2FE93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B8C35A9-FDC2-4075-9CF4-FB46BAE2FE93}.Release|x64.ActiveCfg = Release|Any CPU
+		{4B8C35A9-FDC2-4075-9CF4-FB46BAE2FE93}.Release|x64.Build.0 = Release|Any CPU
+		{4B8C35A9-FDC2-4075-9CF4-FB46BAE2FE93}.Release|x86.ActiveCfg = Release|Any CPU
+		{4B8C35A9-FDC2-4075-9CF4-FB46BAE2FE93}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

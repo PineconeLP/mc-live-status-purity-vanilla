@@ -1,0 +1,38 @@
+name: Deploy Functions
+
+on:
+  push:
+    tags:
+      - 'bpv-functions/v*'
+    paths-ignore:
+      - '**/README.md'
+
+env:
+  AZURE_FUNCTIONAPP_PATH: './blazor-purity-vanilla-functions'
+  AZURE_FUNCTIONAPP_NAME: 'live-status-functions'
+
+jobs:
+  build:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@master
+
+      - name: 'Setup Node'
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: 'Login to Azure CLI'
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_RBAC_CREDENTIALS }}
+
+      - name: 'Install Azure Function Core Tools'
+        run: 'npm i -g azure-functions-core-tools@3'
+
+      - name: 'Deploy to Azure Functions'
+        run: 'func azure functionapp publish ${{ env.AZURE_FUNCTIONAPP_NAME }} --python'
+        working-directory: ${{ env.AZURE_FUNCTIONAPP_PATH }}

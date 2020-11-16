@@ -1,20 +1,15 @@
 using System;
 using System.Threading.Tasks;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores;
+using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers;
 using Microsoft.AspNetCore.Components;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.Components
 {
     public partial class ServerLiveStatusSettings : ComponentBase, IDisposable
     {
-        [Parameter]
-        public bool HasQueue { get; set; }
-
-        [Parameter]
-        public int MaxPlayersExcludingQueue { get; set; }
-
-        [Parameter]
-        public int MaxPlayers { get; set; }
+        [Inject]
+        public IServerStatusPingerStore ServerStatusPingerStore { get; set; }
 
         [Inject]
         public IServerPingerSettingsStore SettingsStore { get; set; }
@@ -37,6 +32,10 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components
             set => SettingsStore.PingIntervalSeconds = value;
         }
 
+        private bool HasQueue => ServerStatusPingerStore.ServerDetails.HasQueue;
+        private int MaxPlayers => ServerStatusPingerStore.ServerDetails.MaxPlayers;
+        private int MaxPlayersExcludingQueue => ServerStatusPingerStore.ServerDetails.MaxPlayersExcludingQueue;
+
         private bool IsInvalidPingIntervalSeconds => SettingsStore.IsInvalidPingIntervalSeconds;
         private string InvalidPingIntervalSecondsClass => IsInvalidPingIntervalSeconds ? "is-invalid" : "";
         private bool HasDirtySettings { get; set; }
@@ -46,9 +45,11 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components
 
         protected override Task OnInitializedAsync()
         {
-            SettingsStore.SettingsChanged += OnSettingsChanged;
-            SettingsStore.ValidationChanged += OnSettingsChanged;
-            SettingsStore.IsLoadingChanged += OnSettingsChanged;
+            SettingsStore.SettingsChanged += OnStateChanged;
+            SettingsStore.ValidationChanged += OnStateChanged;
+            SettingsStore.IsLoadingChanged += OnStateChanged;
+
+            ServerStatusPingerStore.StateChanged += OnStateChanged;
 
             return base.OnInitializedAsync();
         }
@@ -70,15 +71,18 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components
             HasDirtySettings = false;
         }
 
-        private void OnSettingsChanged()
+        private void OnStateChanged()
         {
             InvokeAsync(StateHasChanged);
         }
 
         public void Dispose()
         {
-            SettingsStore.SettingsChanged -= OnSettingsChanged;
-            SettingsStore.ValidationChanged -= OnSettingsChanged;
+            SettingsStore.SettingsChanged -= OnStateChanged;
+            SettingsStore.ValidationChanged -= OnStateChanged;
+            SettingsStore.IsLoadingChanged -= OnStateChanged;
+
+            ServerStatusPingerStore.StateChanged -= OnStateChanged;
         }
     }
 }

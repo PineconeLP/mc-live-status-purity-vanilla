@@ -1,0 +1,26 @@
+@if (IsFull)
+{
+    <div>@ServerName is full.</div>
+}
+else if (HasQueue && IsFullExcludingQueue)
+{
+    <div>@ServerName is joinable, but there are players in the queue.</div>
+}
+else
+{
+    <div>@ServerName is joinable. Play now!</div>
+}
+
+@code {
+    [Parameter]
+    public bool IsFull { get; set; }
+
+    [Parameter]
+    public bool HasQueue { get; set; }
+
+    [Parameter]
+    public bool IsFullExcludingQueue { get; set; }
+
+    [Parameter]
+    public string ServerName { get; set; }
+}

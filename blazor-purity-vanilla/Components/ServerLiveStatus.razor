@@ -1,54 +1,33 @@
-<div>
-    <h1 class="text-center text-sm-left">Status</h1>
+@if (IsLoading)
+{
+    <Loading Message="@($"Pinging {Host}...")" HasError="HasUpdateError"
+    ErrorMessage="@($"{LastUpdateErrorTimeDisplay}: Failed to ping {Host}. Retrying...")" />
+}
+else
+{
+    <div class="row align-items-center">
+        <div class="ml-3 ml-sm-0 col-md-auto">
+            <CircularServerPlayerCount OnlinePlayers="@OnlinePlayers" MaxPlayers="@MaxPlayers" IsFull="@IsFull"
+            IsFullExcludingQueue="@IsFullExcludingQueue" />
+        </div>
+        <div class="col-md">
+            <div class="text-center text-sm-left">
+                <h2>
+                    <ServerLiveStatusDescription ServerName="@Name" IsFull="@IsFull" 
+                        IsFullExcludingQueue="@IsFullExcludingQueue"
+                        HasQueue="@HasQueue" />
+                </h2>
 
-    @if (IsLoading)
-    {
-        <Loading Message="@($"Pinging {Host}...")" HasError="HasUpdateError"
-        ErrorMessage="@($"{LastUpdateErrorTimeDisplay}: Failed to ping {Host}. Retrying...")" />
-    }
-    else
-    {
-        <div class="row align-items-center">
-            <div class="ml-3 ml-sm-0 col-md-auto">
-                <CircularServerPlayerCount OnlinePlayers="@OnlinePlayers" MaxPlayers="@MaxPlayers" IsFull="@IsFull"
-                IsFullExcludingQueue="@IsFullExcludingQueue" />
-            </div>
-            <div class="col-md">
-                <div class="text-center text-sm-left">
-                    <h2>
-                        @if (IsFull)
-                        {
-                            <div>@Name is full.</div>
-                        }
-                        else if (HasQueue && IsFullExcludingQueue)
-                        {
-                            <div>@Name is joinable, but there are players in the queue.</div>
-                        }
-                        else
-                        {
-                            <div>@Name is joinable. Play now!</div>
-                        }
-                    </h2>
+                <p class="lead">last updated @LastUpdateTimeDisplay</p>
 
-                    <p class="lead">last updated @LastUpdateTimeDisplay</p>
-
-                    <button class="btn btn-outline-secondary" type="button" @onclick="Refresh" disabled="@(!CanRefresh)">Refresh</button>
-                </div>
+                <button class="btn btn-outline-secondary" type="button" @onclick="Refresh" disabled="@(!CanRefresh)">Refresh</button>
             </div>
         </div>
-        @if (HasUpdateError)
-        {
-            <div class="small text-danger text-center">
-                @LastUpdateErrorTimeDisplay: Failed to ping @Host.
-            </div>
-        }
-    }
-</div>
-
-<div class="mt-3">
-    <h1 class="text-center text-sm-left">Settings</h1>
-    <div class="mt-3 mx-md-4">
-        <ServerLiveStatusSettings MaxPlayers="MaxPlayers" HasQueue="HasQueue"
-        MaxPlayersExcludingQueue="MaxPlayersExcludingQueue" />
     </div>
-</div>
+    @if (HasUpdateError)
+    {
+        <div class="small text-danger text-center">
+            @LastUpdateErrorTimeDisplay: Failed to ping @Host.
+        </div>
+    }
+}
