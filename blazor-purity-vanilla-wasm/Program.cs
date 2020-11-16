@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers;
+using MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerStatusPingers;
+using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores;
+using MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettings;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.WASM
 {
@@ -14,10 +18,12 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM
     {
         public static async Task Main(string[] args)
         {
-            var builder = WebAssemblyHostBuilder.CreateDefault(args);
+            WebAssemblyHostBuilder builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("app");
+            IServiceCollection services = builder.Services;
 
-            builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            services.AddScoped<IServerStatusPingerStore, ServerStatusPingerStore>();
+            services.AddScoped<IServerPingerSettingsStore, ServerPingerSettingsStore>();
 
             await builder.Build().RunAsync();
         }
