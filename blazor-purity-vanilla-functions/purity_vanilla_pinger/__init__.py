@@ -6,7 +6,7 @@ import azure.functions as func
 
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
-    logging.info("Executing Purity Vanilla ping.")
+    logging.info("Executing Purity Vanilla ping from HTTP request.")
 
     server = MinecraftServer("purityvanilla.com", 25565)
     info = server.status()

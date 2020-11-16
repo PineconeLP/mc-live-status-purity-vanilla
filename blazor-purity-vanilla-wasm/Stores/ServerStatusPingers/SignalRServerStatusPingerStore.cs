@@ -2,14 +2,19 @@ using System;
 using System.Threading.Tasks;
 using MCLiveStatus.PurityVanilla.Blazor.Models;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers;
+using MCLiveStatus.PurityVanilla.Blazor.WASM.Models;
+using MCLiveStatus.PurityVanilla.Blazor.WASM.Services.ServerPingers;
 using Microsoft.AspNetCore.SignalR.Client;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerStatusPingers
 {
     public class SignalRServerStatusPingerStore : IServerStatusPingerStore
     {
-        private HubConnection _connection;
+        private readonly IServerPinger _pinger;
+        private readonly string _negotiateUrl;
         private readonly PingedServerDetails _serverDetails;
+
+        private HubConnection _connection;
 
         public IPingedServerDetails ServerDetails => _serverDetails;
 
@@ -21,8 +26,11 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerStatusPingers
 
         public event Action StateChanged;
 
-        public SignalRServerStatusPingerStore()
+        public SignalRServerStatusPingerStore(IServerPinger pinger, string negotiateUrl)
         {
+            _pinger = pinger;
+            _negotiateUrl = negotiateUrl;
+
             _serverDetails = new PingedServerDetails(new ServerDetails()
             {
                 Name = "Purity Vanilla",
@@ -35,16 +43,32 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerStatusPingers
 
         public async Task Load()
         {
+            await RefreshServerStatus();
+
             _connection = new HubConnectionBuilder()
-                .WithUrl("http://0.0.0.0:7071/api")
+                .WithUrl(_negotiateUrl)
                 .Build();
 
-            _connection.On<int, int>("ping", OnPing);
+            _connection.On<int, int>("ping", OnPingCompleted);
 
             await _connection.StartAsync();
         }
 
-        private void OnPing(int online, int max)
+        public async Task RefreshServerStatus()
+        {
+            try
+            {
+                ServerPingResponse response = await _pinger.Ping();
+                OnPingCompleted(response.OnlinePlayers, response.MaxPlayers);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                OnPingFailed(ex);
+            }
+        }
+
+        private void OnPingCompleted(int online, int max)
         {
             HasUpdateError = false;
             LastUpdateTime = DateTime.Now;
@@ -56,9 +80,11 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerStatusPingers
             OnStateChanged();
         }
 
-        public async Task RefreshServerStatus()
+        private void OnPingFailed(Exception ex)
         {
-
+            HasUpdateError = true;
+            LastUpdateErrorTime = DateTime.Now;
+            OnStateChanged();
         }
 
         public void Dispose()

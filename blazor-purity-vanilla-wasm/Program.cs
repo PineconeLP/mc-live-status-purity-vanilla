@@ -9,8 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers;
 using MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerStatusPingers;
-using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores;
-using MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettings;
 using MCLiveStatus.PurityVanilla.Blazor.WASM.Services.ServerPingers;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.WASM
@@ -23,11 +21,23 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM
             builder.RootComponents.Add<App>("app");
             IServiceCollection services = builder.Services;
 
-            services.AddScoped<IServerStatusPingerStore, SignalRServerStatusPingerStore>();
-            services.AddScoped<IServerPingerSettingsStore, ServerPingerSettingsStore>();
-            services.AddSingleton<IServerPinger, APIServerPinger>();
+            services.AddScoped<IServerStatusPingerStore, SignalRServerStatusPingerStore>(CreateServerStatusPingerStore);
+            services.AddSingleton<IServerPinger>(CreateServerPinger());
 
             await builder.Build().RunAsync();
+        }
+
+        private static SignalRServerStatusPingerStore CreateServerStatusPingerStore(IServiceProvider services)
+        {
+            return new SignalRServerStatusPingerStore(
+                services.GetRequiredService<IServerPinger>(),
+                "http://0.0.0.0:7071/api"
+            );
+        }
+
+        private static APIServerPinger CreateServerPinger()
+        {
+            return new APIServerPinger("http://localhost:7071/api/purity_vanilla_pinger");
         }
     }
 }
