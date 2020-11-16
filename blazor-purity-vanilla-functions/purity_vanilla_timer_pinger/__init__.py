@@ -1,11 +1,12 @@
-import logging
 from mcstatus import MinecraftServer
+import datetime
+import logging
 import json
 
 import azure.functions as func
 
 
-def main(req: func.HttpRequest) -> func.HttpResponse:
+def main(mytimer: func.TimerRequest, outMessage: func.Out[str]) -> None:
     logging.info("Executing Purity Vanilla ping.")
 
     server = MinecraftServer("purityvanilla.com", 25565)
@@ -17,9 +18,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info(f"Online: {online_players}")
     logging.info(f"Max: {max_players}")
 
-    return func.HttpResponse(
-        json.dumps({
-            'online': online_players,
-            'max': max_players
-        }),
-        status_code=200)
+    outMessage.set(json.dumps({
+        'target': 'ping',
+        'arguments': [online_players, max_players]
+    }))

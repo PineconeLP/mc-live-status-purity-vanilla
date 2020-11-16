@@ -2,17 +2,18 @@
   "scriptFile": "__init__.py",
   "bindings": [
     {
-      "name": "mytimer",
-      "type": "timerTrigger",
-      "runOnStartup": true,
+      "authLevel": "anonymous",
+      "type": "httpTrigger",
       "direction": "in",
-      "schedule": "0/15 * * * * *"
+      "name": "req",
+      "methods": [
+        "get"
+      ]
     },
     {
-      "type": "signalR",
-      "name": "outMessage",
-      "hubName": "pinger",
-      "direction": "out"
+      "type": "http",
+      "direction": "out",
+      "name": "$return"
     }
   ]
 }
