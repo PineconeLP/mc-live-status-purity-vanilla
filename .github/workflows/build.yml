@@ -31,7 +31,7 @@ jobs:
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 3.1.x
+          dotnet-version: 5.0.x
 
       # Python Pinger
       - name: Install pipenv
@@ -44,6 +44,8 @@ jobs:
       - name: Build Python Pinger
         run: pipenv run build
         working-directory: ${{ env.PYTHON_PINGER_PROJECT_DIRECTORY }}
+
+      # Functions
 
       # .NET
       - name: Restore .NET packages

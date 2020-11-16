@@ -1,0 +1,49 @@
+name: Deploy Blazor Purity Vanilla (WASM)
+
+on:
+  push:
+    branches:
+      - 'wasm'
+    # tags:
+    #   - 'bpv-wasm/v*'
+    # paths-ignore:
+    #   - '**/README.md'
+
+env:
+  STORAGE_ACCOUNT_KEY: ${{ secrets.WASM_STORAGE_ACCOUNT_KEY }}
+  STORAGE_ACCOUNT_NAME: livestatuswasm
+  STORAGE_CONTAINER_NAME: $web
+  WASM_PROJECT_DIRECTORY: ./blazor-purity-vanilla-wasm
+  PUBLISH_PATH: ./publish
+  UPLOAD_DIR_PATH: ./blazor-purity-vanilla-wasm/publish/wwwroot
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.x
+
+      - name: Restore
+        run: dotnet restore
+        working-directory: ${{ env.WASM_PROJECT_DIRECTORY }}
+
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+        working-directory: ${{ env.WASM_PROJECT_DIRECTORY }}
+
+      - name: Publish
+        run: dotnet publish --no-restore --no-build --configuration Release -o ${{ env.PUBLISH_PATH }}
+        working-directory: ${{ env.WASM_PROJECT_DIRECTORY }}
+
+      - name: Deploy
+        uses: azure/CLI@v1
+        with:
+          azcliversion: 2.0.72
+          inlineScript: |
+            az storage blob delete-batch -s '${{ env.STORAGE_CONTAINER_NAME }}' --account-name ${{ env.STORAGE_ACCOUNT_NAME }} --account-key ${{ env.STORAGE_ACCOUNT_KEY }}
+            az storage blob upload-batch -s '${{ env.UPLOAD_DIR_PATH }}' -d '${{ env.STORAGE_CONTAINER_NAME }}' --account-name ${{ env.STORAGE_ACCOUNT_NAME }} --account-key ${{ env.STORAGE_ACCOUNT_KEY }}
