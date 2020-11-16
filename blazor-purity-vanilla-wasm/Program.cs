@@ -22,7 +22,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM
             builder.RootComponents.Add<App>("app");
             IServiceCollection services = builder.Services;
 
-            services.AddScoped<IServerStatusPingerStore, ServerStatusPingerStore>();
+            services.AddScoped<IServerStatusPingerStore, SignalRServerStatusPingerStore>();
             services.AddScoped<IServerPingerSettingsStore, ServerPingerSettingsStore>();
 
             await builder.Build().RunAsync();

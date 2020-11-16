@@ -6,7 +6,7 @@
       "type": "timerTrigger",
       "runOnStartup": true,
       "direction": "in",
-      "schedule": "0 * * * * *"
+      "schedule": "0/15 * * * * *"
     },
     {
       "type": "signalR",
