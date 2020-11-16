@@ -19,25 +19,31 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM
         {
             WebAssemblyHostBuilder builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("app");
+
+            IConfiguration configuration = builder.Configuration;
             IServiceCollection services = builder.Services;
 
-            services.AddScoped<IServerStatusPingerStore, SignalRServerStatusPingerStore>(CreateServerStatusPingerStore);
-            services.AddSingleton<IServerPinger>(CreateServerPinger());
+            services.AddScoped<IServerStatusPingerStore, SignalRServerStatusPingerStore>(s => CreateServerStatusPingerStore(s, configuration));
+            services.AddSingleton<IServerPinger>(CreateServerPinger(configuration));
 
             await builder.Build().RunAsync();
         }
 
-        private static SignalRServerStatusPingerStore CreateServerStatusPingerStore(IServiceProvider services)
+        private static SignalRServerStatusPingerStore CreateServerStatusPingerStore(IServiceProvider services, IConfiguration configuration)
         {
+            string negotiateUrl = configuration.GetValue<string>("NEGOTIATE_URL");
+
             return new SignalRServerStatusPingerStore(
                 services.GetRequiredService<IServerPinger>(),
-                "http://0.0.0.0:7071/api"
+                negotiateUrl
             );
         }
 
-        private static APIServerPinger CreateServerPinger()
+        private static APIServerPinger CreateServerPinger(IConfiguration configuration)
         {
-            return new APIServerPinger("http://localhost:7071/api/purity_vanilla_pinger");
+            string apiUrl = configuration.GetValue<string>("API_URL");
+
+            return new APIServerPinger(apiUrl);
         }
     }
 }
