@@ -11,6 +11,7 @@ using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers;
 using MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerStatusPingers;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores;
 using MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettings;
+using MCLiveStatus.PurityVanilla.Blazor.WASM.Services.ServerPingers;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.WASM
 {
@@ -24,6 +25,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM
 
             services.AddScoped<IServerStatusPingerStore, SignalRServerStatusPingerStore>();
             services.AddScoped<IServerPingerSettingsStore, ServerPingerSettingsStore>();
+            services.AddSingleton<IServerPinger, APIServerPinger>();
 
             await builder.Build().RunAsync();
         }
