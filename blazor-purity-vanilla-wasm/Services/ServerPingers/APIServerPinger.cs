@@ -1,8 +1,7 @@
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using MCLiveStatus.PurityVanilla.Blazor.WASM.Models;
-using MCLiveStatus.PurityVanilla.Blazor.WASM.Services.ServerPingers;
-using RestSharp;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Services.ServerPingers
 {
@@ -17,10 +16,13 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Services.ServerPingers
 
         public async Task<ServerPingResponse> Ping()
         {
-            IRestClient client = new RestClient();
-            IRestRequest request = new RestRequest(_pingUrl, DataFormat.Json);
+            using (HttpClient client = new HttpClient())
+            {
+                HttpResponseMessage response = await client.GetAsync(_pingUrl);
+                string responseJson = await response.Content.ReadAsStringAsync();
 
-            return await client.GetAsync<ServerPingResponse>(request);
+                return JsonSerializer.Deserialize<ServerPingResponse>(responseJson);
+            }
         }
     }
 }
