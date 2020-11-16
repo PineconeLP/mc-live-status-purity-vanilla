@@ -7,6 +7,8 @@ on:
     tags-ignore:
       - 'bpv-win/v*'
       - 'bpv-osx/v*'
+      - 'bpv-wasm/v*'
+      - 'bpv-functions/v*'
     paths-ignore:
       - '**/README.md'
   pull_request:
@@ -19,6 +21,9 @@ env:
 jobs:
   build:
     runs-on: windows-latest
+    strategy:
+      matrix:
+        dotnet: ['5.0.x', '3.1.x']
     steps:
       # Setup
       - uses: actions/checkout@v2
@@ -31,7 +36,12 @@ jobs:
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 5.0.x
+          dotnet-version: '5.0.x'
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '3.1.x'
 
       # Python Pinger
       - name: Install pipenv
