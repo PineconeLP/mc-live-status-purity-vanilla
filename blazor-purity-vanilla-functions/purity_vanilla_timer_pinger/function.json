@@ -4,9 +4,9 @@
     {
       "name": "mytimer",
       "type": "timerTrigger",
-      "runOnStartup": true,
+      "runOnStartup": false,
       "direction": "in",
-      "schedule": "0/5 * * * * *"
+      "schedule": "0/30 * * * * *"
     },
     {
       "type": "signalR",
