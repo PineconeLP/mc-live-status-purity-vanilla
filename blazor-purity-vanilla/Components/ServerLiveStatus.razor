@@ -13,18 +13,9 @@ else
         <div class="col-md">
             <div class="text-center text-sm-left">
                 <h2>
-                    @if (IsFull)
-                    {
-                        <div>@Name is full.</div>
-                    }
-                    else if (HasQueue && IsFullExcludingQueue)
-                    {
-                        <div>@Name is joinable, but there are players in the queue.</div>
-                    }
-                    else
-                    {
-                        <div>@Name is joinable. Play now!</div>
-                    }
+                    <ServerLiveStatusDescription ServerName="@Name" IsFull="@IsFull" 
+                        IsFullExcludingQueue="@IsFullExcludingQueue"
+                        HasQueue="@HasQueue" />
                 </h2>
 
                 <p class="lead">last updated @LastUpdateTimeDisplay</p>
