@@ -7,6 +7,12 @@
       "runOnStartup": true,
       "direction": "in",
       "schedule": "0 * * * * *"
+    },
+    {
+      "type": "signalR",
+      "name": "outMessage",
+      "hubName": "pinger",
+      "direction": "out"
     }
   ]
 }
