@@ -3,6 +3,7 @@ obj/
 dist/
 build/
 __pycache__/
+storage/
 node_modules/
 scripts.txt
 secrets.txt
