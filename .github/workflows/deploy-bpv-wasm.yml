@@ -38,7 +38,13 @@ jobs:
         run: dotnet publish --no-restore --no-build --configuration Release -o ${{ env.PUBLISH_PATH }}
         working-directory: ${{ env.WASM_PROJECT_DIRECTORY }}
 
-      - name: Deploy
+      - name: Deploy GH Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ${{ env.UPLOAD_DIR_PATH }}
+
+      - name: Deploy Azure
         uses: azure/CLI@v1
         with:
           azcliversion: 2.0.72
