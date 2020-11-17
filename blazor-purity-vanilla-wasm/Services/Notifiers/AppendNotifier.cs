@@ -15,12 +15,18 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Services.Notifiers
 
         public async Task RequestPermission()
         {
-            await _notificationService.RequestPermissionAsync();
+            if (await _notificationService.IsSupportedByBrowserAsync())
+            {
+                await _notificationService.RequestPermissionAsync();
+            }
         }
 
         public async Task Show(Notification notification)
         {
-            await _notificationService.CreateAsync(notification.Title, notification.Body);
+            if (await _notificationService.IsSupportedByBrowserAsync())
+            {
+                await _notificationService.CreateAsync(notification.Title, notification.Body);
+            }
         }
     }
 }
