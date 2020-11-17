@@ -10,6 +10,7 @@
   "linkerEnabled": true,
   "resources": {
     "assembly": {
+      "Append.Blazor.Notifications.dll": "sha256-PDOX6UfCuswDJFYgEXme2+qxS5MPnJprWM5BBjB\/\/bs=",
       "Microsoft.AspNetCore.Components.dll": "sha256-p8\/ek+wMI42aVWaSFSWKsW0NGiING9pvujwnavInpUo=",
       "Microsoft.AspNetCore.Components.Forms.dll": "sha256-L2R\/n\/9HcMIKg3iCdtRMjPgbbaHupeQ6CkAImZ9dmmE=",
       "Microsoft.AspNetCore.Components.Web.dll": "sha256-7aihYdn41yH7rIh5jGcmdQw2jFlu91A+SVvhzzQxZOY=",
@@ -27,7 +28,7 @@
       "Microsoft.Extensions.Configuration.Binder.dll": "sha256-m5KJgX5I1\/+kbR2wnSdUtBf\/11M1KWJJmQV74Cttf8A=",
       "Microsoft.Extensions.Configuration.Json.dll": "sha256-cwzKuqTaJjYc5QXknt6NaBt\/MWSt9DYHfmu0I\/CV2mc=",
       "Microsoft.Extensions.DependencyInjection.dll": "sha256-k56godoTWqePSYo6s3ygiguyUQ7vFpd6\/5IX1QpnPCM=",
-      "Microsoft.Extensions.DependencyInjection.Abstractions.dll": "sha256-wSfvai08CWE64YhmZDTUQtt3Uel75b35U8fQo4ZJWoE=",
+      "Microsoft.Extensions.DependencyInjection.Abstractions.dll": "sha256-\/Scq4viNWSc5b268OfrIvm614YlojhSJ+URu38o9DVU=",
       "Microsoft.Extensions.Logging.dll": "sha256-CIejF6BOyKTfAMYOXQFe0Gs8bLd2yWGbCnn3WtgWDwc=",
       "Microsoft.Extensions.Logging.Abstractions.dll": "sha256-515hAhh8pdx3LKPuqpy648FDcn8sFXJOh2Ir3fOyyAw=",
       "Microsoft.Extensions.Options.dll": "sha256-3sf8r+ogYkuFJnm7UAOLSjp66oVaNIECC\/N\/L8xaDkM=",
@@ -37,8 +38,8 @@
       "Radzen.Blazor.dll": "sha256-4cDPbVoYG27mrbo8ga3+EAsCq3EEf8lu0BgA2X1GxyQ=",
       "System.IO.Pipelines.dll": "sha256-CETD5tkXtiKEgbXyN\/lp0Ejf6LcHIhgeQIEyow2mhmY=",
       "System.Linq.Dynamic.Core.dll": "sha256-1FY4njT4yBDGDmit0dChl3nkd8sDwvqj4rl9RhKoJBQ=",
-      "MCLiveStatus.PurityVanilla.Blazor.dll": "sha256-NOA0YsvQm3br2XZbhkqLHgmeFgXQ7ePS2q6BVLo\/\/H4=",
-      "MCLiveStatus.PurityVanilla.Blazor.WASM.dll": "sha256-OIb7qOv1uCx69Vlf3vsELdVzc7Iv83Kdn3A3hfU09P8=",
+      "MCLiveStatus.PurityVanilla.Blazor.dll": "sha256-5m102\/4hOnJToWsV+MSaiDaW\/5ztHE1o1AhnWc7Pe9s=",
+      "MCLiveStatus.PurityVanilla.Blazor.WASM.dll": "sha256-xX9GAPW7TpGRmtW97J8cH+RvnUwwLlJcdH5S19JLhhs=",
       "Microsoft.CSharp.dll": "sha256-rmq0qJ2lFe4DEnWA0AnRsEZvUTJ84IRq5cnfMhHC8h8=",
       "Microsoft.Win32.Primitives.dll": "sha256-9TVNO0wenPhOnp0PoJkNSzRzM5KbIyK3JmJpolkrVhk=",
       "System.Collections.Concurrent.dll": "sha256-Y60ROWWdLl\/fd6+S9NksafZUTZX8DwJsQI3+GTWJEZs=",
