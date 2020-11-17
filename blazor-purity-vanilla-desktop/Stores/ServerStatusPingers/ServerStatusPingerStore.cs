@@ -4,6 +4,7 @@ using MCLiveStatus.Pinger.Models;
 using MCLiveStatus.Pinger.Pingers;
 using MCLiveStatus.PurityVanilla.Blazor.Desktop.Services.ServerStatusNotifiers;
 using MCLiveStatus.PurityVanilla.Blazor.Models;
+using MCLiveStatus.PurityVanilla.Blazor.Services.ServerStatusNotifiers;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers;
 
@@ -38,7 +39,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerStatusPingers
             _settingsStore = settingsStore;
             _serverStatusNotifier = serverStatusNotifier;
 
-            _repeatingPinger.PingCompleted += OnRepeatingPingCompleted;
+            _repeatingPinger.PingCompleted += OnNotificationPingCompleted;
             _repeatingPinger.PingFailed += OnPingFailed;
             _settingsStore.SettingsChanged += UpdatePingInterval;
         }
@@ -47,7 +48,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerStatusPingers
         {
             await _settingsStore.Load();
 
-            await RefreshServerStatus();
+            await LoadServerStatus();
 
             try
             {
@@ -56,6 +57,19 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerStatusPingers
             catch (ArgumentException)
             {
                 _settingsStore.IsInvalidPingIntervalSeconds = true;
+            }
+        }
+
+        private async Task LoadServerStatus()
+        {
+            try
+            {
+                ServerPingResponse initialResponse = await _pinger.Ping(_serverAddress);
+                OnPingCompleted(initialResponse);
+            }
+            catch (Exception ex)
+            {
+                OnPingFailed(ex);
             }
         }
 
@@ -72,7 +86,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerStatusPingers
             }
         }
 
-        private void OnRepeatingPingCompleted(ServerPingResponse response)
+        private void OnNotificationPingCompleted(ServerPingResponse response)
         {
             bool wasFull = _serverDetails.IsFull;
             bool wasFullExcludingQueue = _serverDetails.IsFullExcludingQueue;
@@ -153,7 +167,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerStatusPingers
         {
             await _repeatingPinger.Stop();
 
-            _repeatingPinger.PingCompleted -= OnRepeatingPingCompleted;
+            _repeatingPinger.PingCompleted -= OnNotificationPingCompleted;
             _repeatingPinger.PingFailed -= OnPingFailed;
             _settingsStore.SettingsChanged -= UpdatePingInterval;
         }

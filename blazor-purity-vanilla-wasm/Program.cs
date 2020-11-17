@@ -10,6 +10,11 @@ using Microsoft.Extensions.Logging;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers;
 using MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerStatusPingers;
 using MCLiveStatus.PurityVanilla.Blazor.WASM.Services.ServerPingers;
+using Append.Blazor.Notifications;
+using MCLiveStatus.PurityVanilla.Blazor.Desktop.Services.ServerStatusNotifiers;
+using MCLiveStatus.PurityVanilla.Blazor.WASM.Services.Notifiers;
+using MCLiveStatus.PurityVanilla.Blazor.Services.Notifiers;
+using MCLiveStatus.PurityVanilla.Blazor.Models;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.WASM
 {
@@ -23,6 +28,11 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM
             IConfiguration configuration = builder.Configuration;
             IServiceCollection services = builder.Services;
 
+            services.AddNotifications();
+            services.AddScoped<INotifier, AppendNotifier>();
+            services.AddScoped<ServerStatusNotificationFactory>();
+            services.AddScoped<ServerStatusNotifier>();
+
             services.AddScoped<IServerStatusPingerStore, SignalRServerStatusPingerStore>(s => CreateServerStatusPingerStore(s, configuration));
             services.AddSingleton<IServerPinger>(CreateServerPinger(configuration));
 
@@ -35,6 +45,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM
 
             return new SignalRServerStatusPingerStore(
                 services.GetRequiredService<IServerPinger>(),
+                services.GetRequiredService<ServerStatusNotifier>(),
                 negotiateUrl
             );
         }
