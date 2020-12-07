@@ -12,35 +12,37 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerStatusPingers
 {
     public class ServerStatusPingerStore : IDisposable, IServerStatusPingerStore
     {
-        private readonly PingedServerDetails _serverDetails;
+        private readonly ServerStatusPingerStoreState _state;
         private readonly ServerAddress _serverAddress;
         private readonly IServerPinger _pinger;
         private readonly RepeatingServerPinger _repeatingPinger;
         private readonly IServerPingerSettingsStore _settingsStore;
         private readonly IServerStatusNotifier _serverStatusNotifier;
 
-        public IPingedServerDetails ServerDetails => _serverDetails;
-        public DateTime LastUpdateTime { get; private set; }
-        public bool HasUpdateError { get; private set; }
-        public DateTime LastUpdateErrorTime { get; private set; }
+        public IPingedServerDetails ServerDetails => _state.ServerDetails;
+        public DateTime LastUpdateTime => _state.LastUpdateTime;
+        public bool HasUpdateError => _state.HasUpdateError;
+        public DateTime LastUpdateErrorTime => _state.LastUpdateErrorTime;
 
         public event Action StateChanged;
 
-        public ServerStatusPingerStore(ServerDetails serverDetails,
+        public ServerStatusPingerStore(ServerStatusPingerStoreState state,
+            ServerDetails serverDetails,
             IServerPinger pinger,
             RepeatingServerPingerFactory repeatingServerPingerFactory,
             IServerPingerSettingsStore settingsStore,
             IServerStatusNotifier serverStatusNotifier)
         {
-            _serverDetails = new PingedServerDetails(serverDetails);
-            _serverAddress = new ServerAddress(_serverDetails.Host, _serverDetails.Port);
+            _state = state;
+            _serverAddress = new ServerAddress(ServerDetails.Host, ServerDetails.Port);
             _pinger = pinger;
             _repeatingPinger = repeatingServerPingerFactory.CreateRepeatingServerPinger(_serverAddress);
             _settingsStore = settingsStore;
             _serverStatusNotifier = serverStatusNotifier;
 
+            _state.StateChanged += OnStateChanged;
             _repeatingPinger.PingCompleted += OnNotificationPingCompleted;
-            _repeatingPinger.PingFailed += OnPingFailed;
+            _repeatingPinger.PingFailed += _state.OnPingFailed;
             _settingsStore.SettingsChanged += UpdatePingInterval;
         }
 
@@ -69,7 +71,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerStatusPingers
             }
             catch (Exception ex)
             {
-                OnPingFailed(ex);
+                _state.OnPingFailed(ex);
             }
         }
 
@@ -82,59 +84,18 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerStatusPingers
             }
             catch (Exception ex)
             {
-                OnPingFailed(ex);
+                _state.OnPingFailed(ex);
             }
         }
 
         private void OnNotificationPingCompleted(ServerPingResponse response)
         {
-            bool wasFull = _serverDetails.IsFull;
-            bool wasFullExcludingQueue = _serverDetails.IsFullExcludingQueue;
-
-            OnPingCompleted(response);
-
-            TryNotify(wasFull, wasFullExcludingQueue);
+            _state.OnNotificationPingCompleted(_serverStatusNotifier, response.OnlinePlayers, response.MaxPlayers);
         }
 
         private void OnPingCompleted(ServerPingResponse response)
         {
-            HasUpdateError = false;
-            LastUpdateTime = DateTime.Now;
-
-            _serverDetails.HasData = true;
-            _serverDetails.OnlinePlayers = response.OnlinePlayers;
-            _serverDetails.MaxPlayers = response.MaxPlayers;
-
-            OnStateChanged();
-        }
-
-        private void OnPingFailed(Exception ex)
-        {
-            HasUpdateError = true;
-            LastUpdateErrorTime = DateTime.Now;
-            OnStateChanged();
-        }
-
-        private void TryNotify(bool wasFull, bool wasFullExcludingQueue)
-        {
-            if (ServerDetails.HasQueue)
-            {
-                if (_settingsStore.AllowNotifyJoinable && wasFullExcludingQueue && !ServerDetails.IsFullExcludingQueue)
-                {
-                    _serverStatusNotifier.NotifyJoinableExludingQueue(ServerDetails.Name, ServerDetails.OnlinePlayers, ServerDetails.MaxPlayersExcludingQueue);
-                }
-                else if (_settingsStore.AllowNotifyQueueJoinable && wasFull && !ServerDetails.IsFull)
-                {
-                    _serverStatusNotifier.NotifyQueueJoinable(ServerDetails.Name, ServerDetails.OnlinePlayers, ServerDetails.MaxPlayers);
-                }
-            }
-            else
-            {
-                if (_settingsStore.AllowNotifyJoinable && wasFull && !ServerDetails.IsFull)
-                {
-                    _serverStatusNotifier.NotifyJoinable(ServerDetails.Name, ServerDetails.OnlinePlayers, ServerDetails.MaxPlayers);
-                }
-            }
+            _state.OnPingCompleted(response.OnlinePlayers, response.MaxPlayers);
         }
 
         private async void UpdatePingInterval()
@@ -167,8 +128,9 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerStatusPingers
         {
             await _repeatingPinger.Stop();
 
+            _state.StateChanged -= OnStateChanged;
             _repeatingPinger.PingCompleted -= OnNotificationPingCompleted;
-            _repeatingPinger.PingFailed -= OnPingFailed;
+            _repeatingPinger.PingFailed -= _state.OnPingFailed;
             _settingsStore.SettingsChanged -= UpdatePingInterval;
         }
     }

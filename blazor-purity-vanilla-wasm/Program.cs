@@ -12,6 +12,8 @@ using MCLiveStatus.PurityVanilla.Blazor.WASM.Services.Notifiers;
 using MCLiveStatus.PurityVanilla.Blazor.Services.Notifiers;
 using MCLiveStatus.PurityVanilla.Blazor.Models;
 using Blazor.Analytics;
+using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers.NotificationPermitters;
+using MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettings;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.WASM
 {
@@ -29,11 +31,22 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM
             string trackingId = configuration.GetValue<string>("ANALYTICS_GTAG");
             services.AddGoogleAnalytics(trackingId, debug);
 
+            services.AddTransient<ServerDetails>(s => new ServerDetails()
+            {
+                Host = "purityvanilla.com",
+                Port = 25565,
+                Name = "Purity Vanilla",
+                HasQueue = true,
+                MaxPlayersExcludingQueue = 75
+            });
+
             services.AddNotifications();
             services.AddScoped<INotifier, AppendNotifier>();
             services.AddScoped<ServerStatusNotificationFactory>();
             services.AddScoped<ServerStatusNotifier>();
-
+            services.AddScoped<ServerPingerSettingsStore>();
+            services.AddSingleton<IServerStatusNotificationPermitter, ServerStatusNotificationPermitter>();
+            services.AddScoped<ServerStatusPingerStoreState>();
             services.AddScoped<IServerStatusPingerStore, SignalRServerStatusPingerStore>(s => CreateServerStatusPingerStore(s, configuration));
             services.AddSingleton<IServerPinger>(CreateServerPinger(configuration));
 
@@ -45,6 +58,8 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM
             string negotiateUrl = configuration.GetValue<string>("NEGOTIATE_URL");
 
             return new SignalRServerStatusPingerStore(
+                services.GetRequiredService<ServerStatusPingerStoreState>(),
+                services.GetRequiredService<ServerPingerSettingsStore>(),
                 services.GetRequiredService<IServerPinger>(),
                 services.GetRequiredService<ServerStatusNotifier>(),
                 negotiateUrl
