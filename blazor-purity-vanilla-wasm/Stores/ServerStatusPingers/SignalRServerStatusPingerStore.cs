@@ -5,6 +5,7 @@ using MCLiveStatus.PurityVanilla.Blazor.Services.ServerStatusNotifiers;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers;
 using MCLiveStatus.PurityVanilla.Blazor.WASM.Models;
 using MCLiveStatus.PurityVanilla.Blazor.WASM.Services.ServerPingers;
+using MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettings;
 using Microsoft.AspNetCore.SignalR.Client;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerStatusPingers
@@ -12,6 +13,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerStatusPingers
     public class SignalRServerStatusPingerStore : IServerStatusPingerStore
     {
         private readonly ServerStatusPingerStoreState _state;
+        private readonly ServerPingerSettingsStore _settingsStore;
         private readonly IServerPinger _pinger;
         private readonly IServerStatusNotifier _serverStatusNotifier;
         private readonly string _negotiateUrl;
@@ -26,16 +28,19 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerStatusPingers
         public event Action StateChanged;
 
         public SignalRServerStatusPingerStore(ServerStatusPingerStoreState state,
+            ServerPingerSettingsStore settingsStore,
             IServerPinger pinger,
             IServerStatusNotifier serverStatusNotifier,
             string negotiateUrl)
         {
             _state = state;
+            _settingsStore = settingsStore;
             _pinger = pinger;
             _serverStatusNotifier = serverStatusNotifier;
             _negotiateUrl = negotiateUrl;
 
             _state.StateChanged += OnStateChanged;
+            _settingsStore.SettingsChanged += UpdateHubConnection;
         }
 
         public async Task Load()
@@ -86,8 +91,22 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerStatusPingers
             }
         }
 
+        private async void UpdateHubConnection()
+        {
+            bool startConnectionRequested = _settingsStore.AutoRefreshEnabled;
+            if (startConnectionRequested)
+            {
+                await _connection.StartAsync();
+            }
+            else
+            {
+                await _connection.StopAsync();
+            }
+        }
+
         public void Dispose()
         {
+            _settingsStore.SettingsChanged -= UpdateHubConnection;
             _connection?.DisposeAsync();
             _state.StateChanged -= OnStateChanged;
         }
