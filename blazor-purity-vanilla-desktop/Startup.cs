@@ -22,6 +22,8 @@ using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers;
 using MCLiveStatus.PurityVanilla.Blazor.Services.ServerStatusNotifiers;
 using MCLiveStatus.PurityVanilla.Blazor.Services.Notifiers;
 using MCLiveStatus.PurityVanilla.Blazor.Desktop.Services.Notifiers;
+using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers.NotificationPermitters;
+using MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerStatusPingers.NotificationPermitters;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.Desktop
 {
@@ -55,7 +57,10 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Desktop
             services.AddSingleton<ServerStatusNotificationFactory>();
             services.AddSingleton<INotifier, ElectronNotifier>();
             services.AddSingleton<IServerStatusNotifier, ServerStatusNotifier>();
+            services.AddSingleton<ServerStatusNotificationPermitter>();
+            services.AddSingleton<IServerStatusNotificationPermitter, SettingsStoreServerStatusNotificationPermitter>();
             services.AddSingleton<IServerPingerSettingsStore, ServerPingerSettingsStore>();
+            services.AddSingleton<ServerStatusPingerStoreState>();
             services.AddSingleton<IServerStatusPingerStore, ServerStatusPingerStore>();
         }
 
