@@ -14,6 +14,7 @@ using MCLiveStatus.PurityVanilla.Blazor.Models;
 using Blazor.Analytics;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers.NotificationPermitters;
 using MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettings;
+using System.Net.Http;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.WASM
 {
@@ -40,6 +41,8 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM
                 MaxPlayersExcludingQueue = 75
             });
 
+            services.AddHttpClient<IServerPinger, APIServerPinger>(client => CreateServerPinger(client, configuration));
+
             services.AddNotifications();
             services.AddScoped<INotifier, AppendNotifier>();
             services.AddScoped<ServerStatusNotificationFactory>();
@@ -48,7 +51,6 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM
             services.AddSingleton<IServerStatusNotificationPermitter, ServerStatusNotificationPermitter>();
             services.AddScoped<ServerStatusPingerStoreState>();
             services.AddScoped<IServerStatusPingerStore, SignalRServerStatusPingerStore>(s => CreateServerStatusPingerStore(s, configuration));
-            services.AddSingleton<IServerPinger>(CreateServerPinger(configuration));
 
             await builder.Build().RunAsync();
         }
@@ -66,11 +68,12 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM
             );
         }
 
-        private static APIServerPinger CreateServerPinger(IConfiguration configuration)
+        private static APIServerPinger CreateServerPinger(HttpClient client, IConfiguration configuration)
         {
             string apiUrl = configuration.GetValue<string>("API_URL");
+            client.BaseAddress = new Uri(apiUrl);
 
-            return new APIServerPinger(apiUrl);
+            return new APIServerPinger(client);
         }
     }
 }
