@@ -1,5 +1,5 @@
 using System.Net.Http;
-using System.Text.Json;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using MCLiveStatus.PurityVanilla.Blazor.WASM.Models;
 
@@ -16,10 +16,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Services.ServerPingers
 
         public async Task<ServerPingResponse> Ping()
         {
-            HttpResponseMessage response = await _client.GetAsync("");
-            string responseJson = await response.Content.ReadAsStringAsync();
-
-            return JsonSerializer.Deserialize<ServerPingResponse>(responseJson);
+            return await _client.GetFromJsonAsync<ServerPingResponse>("");
         }
     }
 }
