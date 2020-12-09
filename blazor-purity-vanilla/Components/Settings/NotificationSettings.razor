@@ -1,7 +1,7 @@
 @if (HasQueue)
 {
     <div class="form-check">
-        <input type="checkbox" class="form-check-input" id="cbNotify" value="@AllowNotifyJoinable"
+        <input type="checkbox" class="form-check-input" id="cbNotify" checked="@AllowNotifyJoinable"
             @oninput="OnAllowNotifyJoinableInput">
         <label class="form-check-label" for="cbNotify">
             Notify on joinable
@@ -9,7 +9,7 @@
         </label>
     </div>
     <div class="mt-3 form-check">
-        <input type="checkbox" class="form-check-input" id="cbQueueNotify" value="@AllowNotifyQueueJoinable"
+        <input type="checkbox" class="form-check-input" id="cbQueueNotify" checked="@AllowNotifyQueueJoinable"
             @oninput="OnAllowNotifyQueueJoinableInput">
         <label class="form-check-label" for="cbQueueNotify">
             Notify on queue joinable
