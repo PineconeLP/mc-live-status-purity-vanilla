@@ -94,11 +94,11 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerStatusPingers
         private async void UpdateHubConnection()
         {
             bool startConnectionRequested = _settingsStore.AutoRefreshEnabled;
-            if (startConnectionRequested)
+            if (startConnectionRequested && _connection.State == HubConnectionState.Disconnected)
             {
                 await _connection.StartAsync();
             }
-            else
+            else if (!startConnectionRequested && _connection.State != HubConnectionState.Disconnected)
             {
                 await _connection.StopAsync();
             }
