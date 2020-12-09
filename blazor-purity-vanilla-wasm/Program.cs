@@ -16,6 +16,7 @@ using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers.NotificationP
 using MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettings;
 using System.Net.Http;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores;
+using MCLiveStatus.PurityVanilla.Blazor.WASM.Services.NotificationSupportCheckers;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.WASM
 {
@@ -45,6 +46,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM
             services.AddHttpClient<IServerPinger, APIServerPinger>(client => CreateServerPinger(client, configuration));
 
             services.AddNotifications();
+            services.AddSingleton<NotificationSupportChecker>();
             services.AddScoped<INotifier, AppendNotifier>();
             services.AddScoped<ServerStatusNotificationFactory>();
             services.AddScoped<ServerStatusNotifier>();
