@@ -59,9 +59,13 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Desktop
             services.AddSingleton<IServerStatusNotifier, ServerStatusNotifier>();
             services.AddSingleton<ServerStatusNotificationPermitter>();
             services.AddSingleton<IServerStatusNotificationPermitter, SettingsStoreServerStatusNotificationPermitter>();
-            services.AddSingleton<IServerPingerSettingsStore, ServerPingerSettingsStore>();
             services.AddSingleton<ServerStatusPingerStoreState>();
             services.AddSingleton<IServerStatusPingerStore, ServerStatusPingerStore>();
+
+            services.AddSingleton<ServerPingerSettingsStore>();
+            services.AddSingleton<IPingConfigurableServerPingerSettingsStore>(s => s.GetRequiredService<ServerPingerSettingsStore>());
+            services.AddSingleton<IServerPingerSettingsStore>(s => s.GetRequiredService<ServerPingerSettingsStore>());
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime lifetime)

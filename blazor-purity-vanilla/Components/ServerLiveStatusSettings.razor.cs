@@ -12,18 +12,26 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components
         public IServerStatusPingerStore ServerStatusPingerStore { get; set; }
 
         [Inject]
-        public IServerPingerSettingsStore SettingsStore { get; set; }
+        public IPingConfigurableServerPingerSettingsStore SettingsStore { get; set; }
 
         private bool AllowNotifyJoinable
         {
             get => SettingsStore.AllowNotifyJoinable;
-            set => SettingsStore.AllowNotifyJoinable = value;
+            set
+            {
+                SettingsStore.AllowNotifyJoinable = value;
+                OnSettingsInput();
+            }
         }
 
         private bool AllowNotifyQueueJoinable
         {
             get => SettingsStore.AllowNotifyQueueJoinable;
-            set => SettingsStore.AllowNotifyQueueJoinable = value;
+            set
+            {
+                SettingsStore.AllowNotifyQueueJoinable = value;
+                OnSettingsInput();
+            }
         }
 
         private double PingIntervalSeconds

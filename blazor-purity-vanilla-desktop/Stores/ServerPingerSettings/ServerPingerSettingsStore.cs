@@ -6,7 +6,7 @@ using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerPingerSettingsStores
 {
-    public class ServerPingerSettingsStore : IServerPingerSettingsStore
+    public class ServerPingerSettingsStore : IPingConfigurableServerPingerSettingsStore
     {
         private readonly IServerPingerSettingsRepository _settingsRepository;
 

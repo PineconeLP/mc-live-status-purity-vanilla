@@ -16,7 +16,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerStatusPingers
         private readonly ServerAddress _serverAddress;
         private readonly IServerPinger _pinger;
         private readonly RepeatingServerPinger _repeatingPinger;
-        private readonly IServerPingerSettingsStore _settingsStore;
+        private readonly IPingConfigurableServerPingerSettingsStore _settingsStore;
         private readonly IServerStatusNotifier _serverStatusNotifier;
 
         public IPingedServerDetails ServerDetails => _state.ServerDetails;
@@ -30,7 +30,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerStatusPingers
             ServerDetails serverDetails,
             IServerPinger pinger,
             RepeatingServerPingerFactory repeatingServerPingerFactory,
-            IServerPingerSettingsStore settingsStore,
+            IPingConfigurableServerPingerSettingsStore settingsStore,
             IServerStatusNotifier serverStatusNotifier)
         {
             _state = state;
