@@ -5,44 +5,17 @@
 else
 {
     <form>
-        @if (HasQueue)
-        {
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="cbNotify" @bind="AllowNotifyJoinable"
-                @oninput="OnSettingsInput">
-                <label class="form-check-label" for="cbNotify">
-                    Notify on joinable
-                    <span class="font-weight-light">(less than @MaxPlayersExcludingQueue online players)</span>
-                </label>
-            </div>
-            <div class="mt-3 form-check">
-                <input type="checkbox" class="form-check-input" id="cbQueueNotify" @bind="AllowNotifyQueueJoinable"
-                @oninput="OnSettingsInput">
-                <label class="form-check-label" for="cbQueueNotify">
-                    Notify on queue joinable
-                    <span class="font-weight-light">(less than @MaxPlayers online players)</span>
-                </label>
-            </div>
-        }
-        else
-        {
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="cbNotify" @bind="AllowNotifyJoinable"
-                @oninput="OnSettingsInput">
-                <label class="form-check-label" for="cbNotify">
-                    Notify on joinable
-                    <span class="font-weight-light">(less than @MaxPlayers online players)</span>
-                </label>
-            </div>
-        }
+        <NotificationSettings HasQueue="HasQueue" MaxPlayers="MaxPlayers"
+            MaxPlayersExcludingQueue="MaxPlayersExcludingQueue" @bind-AllowNotifyJoinable="AllowNotifyJoinable"
+            @bind-AllowNotifyQueueJoinable="AllowNotifyQueueJoinable" />
 
         <div class="mt-3 form-group">
             <div class="row align-items-center">
                 <label for="inputPingInterval" class="col-auto col-form-label pr-0">Server ping interval</label>
                 <div class="col-auto d-flex flex-wrap align-items-center pr-0">
                     <input id="inputPingInterval" class="form-control form-control-sm @InvalidPingIntervalSecondsClass"
-                    type="number" style="width: 75px; text-align: center;" @bind="PingIntervalSeconds"
-                    @oninput="OnPingIntervalSecondsInput">
+                        type="number" style="width: 75px; text-align: center;" @bind="PingIntervalSeconds"
+                        @oninput="OnPingIntervalSecondsInput">
                     <div class="pl-2 font-weight-light">seconds</div>
                 </div>
             </div>
