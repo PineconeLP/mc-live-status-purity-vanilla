@@ -1,15 +1,14 @@
 using MCLiveStatus.PurityVanilla.Blazor.Models;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores;
-using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers.NotificationPermitters;
 
-namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerStatusPingers.NotificationPermitters
+namespace MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers.NotificationPermitters
 {
     public class SettingsStoreServerStatusNotificationPermitter : IServerStatusNotificationPermitter
     {
         private readonly ServerStatusNotificationPermitter _baseNotificationPermitter;
         private readonly IServerPingerSettingsStore _settingsStore;
 
-        public SettingsStoreServerStatusNotificationPermitter(ServerStatusNotificationPermitter baseNotificationPermitter, 
+        public SettingsStoreServerStatusNotificationPermitter(ServerStatusNotificationPermitter baseNotificationPermitter,
             IServerPingerSettingsStore settingsStore)
         {
             _baseNotificationPermitter = baseNotificationPermitter;

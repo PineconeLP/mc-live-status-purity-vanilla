@@ -1,4 +1,5 @@
 using System;
+using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers;
 using MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettings;
 using Microsoft.AspNetCore.Components;
@@ -8,7 +9,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Components
     public partial class WASMServerLiveStatusSettings : ComponentBase, IDisposable
     {
         [Inject]
-        public ServerPingerSettingsStore ServerPingerSettingsStore { get; set; }
+        public IAutoRefreshServerPingerSettingsStore ServerPingerSettingsStore { get; set; }
 
         [Inject]
         public IServerStatusPingerStore ServerStatusPingerStore { get; set; }

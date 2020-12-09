@@ -15,6 +15,7 @@ using Blazor.Analytics;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers.NotificationPermitters;
 using MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettings;
 using System.Net.Http;
+using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.WASM
 {
@@ -47,10 +48,14 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM
             services.AddScoped<INotifier, AppendNotifier>();
             services.AddScoped<ServerStatusNotificationFactory>();
             services.AddScoped<ServerStatusNotifier>();
-            services.AddScoped<ServerPingerSettingsStore>();
-            services.AddSingleton<IServerStatusNotificationPermitter, ServerStatusNotificationPermitter>();
+            services.AddScoped<ServerStatusNotificationPermitter>();
+            services.AddScoped<IServerStatusNotificationPermitter, SettingsStoreServerStatusNotificationPermitter>();
             services.AddScoped<ServerStatusPingerStoreState>();
             services.AddScoped<IServerStatusPingerStore, SignalRServerStatusPingerStore>(s => CreateServerStatusPingerStore(s, configuration));
+
+            services.AddScoped<ServerPingerSettingsStore>();
+            services.AddScoped<IServerPingerSettingsStore>(s => s.GetRequiredService<ServerPingerSettingsStore>());
+            services.AddScoped<IAutoRefreshServerPingerSettingsStore>(s => s.GetRequiredService<ServerPingerSettingsStore>());
 
             await builder.Build().RunAsync();
         }

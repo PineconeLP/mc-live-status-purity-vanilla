@@ -23,7 +23,6 @@ using MCLiveStatus.PurityVanilla.Blazor.Services.ServerStatusNotifiers;
 using MCLiveStatus.PurityVanilla.Blazor.Services.Notifiers;
 using MCLiveStatus.PurityVanilla.Blazor.Desktop.Services.Notifiers;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers.NotificationPermitters;
-using MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerStatusPingers.NotificationPermitters;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.Desktop
 {
