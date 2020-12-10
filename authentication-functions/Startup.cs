@@ -1,13 +1,11 @@
 using System;
 using System.Text;
-using MCLiveStatus.Authentication.Contexts;
-using MCLiveStatus.Authentication.Models;
-using MCLiveStatus.Authentication.Services;
+using BreadAuthentication.Core.Extensions;
+using BreadAuthentication.Core.Models;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 [assembly: FunctionsStartup(typeof(MCLiveStatus.Authentication.Startup))]
@@ -20,48 +18,30 @@ namespace MCLiveStatus.Authentication
         {
             IServiceCollection services = builder.Services;
 
+            AuthenticationConfiguration authenticationConfiguration = new AuthenticationConfiguration()
+            {
+                AccessTokenSecret = Environment.GetEnvironmentVariable("Authentication:AccessTokenSecret"),
+                AccessTokenExpirationMinutes = 30,
+                RefreshTokenSecret = Environment.GetEnvironmentVariable("Authentication:RefreshTokenSecret"),
+                RefreshTokenExpirationMinutes = 131400,
+                Audience = Environment.GetEnvironmentVariable("Authentication:Audience"),
+                Issuer = Environment.GetEnvironmentVariable("Authentication:Issuer")
+            };
+
+            TokenValidationParameters tokenValidationParameters = new TokenValidationParameters()
+            {
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationConfiguration.AccessTokenSecret)),
+                ValidIssuer = authenticationConfiguration.Issuer,
+                ValidAudience = authenticationConfiguration.Audience,
+                ValidateIssuerSigningKey = true,
+                ValidateIssuer = true,
+                ValidateAudience = true
+            };
+
             string connectionString = Environment.GetEnvironmentVariable("SqlServerConnectionString");
-            Action<DbContextOptionsBuilder> configureContext = o => o.UseSqlServer(connectionString);
-            services.AddDbContext<AuthServerDbContext>(configureContext);
-            services.AddSingleton<AuthServerDbContextFactory>(new AuthServerDbContextFactory(configureContext));
-
-            builder.Services.AddOptions<TokenConfiguration>()
-                .Configure<IConfiguration>((settings, configuration) =>
-                {
-                    configuration.GetSection("Authentication").Bind(settings);
-                });
-
-            services.AddSingleton(s =>
-            {
-                TokenConfiguration tokenConfiguration = s.GetRequiredService<IOptions<TokenConfiguration>>().Value;
-                return new TokenValidationParameters()
-                {
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenConfiguration.AccessTokenSecret)),
-                    ValidIssuer = tokenConfiguration.Issuer,
-                    ValidAudience = tokenConfiguration.Audience,
-                    ValidateIssuerSigningKey = true,
-                    ValidateIssuer = true,
-                    ValidateAudience = true
-                };
-            });
-
-            services.AddSingleton<AccessTokenGenerator>();
-            services.AddSingleton<AccessTokenDecoder>();
-            services.AddSingleton<RefreshTokenGenerator>();
-            services.AddSingleton<UsersRepository>();
-            services.AddSingleton<RefreshTokenRepository>();
-            services.AddSingleton<Authenticator>();
-            services.AddSingleton<HttpRequestAuthenticator>();
-
-            IServiceProvider provider = services.BuildServiceProvider();
-            using (IServiceScope scope = provider.CreateScope())
-            {
-                AuthServerDbContextFactory contextFactory = scope.ServiceProvider.GetRequiredService<AuthServerDbContextFactory>();
-                using (AuthServerDbContext context = contextFactory.CreateDbContext())
-                {
-                    context.Database.Migrate();
-                }
-            }
+            services.AddBreadAuthentication(authenticationConfiguration,
+                tokenValidationParameters,
+                o => o.UseSqlServer(connectionString));
         }
     }
 }

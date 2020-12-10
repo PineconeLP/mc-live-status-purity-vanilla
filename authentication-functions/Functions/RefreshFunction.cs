@@ -1,55 +1,31 @@
-using System;
-using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using MCLiveStatus.Authentication.Exceptions;
-using MCLiveStatus.Authentication.Models.Requests;
-using MCLiveStatus.Authentication.Services;
-using MCLiveStatus.Authentication.Models;
-using MCLiveStatus.Authentication.Models.Responses;
+using BreadAuthentication.Core.EndpointHandlers;
+using BreadAuthentication.Core.Models.Requests;
 
 namespace MCLiveStatus.Authentication.Functions
 {
     public class RefreshFunction
     {
-        private readonly Authenticator _authenticator;
+        private readonly RefreshEndpointHandler _refreshHandler;
 
-        public RefreshFunction(Authenticator authenticator)
+        public RefreshFunction(RefreshEndpointHandler refreshHandler)
         {
-            _authenticator = authenticator;
+            _refreshHandler = refreshHandler;
         }
 
         [FunctionName("RefreshFunction")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "refresh")]
-            RefreshTokenRequest refreshTokenRequest,
+            RefreshRequest refreshTokenRequest,
             HttpRequest request,
             ILogger log)
         {
-            try
-            {
-                AuthenticatedUser authenticatedUser = await _authenticator.Refresh(
-                    refreshTokenRequest.RefreshToken
-                );
-
-                AuthenticatedUserResponse authenticatedUserResponse = new AuthenticatedUserResponse()
-                {
-                    AccessToken = authenticatedUser.AccessToken,
-                    RefreshToken = authenticatedUser.RefreshToken,
-                    AccessTokenExpireTime = authenticatedUser.AccessTokenExpireTime
-                };
-
-                return new OkObjectResult(authenticatedUserResponse);
-            }
-            catch (InvalidRefreshTokenException)
-            {
-                return new BadRequestResult();
-            }
+            return await _refreshHandler.HandleRefresh(refreshTokenRequest);
         }
     }
 }

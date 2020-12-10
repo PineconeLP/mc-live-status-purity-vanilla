@@ -1,46 +1,29 @@
-using System;
-using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using MCLiveStatus.Authentication.Exceptions;
-using MCLiveStatus.Authentication.Models.Requests;
-using MCLiveStatus.Authentication.Services;
-using MCLiveStatus.Authentication.Models;
+using BreadAuthentication.Core.EndpointHandlers;
 
 namespace MCLiveStatus.Authentication.Functions
 {
     public class LogoutFunction
     {
-        private readonly Authenticator _authenticator;
-        private readonly HttpRequestAuthenticator _requestAuthenticator;
+        private readonly LogoutEndpointHandler _logoutHandler;
 
-        public LogoutFunction(Authenticator authenticator, HttpRequestAuthenticator requestAuthenticator)
+        public LogoutFunction(LogoutEndpointHandler logoutHandler)
         {
-            _authenticator = authenticator;
-            _requestAuthenticator = requestAuthenticator;
+            _logoutHandler = logoutHandler;
         }
 
         [FunctionName("LogoutFunction")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "logout")]
+            [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "logout")]
             HttpRequest request,
             ILogger log)
         {
-
-            User user = await _requestAuthenticator.Authenticate(request);
-            if (user == null)
-            {
-                return new UnauthorizedResult();
-            }
-
-            await _authenticator.Logout(user.Id);
-
-            return new NoContentResult();
+            return await _logoutHandler.HandleLogout(request);
         }
     }
 }
