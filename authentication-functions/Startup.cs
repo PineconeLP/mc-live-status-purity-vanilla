@@ -1,7 +1,7 @@
 using System;
 using System.Text;
-using BreadAuthentication.Core.Extensions;
-using BreadAuthentication.Core.Models;
+using Endpointer.Authentication.API.Extensions;
+using Endpointer.Authentication.API.Models;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -39,7 +39,7 @@ namespace MCLiveStatus.Authentication
             };
 
             string connectionString = Environment.GetEnvironmentVariable("SqlServerConnectionString");
-            services.AddBreadAuthentication(authenticationConfiguration,
+            services.AddEndpointerAuthentication(authenticationConfiguration,
                 tokenValidationParameters,
                 o => o.UseSqlServer(connectionString));
         }
