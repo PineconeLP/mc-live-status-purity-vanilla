@@ -20,7 +20,7 @@ namespace MCLiveStatus.Authentication
         {
             IServiceCollection services = builder.Services;
 
-            string connectionString = Environment.GetEnvironmentVariable("SqliteConnectionString");
+            string connectionString = Environment.GetEnvironmentVariable("SqlServerConnectionString");
             Action<DbContextOptionsBuilder> configureContext = o => o.UseSqlServer(connectionString);
             services.AddDbContext<AuthServerDbContext>(configureContext);
             services.AddSingleton<AuthServerDbContextFactory>(new AuthServerDbContextFactory(configureContext));
