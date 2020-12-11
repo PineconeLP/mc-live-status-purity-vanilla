@@ -5,10 +5,10 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers.Notificat
 {
     public class SettingsStoreServerStatusNotificationPermitter : IServerStatusNotificationPermitter
     {
-        private readonly ServerStatusNotificationPermitter _baseNotificationPermitter;
+        private readonly IServerStatusNotificationPermitter _baseNotificationPermitter;
         private readonly IServerPingerSettingsStore _settingsStore;
 
-        public SettingsStoreServerStatusNotificationPermitter(ServerStatusNotificationPermitter baseNotificationPermitter,
+        public SettingsStoreServerStatusNotificationPermitter(IServerStatusNotificationPermitter baseNotificationPermitter,
             IServerPingerSettingsStore settingsStore)
         {
             _baseNotificationPermitter = baseNotificationPermitter;

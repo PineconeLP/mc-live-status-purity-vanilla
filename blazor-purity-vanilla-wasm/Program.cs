@@ -50,11 +50,12 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM
             services.AddScoped<INotifier, AppendNotifier>();
             services.AddScoped<ServerStatusNotificationFactory>();
             services.AddScoped<ServerStatusNotifier>();
-            services.AddScoped<ServerStatusNotificationPermitter>();
-            services.AddScoped<IServerStatusNotificationPermitter, SettingsStoreServerStatusNotificationPermitter>();
+
+            services.AddScoped<IServerStatusNotificationPermitter, ServerStatusNotificationPermitter>();
+            services.Decorate<IServerStatusNotificationPermitter, SettingsStoreServerStatusNotificationPermitter>();
+
             services.AddScoped<ServerStatusPingerStoreState>();
             services.AddScoped<IServerStatusPingerStore, SignalRServerStatusPingerStore>(s => CreateServerStatusPingerStore(s, configuration));
-
             services.AddScoped<ServerPingerSettingsStore>();
             services.AddScoped<IServerPingerSettingsStore>(s => s.GetRequiredService<ServerPingerSettingsStore>());
             services.AddScoped<IAutoRefreshServerPingerSettingsStore>(s => s.GetRequiredService<ServerPingerSettingsStore>());
