@@ -20,12 +20,12 @@ namespace MCLiveStatus.Authentication
 
             AuthenticationConfiguration authenticationConfiguration = new AuthenticationConfiguration()
             {
-                AccessTokenSecret = Environment.GetEnvironmentVariable("Authentication:AccessTokenSecret"),
+                AccessTokenSecret = Environment.GetEnvironmentVariable("Authentication_AccessTokenSecret"),
                 AccessTokenExpirationMinutes = 30,
-                RefreshTokenSecret = Environment.GetEnvironmentVariable("Authentication:RefreshTokenSecret"),
+                RefreshTokenSecret = Environment.GetEnvironmentVariable("Authentication_RefreshTokenSecret"),
                 RefreshTokenExpirationMinutes = 131400,
-                Audience = Environment.GetEnvironmentVariable("Authentication:Audience"),
-                Issuer = Environment.GetEnvironmentVariable("Authentication:Issuer")
+                Audience = Environment.GetEnvironmentVariable("Authentication_Audience"),
+                Issuer = Environment.GetEnvironmentVariable("Authentication_Issuer")
             };
 
             TokenValidationParameters tokenValidationParameters = new TokenValidationParameters()
