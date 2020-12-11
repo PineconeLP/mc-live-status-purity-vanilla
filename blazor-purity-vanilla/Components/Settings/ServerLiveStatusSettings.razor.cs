@@ -4,7 +4,7 @@ using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers;
 using Microsoft.AspNetCore.Components;
 
-namespace MCLiveStatus.PurityVanilla.Blazor.Components
+namespace MCLiveStatus.PurityVanilla.Blazor.Components.Settings
 {
     public partial class ServerLiveStatusSettings : ComponentBase, IDisposable
     {

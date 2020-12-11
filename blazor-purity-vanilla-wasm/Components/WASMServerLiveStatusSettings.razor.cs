@@ -1,6 +1,8 @@
 using System;
+using System.Threading.Tasks;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers;
+using MCLiveStatus.PurityVanilla.Blazor.WASM.Services.NotificationSupportCheckers;
 using MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettings;
 using Microsoft.AspNetCore.Components;
 
@@ -13,6 +15,9 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Components
 
         [Inject]
         public IServerStatusPingerStore ServerStatusPingerStore { get; set; }
+
+        [Inject]
+        public NotificationSupportChecker NotificationSupportChecker { get; set; }
 
         private bool AutoRefreshEnabled
         {
@@ -36,10 +41,20 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Components
         private int MaxPlayers => ServerStatusPingerStore.ServerDetails.MaxPlayers;
         private int MaxPlayersExcludingQueue => ServerStatusPingerStore.ServerDetails.MaxPlayersExcludingQueue;
 
-        protected override void OnInitialized()
+        private bool IsLoading { get; set; }
+        private bool IsNotificationSupported { get; set; }
+
+        protected override async Task OnInitializedAsync()
         {
+            IsLoading = true;
+
             ServerPingerSettingsStore.SettingsChanged += StateHasChanged;
             ServerStatusPingerStore.StateChanged += StateHasChanged;
+
+            IsNotificationSupported = await NotificationSupportChecker.IsNotificationSupported();
+            IsLoading = false;
+
+            StateHasChanged();
 
             base.OnInitialized();
         }

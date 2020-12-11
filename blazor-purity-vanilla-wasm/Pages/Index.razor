@@ -1,9 +1,14 @@
 ﻿@page "/"
 
 <NavLayout>
-    <StatusSettingsLayout>
-        <SettingsContent>
-            <WASMServerLiveStatusSettings />
-        </SettingsContent>
-    </StatusSettingsLayout>
+    <Header>
+        <AuthenticationNavbar />
+    </Header>
+    <Content>
+        <StatusSettingsLayout>
+            <SettingsContent>
+                <WASMServerLiveStatusSettings />
+            </SettingsContent>
+        </StatusSettingsLayout>
+    </Content>
 </NavLayout>

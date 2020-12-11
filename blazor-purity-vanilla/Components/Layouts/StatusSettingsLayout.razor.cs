@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
 
-namespace MCLiveStatus.PurityVanilla.Blazor.Components
+namespace MCLiveStatus.PurityVanilla.Blazor.Components.Layouts
 {
     public partial class StatusSettingsLayout : ComponentBase
     {
