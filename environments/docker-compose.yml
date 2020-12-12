@@ -8,3 +8,8 @@ services:
       MSSQL_PID: 'Express'
     ports:
       - '1433:1433'
+    volumes:
+      - 'auth-data:/var/opt/mssql/data'
+
+volumes:
+  auth-data:
