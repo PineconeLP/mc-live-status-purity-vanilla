@@ -17,6 +17,8 @@ using MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettings;
 using System.Net.Http;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores;
 using MCLiveStatus.PurityVanilla.Blazor.WASM.Services.NotificationSupportCheckers;
+using Endpointer.Authentication.Client.Extensions;
+using Endpointer.Authentication.Client.Models;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.WASM
 {
@@ -44,6 +46,16 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM
             });
 
             services.AddHttpClient<IServerPinger, APIServerPinger>(client => CreateServerPinger(client, configuration));
+
+            string authenticationBaseUrl = configuration.GetValue<string>("AUTHENTICATION_API_BASE_URL");
+            AuthenticationEndpointsConfiguration endpointsConfiguration = new AuthenticationEndpointsConfiguration()
+            {
+                RegisterEndpoint = authenticationBaseUrl + "register",
+                LoginEndpoint = authenticationBaseUrl + "login",
+                RefreshEndpoint = authenticationBaseUrl + "refresh",
+                LogoutEndpoint = authenticationBaseUrl + "logout"
+            };
+            services.AddEndpointerAuthenticationClient(endpointsConfiguration);
 
             services.AddNotifications();
             services.AddSingleton<NotificationSupportChecker>();
