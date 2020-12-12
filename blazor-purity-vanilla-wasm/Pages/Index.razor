@@ -1,14 +1,8 @@
 ﻿@page "/"
+@layout AuthenticationNavLayout
 
-<NavLayout>
-    <Header>
-        <AuthenticationNavbar />
-    </Header>
-    <Content>
-        <StatusSettingsLayout>
-            <SettingsContent>
-                <WASMServerLiveStatusSettings />
-            </SettingsContent>
-        </StatusSettingsLayout>
-    </Content>
-</NavLayout>
+<StatusSettingsLayout>
+    <SettingsContent>
+        <WASMServerLiveStatusSettings />
+    </SettingsContent>
+</StatusSettingsLayout>
