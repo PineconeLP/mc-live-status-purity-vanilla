@@ -1,6 +1,17 @@
+@using Microsoft.AspNetCore.Components.Routing
+
 <NavbarLayout>
     <div class="d-flex">
-        <button class="btn btn-outline-primary" type="button">Login</button>
-        <button class="ml-2 btn btn-primary" type="button">Register</button>
-    </div>
-</NavbarLayout>
+        @if (IsLoggedIn)
+            {
+                <button class="btn btn-primary" type="button">Logout</button>
+            }
+            else
+            {
+                <NavLink href="login" Match="NavLinkMatch.All">
+                    <button class="btn btn-outline-primary" type="button">Login</button>
+                </NavLink>
+                <button class="ml-2 btn btn-primary" type="button">Register</button>
+            }
+        </div>
+    </NavbarLayout>
