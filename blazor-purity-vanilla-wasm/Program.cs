@@ -19,6 +19,10 @@ using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores;
 using MCLiveStatus.PurityVanilla.Blazor.WASM.Services.NotificationSupportCheckers;
 using Endpointer.Authentication.Client.Extensions;
 using Endpointer.Authentication.Client.Models;
+using MCLiveStatus.PurityVanilla.Blazor.Stores.Authentication;
+using Blazored.LocalStorage;
+using MCLiveStatus.PurityVanilla.Blazor.Stores.Tokens;
+using MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.Tokens;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.WASM
 {
@@ -35,6 +39,8 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM
             bool debug = builder.HostEnvironment.IsDevelopment();
             string trackingId = configuration.GetValue<string>("ANALYTICS_GTAG");
             services.AddGoogleAnalytics(trackingId, debug);
+
+            services.AddBlazoredLocalStorage();
 
             services.AddTransient<ServerDetails>(s => new ServerDetails()
             {
@@ -66,6 +72,8 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM
             services.AddScoped<IServerStatusNotificationPermitter, ServerStatusNotificationPermitter>();
             services.Decorate<IServerStatusNotificationPermitter, SettingsStoreServerStatusNotificationPermitter>();
 
+            services.AddScoped<ITokenStore, WebStorageTokenStore>();
+            services.AddScoped<AuthenticationStore>();
             services.AddScoped<ServerStatusPingerStoreState>();
             services.AddScoped<IServerStatusPingerStore, SignalRServerStatusPingerStore>(s => CreateServerStatusPingerStore(s, configuration));
             services.AddScoped<ServerPingerSettingsStore>();
