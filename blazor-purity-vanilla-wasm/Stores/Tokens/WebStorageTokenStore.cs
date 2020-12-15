@@ -39,5 +39,10 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.Tokens
         {
             return !string.IsNullOrEmpty(await GetRefreshToken());
         }
+
+        public async Task ClearRefreshToken()
+        {
+            await _localStorage.RemoveItemAsync(REFRESH_TOKEN_KEY);
+        }
     }
 }
