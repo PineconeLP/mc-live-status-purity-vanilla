@@ -51,6 +51,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerStatusPingers
 
             _connection = new HubConnectionBuilder()
                 .WithUrl(_negotiateUrl)
+                .WithAutomaticReconnect()
                 .Build();
 
             _connection.On<int, int>("ping", (online, max) => _state.OnNotificationPingCompleted(_serverStatusNotifier, online, max));
