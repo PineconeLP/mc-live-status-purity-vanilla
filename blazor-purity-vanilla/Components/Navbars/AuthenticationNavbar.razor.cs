@@ -12,11 +12,12 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components.Navbars
 
         private bool IsLoggedIn => AuthenticationStore.IsLoggedIn;
 
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
+            await AuthenticationStore.Initialize();
             AuthenticationStore.IsLoggedInChanged += StateHasChanged;
 
-            base.OnInitialized();
+            await base.OnInitializedAsync();
         }
 
         private async Task Logout()

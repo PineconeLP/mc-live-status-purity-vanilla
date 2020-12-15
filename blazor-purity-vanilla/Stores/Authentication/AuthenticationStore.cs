@@ -13,6 +13,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Stores.Authentication
         private readonly ILogoutService _logoutService;
         private readonly ITokenStore _tokenStore;
 
+        private TaskCompletionSource<object> _initializeTask;
         private bool _isLoggedIn;
 
         public bool IsLoggedIn
@@ -32,6 +33,23 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Stores.Authentication
             _loginService = loginService;
             _logoutService = logoutService;
             _tokenStore = tokenStore;
+        }
+
+        public async Task Initialize()
+        {
+            if (_initializeTask == null)
+            {
+                _initializeTask = new TaskCompletionSource<object>();
+
+                if (!_tokenStore.IsAccessTokenExpired || await _tokenStore.HasRefreshToken())
+                {
+                    IsLoggedIn = true;
+                }
+
+                _initializeTask.SetResult(null);
+            }
+
+            await _initializeTask.Task;
         }
 
         public async Task Login(string username, string password)

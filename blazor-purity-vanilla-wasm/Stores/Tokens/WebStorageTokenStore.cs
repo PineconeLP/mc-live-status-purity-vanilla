@@ -32,6 +32,12 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.Tokens
         {
             AccessToken = accessToken;
             await _localStorage.SetItemAsync(REFRESH_TOKEN_KEY, refreshToken);
+            _accessTokenExpirationTime = accessTokenExpirationTime;
+        }
+
+        public async Task<bool> HasRefreshToken()
+        {
+            return !string.IsNullOrEmpty(await GetRefreshToken());
         }
     }
 }
