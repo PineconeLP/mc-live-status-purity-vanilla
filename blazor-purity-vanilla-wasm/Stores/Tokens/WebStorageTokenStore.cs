@@ -14,7 +14,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.Tokens
 
         private DateTime _accessTokenExpirationTime;
 
-        public string AccessToken { get; private set; }
+        public string AccessToken { get; private set; } = string.Empty;
 
         public bool IsAccessTokenExpired => DateTime.UtcNow > _accessTokenExpirationTime;
 

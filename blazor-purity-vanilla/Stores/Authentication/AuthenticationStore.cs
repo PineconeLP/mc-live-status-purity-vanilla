@@ -81,7 +81,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Stores.Authentication
         {
             try
             {
-                await _logoutService.Logout(_tokenStore.AccessToken);
+                await _logoutService.Logout($"Bearer {_tokenStore.AccessToken}");
                 IsLoggedIn = false;
             }
             catch (Exception)
