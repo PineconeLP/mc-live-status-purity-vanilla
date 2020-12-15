@@ -1,15 +1,12 @@
+using System;
 using System.Threading.Tasks;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.Stores.Tokens
 {
     public interface ITokenStore
     {
-        string AccessToken { get; set; }
+        string AccessToken { get; }
 
-        Task<string> GetRefreshToken();
-        Task SetRefreshToken(string refreshToken);
-
-        void ClearAccessToken();
-        Task ClearRefreshToken();
+        Task SetTokens(string accessToken, string refreshToken, DateTime accessTokenExpirationTime);
     }
 }

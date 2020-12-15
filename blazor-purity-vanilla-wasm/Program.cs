@@ -23,6 +23,7 @@ using MCLiveStatus.PurityVanilla.Blazor.Stores.Authentication;
 using Blazored.LocalStorage;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.Tokens;
 using MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.Tokens;
+using Endpointer.Authentication.Client.Stores;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.WASM
 {
@@ -61,7 +62,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM
                 RefreshEndpoint = authenticationBaseUrl + "refresh",
                 LogoutEndpoint = authenticationBaseUrl + "logout"
             };
-            services.AddEndpointerAuthenticationClient(endpointsConfiguration);
+            services.AddEndpointerAuthenticationClient(endpointsConfiguration, s => s.GetRequiredService<IAutoRefreshTokenStore>());
 
             services.AddNotifications();
             services.AddSingleton<NotificationSupportChecker>();
@@ -72,7 +73,10 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM
             services.AddScoped<IServerStatusNotificationPermitter, ServerStatusNotificationPermitter>();
             services.Decorate<IServerStatusNotificationPermitter, SettingsStoreServerStatusNotificationPermitter>();
 
-            services.AddScoped<ITokenStore, WebStorageTokenStore>();
+            services.AddScoped<WebStorageTokenStore>();
+            services.AddScoped<ITokenStore>(s => s.GetRequiredService<WebStorageTokenStore>());
+            services.AddScoped<IAutoRefreshTokenStore>(s => s.GetRequiredService<WebStorageTokenStore>());
+
             services.AddScoped<AuthenticationStore>();
             services.AddScoped<ServerStatusPingerStoreState>();
             services.AddScoped<IServerStatusPingerStore, SignalRServerStatusPingerStore>(s => CreateServerStatusPingerStore(s, configuration));

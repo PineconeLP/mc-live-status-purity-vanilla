@@ -49,8 +49,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Stores.Authentication
 
                 if (responseData != null)
                 {
-                    _tokenStore.AccessToken = responseData.AccessToken;
-                    await _tokenStore.SetRefreshToken(responseData.RefreshToken);
+                    await _tokenStore.SetTokens(responseData.AccessToken, responseData.RefreshToken, responseData.AccessTokenExpirationTime);
                     IsLoggedIn = true;
                 }
             }
