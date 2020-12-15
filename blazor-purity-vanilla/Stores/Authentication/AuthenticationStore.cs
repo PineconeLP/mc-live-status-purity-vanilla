@@ -60,20 +60,13 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Stores.Authentication
                 Password = password
             };
 
-            try
-            {
-                SuccessResponse<AuthenticatedUserResponse> response = await _loginService.Login(request);
-                AuthenticatedUserResponse responseData = response.Data;
+            SuccessResponse<AuthenticatedUserResponse> response = await _loginService.Login(request);
+            AuthenticatedUserResponse responseData = response.Data;
 
-                if (responseData != null)
-                {
-                    await _tokenStore.SetTokens(responseData.AccessToken, responseData.RefreshToken, responseData.AccessTokenExpirationTime);
-                    IsLoggedIn = true;
-                }
-            }
-            catch (Exception)
+            if (responseData != null)
             {
-                throw;
+                await _tokenStore.SetTokens(responseData.AccessToken, responseData.RefreshToken, responseData.AccessTokenExpirationTime);
+                IsLoggedIn = true;
             }
         }
 
@@ -82,12 +75,11 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Stores.Authentication
             try
             {
                 await _logoutService.Logout($"Bearer {_tokenStore.AccessToken}");
+            }
+            finally
+            {
                 await _tokenStore.ClearRefreshToken();
                 IsLoggedIn = false;
-            }
-            catch (Exception)
-            {
-                throw;
             }
         }
 

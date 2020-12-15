@@ -11,6 +11,9 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components.Authentication
         [Inject]
         public IRegisterService RegisterService { get; set; }
 
+        [Inject]
+        public NavigationManager NavigationManager { get; set; }
+
         private RegisterRequest RegisterRequest { get; } = new RegisterRequest();
 
         private async Task OnRegister()
@@ -18,6 +21,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components.Authentication
             try
             {
                 await RegisterService.Register(RegisterRequest);
+                NavigationManager.NavigateTo("/login");
             }
             catch (Exception)
             {

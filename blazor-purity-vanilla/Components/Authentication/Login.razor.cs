@@ -11,6 +11,9 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components.Authentication
         [Inject]
         public AuthenticationStore AuthenticationStore { get; set; }
 
+        [Inject]
+        public NavigationManager NavigationManager { get; set; }
+
         private LoginRequest LoginRequest { get; } = new LoginRequest();
 
         private async Task OnLogin()
@@ -18,6 +21,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components.Authentication
             try
             {
                 await AuthenticationStore.Login(LoginRequest.Username, LoginRequest.Password);
+                NavigationManager.NavigateTo("/");
             }
             catch (Exception)
             {
