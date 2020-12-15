@@ -23,6 +23,12 @@ using MCLiveStatus.PurityVanilla.Blazor.Services.ServerStatusNotifiers;
 using MCLiveStatus.PurityVanilla.Blazor.Services.Notifiers;
 using MCLiveStatus.PurityVanilla.Blazor.Desktop.Services.Notifiers;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers.NotificationPermitters;
+using Endpointer.Authentication.Client.Models;
+using Endpointer.Authentication.Client.Extensions;
+using Endpointer.Authentication.Client.Stores;
+using MCLiveStatus.PurityVanilla.Blazor.Stores.Tokens;
+using MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.Tokens;
+using MCLiveStatus.PurityVanilla.Blazor.Stores.Authentication;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.Desktop
 {
@@ -43,6 +49,20 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Desktop
             services.AddAutoMapper(typeof(DTOMappingProfile));
             services.AddDataServices(o => o.UseSqlite("Data Source=MCLiveStatus.db"));
 
+            services.AddSingleton<TokenStore>();
+            services.AddSingleton<ITokenStore>(s => s.GetRequiredService<TokenStore>());
+            services.AddSingleton<IAutoRefreshTokenStore>(s => s.GetRequiredService<TokenStore>());
+
+            string authenticationBaseUrl = Configuration.GetValue<string>("AUTHENTICATION_API_BASE_URL");
+            AuthenticationEndpointsConfiguration endpointsConfiguration = new AuthenticationEndpointsConfiguration()
+            {
+                RegisterEndpoint = authenticationBaseUrl + "register",
+                LoginEndpoint = authenticationBaseUrl + "login",
+                RefreshEndpoint = authenticationBaseUrl + "refresh",
+                LogoutEndpoint = authenticationBaseUrl + "logout"
+            };
+            services.AddEndpointerAuthenticationClient(endpointsConfiguration, s => s.GetRequiredService<IAutoRefreshTokenStore>());
+
             services.AddTransient<ServerDetails>(s => new ServerDetails()
             {
                 Host = "purityvanilla.com",
@@ -52,19 +72,20 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Desktop
                 MaxPlayersExcludingQueue = 75
             });
 
+            services.AddSingleton<IServerStatusNotificationPermitter, ServerStatusNotificationPermitter>();
+            services.Decorate<IServerStatusNotificationPermitter, SettingsStoreServerStatusNotificationPermitter>();
+
             services.AddServerPinger();
             services.AddSingleton<ServerStatusNotificationFactory>();
             services.AddSingleton<INotifier, ElectronNotifier>();
             services.AddSingleton<IServerStatusNotifier, ServerStatusNotifier>();
-            services.AddSingleton<ServerStatusNotificationPermitter>();
-            services.AddSingleton<IServerStatusNotificationPermitter, SettingsStoreServerStatusNotificationPermitter>();
             services.AddSingleton<ServerStatusPingerStoreState>();
             services.AddSingleton<IServerStatusPingerStore, ServerStatusPingerStore>();
 
+            services.AddSingleton<AuthenticationStore>();
             services.AddSingleton<ServerPingerSettingsStore>();
             services.AddSingleton<IPingConfigurableServerPingerSettingsStore>(s => s.GetRequiredService<ServerPingerSettingsStore>());
             services.AddSingleton<IServerPingerSettingsStore>(s => s.GetRequiredService<ServerPingerSettingsStore>());
-
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime lifetime)
