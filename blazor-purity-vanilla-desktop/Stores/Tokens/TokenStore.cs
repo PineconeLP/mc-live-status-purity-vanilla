@@ -1,31 +1,37 @@
 using System;
 using System.Threading.Tasks;
 using Endpointer.Authentication.Client.Stores;
+using MCLiveStatus.Domain.Services;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.Tokens;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.Tokens
 {
     public class TokenStore : ITokenStore, IAutoRefreshTokenStore
     {
-        private string _refreshToken;
+        private readonly IRefreshTokenRepository _refreshTokenRepository;
+
         private DateTime _accessTokenExpirationTime;
 
         public string AccessToken { get; private set; } = string.Empty;
 
         public bool IsAccessTokenExpired => DateTime.UtcNow > _accessTokenExpirationTime;
 
-        public Task<string> GetRefreshToken()
+        public TokenStore(IRefreshTokenRepository refreshTokenRepository)
         {
-            return Task.FromResult(_refreshToken);
+            _refreshTokenRepository = refreshTokenRepository;
         }
 
-        public Task SetTokens(string accessToken, string refreshToken, DateTime accessTokenExpirationTime)
+        public async Task<string> GetRefreshToken()
+        {
+            return await _refreshTokenRepository.GetRefreshToken();
+        }
+
+        public async Task SetTokens(string accessToken, string refreshToken, DateTime accessTokenExpirationTime)
         {
             AccessToken = accessToken;
-            _refreshToken = refreshToken;
             _accessTokenExpirationTime = accessTokenExpirationTime;
 
-            return Task.CompletedTask;
+            await _refreshTokenRepository.SetRefreshToken(refreshToken);
         }
 
         public async Task<bool> HasRefreshToken()
@@ -33,11 +39,9 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.Tokens
             return !string.IsNullOrEmpty(await GetRefreshToken());
         }
 
-        public Task ClearRefreshToken()
+        public async Task ClearRefreshToken()
         {
-            _refreshToken = null;
-
-            return Task.CompletedTask;
+            await _refreshTokenRepository.ClearRefreshToken();
         }
     }
 }
