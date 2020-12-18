@@ -11,6 +11,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components.Navbars
         public AuthenticationStore AuthenticationStore { get; set; }
 
         private bool IsLoggedIn => AuthenticationStore.IsLoggedIn;
+        private bool IsLoggingOut { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
@@ -22,7 +23,18 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components.Navbars
 
         private async Task Logout()
         {
-            await AuthenticationStore.Logout();
+            IsLoggingOut = true;
+            StateHasChanged();
+
+            try
+            {
+                await AuthenticationStore.Logout();
+            }
+            finally
+            {
+                IsLoggingOut = false;
+                StateHasChanged();
+            }
         }
 
         public void Dispose()

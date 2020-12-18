@@ -16,8 +16,13 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components.Authentication
 
         private LoginRequest LoginRequest { get; } = new LoginRequest();
 
+        private bool IsLoggingIn { get; set; }
+
         private async Task OnLogin()
         {
+            IsLoggingIn = true;
+            StateHasChanged();
+
             try
             {
                 await AuthenticationStore.Login(LoginRequest.Username, LoginRequest.Password);
@@ -26,6 +31,11 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components.Authentication
             catch (Exception)
             {
 
+            }
+            finally
+            {
+                IsLoggingIn = false;
+                StateHasChanged();
             }
         }
     }

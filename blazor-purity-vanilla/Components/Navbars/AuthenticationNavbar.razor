@@ -2,18 +2,18 @@
 
 <NavbarLayout>
     <div class="d-flex justify-content-center justify-content-sm-end">
-        @if (IsLoggedIn)
-            {
-                <button class="btn btn-primary" type="button" @onclick="Logout">Logout</button>
-            }
-            else
-            {
-                <NavLink href="login" Match="NavLinkMatch.All">
-                    <button class="btn btn-outline-primary" type="button">Login</button>
-                </NavLink>
-                <NavLink href="register" Match="NavLinkMatch.All">
-                    <button class="ml-2 btn btn-primary" type="button">Register</button>
-                </NavLink>
-            }
-            </div>
-        </NavbarLayout>
+        @if (IsLoggedIn && !IsLoggingOut)
+        {
+            <button class="btn btn-primary" type="button" @onclick="Logout">Logout</button>
+        }
+        else
+        {
+            <NavLink href="login" Match="NavLinkMatch.All">
+                <button class="btn btn-outline-primary" type="button">Login</button>
+            </NavLink>
+            <NavLink href="register" Match="NavLinkMatch.All">
+                <button class="ml-2 btn btn-primary" type="button">Register</button>
+            </NavLink>
+        }
+    </div>
+</NavbarLayout>

@@ -16,8 +16,13 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components.Authentication
 
         private RegisterRequest RegisterRequest { get; } = new RegisterRequest();
 
+        private bool IsRegistering { get; set; }
+
         private async Task OnRegister()
         {
+            IsRegistering = true;
+            StateHasChanged();
+
             try
             {
                 await RegisterService.Register(RegisterRequest);
@@ -25,7 +30,11 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components.Authentication
             }
             catch (Exception)
             {
-
+            }
+            finally
+            {
+                IsRegistering = false;
+                StateHasChanged();
             }
         }
     }
