@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Endpointer.Authentication.Core.Models.Requests;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.Authentication;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.Components.Authentication
 {
@@ -14,28 +15,42 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components.Authentication
         [Inject]
         public NavigationManager NavigationManager { get; set; }
 
+        private EditContext _loginEditContext;
+
         private LoginRequest LoginRequest { get; } = new LoginRequest();
+
+        private bool CanNotLogin => string.IsNullOrEmpty(LoginRequest.Username) || string.IsNullOrEmpty(LoginRequest.Password);
 
         private bool IsLoggingIn { get; set; }
 
+        protected override void OnInitialized()
+        {
+            _loginEditContext = new EditContext(LoginRequest);
+
+            base.OnInitialized();
+        }
+
         private async Task OnLogin()
         {
-            IsLoggingIn = true;
-            StateHasChanged();
-
-            try
+            if (_loginEditContext.Validate())
             {
-                await AuthenticationStore.Login(LoginRequest.Username, LoginRequest.Password);
-                NavigationManager.NavigateTo("/");
-            }
-            catch (Exception)
-            {
-
-            }
-            finally
-            {
-                IsLoggingIn = false;
+                IsLoggingIn = true;
                 StateHasChanged();
+
+                try
+                {
+                    await AuthenticationStore.Login(LoginRequest.Username, LoginRequest.Password);
+                    NavigationManager.NavigateTo("/");
+                }
+                catch (Exception)
+                {
+
+                }
+                finally
+                {
+                    IsLoggingIn = false;
+                    StateHasChanged();
+                }
             }
         }
     }
