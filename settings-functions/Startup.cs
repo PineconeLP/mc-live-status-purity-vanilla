@@ -1,6 +1,9 @@
 using System;
 using System.Text;
+using Endpointer.Authentication.API.Services.Authenticators;
+using Endpointer.Authentication.API.Services.TokenDecoders;
 using MCLiveStatus.ServerSettings.Models;
+using MCLiveStatus.ServerSettings.Services;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,6 +35,12 @@ namespace MCLiveStatus.ServerSettings
                 ValidateIssuer = true,
                 ValidateAudience = true
             };
+
+            services.AddSingleton<IServerPingerSettingsRepository, FirebaseServerPingerSettingsRepository>();
+
+            services.AddSingleton(tokenValidationParameters);
+            services.AddSingleton<AccessTokenDecoder>();
+            services.AddSingleton<HttpRequestAuthenticator>();
         }
     }
 }
