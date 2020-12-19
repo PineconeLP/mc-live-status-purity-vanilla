@@ -24,6 +24,9 @@ using Blazored.LocalStorage;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.Tokens;
 using MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.Tokens;
 using Endpointer.Authentication.Client.Stores;
+using Refit;
+using MCLiveStatus.PurityVanilla.Blazor.WASM.Services.ServerPingerSettingsServices;
+using Endpointer.Authentication.Client.Http;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.WASM
 {
@@ -65,7 +68,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM
             services.AddEndpointerAuthenticationClient(endpointsConfiguration, s => s.GetRequiredService<IAutoRefreshTokenStore>());
 
             services.AddNotifications();
-            services.AddSingleton<NotificationSupportChecker>();
+            services.AddScoped<NotificationSupportChecker>();
             services.AddScoped<INotifier, AppendNotifier>();
             services.AddScoped<ServerStatusNotificationFactory>();
             services.AddScoped<ServerStatusNotifier>();
@@ -80,6 +83,18 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM
             services.AddScoped<AuthenticationStore>();
             services.AddScoped<ServerStatusPingerStoreState>();
             services.AddScoped<IServerStatusPingerStore, SignalRServerStatusPingerStore>(s => CreateServerStatusPingerStore(s, configuration));
+
+            string settingsBaseUrl = configuration.GetValue<string>("SETTINGS_API_BASE_URL");
+            services.AddScoped<AutoRefreshHttpMessageHandler>();
+            services.AddRefitClient<IAuthenticationServerPingerSettingsService>(new RefitSettings()
+            {
+                ContentSerializer = new NewtonsoftJsonContentSerializer()
+            }).ConfigureHttpClient(c =>
+            {
+                c.BaseAddress = new Uri(settingsBaseUrl);
+            }).AddHttpMessageHandler<AutoRefreshHttpMessageHandler>();
+            services.AddScoped<IServerPingerSettingsService, APIServerPingerSettingsService>();
+
             services.AddScoped<ServerPingerSettingsStore>();
             services.AddScoped<IServerPingerSettingsStore>(s => s.GetRequiredService<ServerPingerSettingsStore>());
             services.AddScoped<IAutoRefreshServerPingerSettingsStore>(s => s.GetRequiredService<ServerPingerSettingsStore>());

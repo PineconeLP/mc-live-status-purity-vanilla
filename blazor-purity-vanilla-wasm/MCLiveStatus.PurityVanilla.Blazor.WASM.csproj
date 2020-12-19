@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\blazor-purity-vanilla\MCLiveStatus.PurityVanilla.Blazor.csproj" />
+    <ProjectReference Include="..\settings-domain\MCLiveStatus.ServerSettings.Domain.csproj" />
   </ItemGroup>
 
 </Project>

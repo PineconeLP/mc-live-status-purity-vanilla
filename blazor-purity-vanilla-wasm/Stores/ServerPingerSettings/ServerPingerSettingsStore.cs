@@ -1,11 +1,14 @@
 using System;
 using System.Threading.Tasks;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores;
+using MCLiveStatus.PurityVanilla.Blazor.WASM.Services.ServerPingerSettingsServices;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettings
 {
     public class ServerPingerSettingsStore : IAutoRefreshServerPingerSettingsStore
     {
+        private readonly IServerPingerSettingsService _settingsService;
+
         private bool _autoRefreshEnabled;
         private bool _allowNotifyJoinable;
         private bool _allowNotifyQueueJoinable;
@@ -54,17 +57,17 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettings
         public event Action SettingsChanged;
         public event Action IsLoadingChanged;
 
-        public ServerPingerSettingsStore()
+        public ServerPingerSettingsStore(IServerPingerSettingsService settingsService)
         {
-            AutoRefreshEnabled = true;
+            _settingsService = settingsService;
         }
 
-        public Task Load()
+        public async Task Load()
         {
             throw new NotImplementedException();
         }
 
-        public Task Save()
+        public async Task Save()
         {
             throw new NotImplementedException();
         }
