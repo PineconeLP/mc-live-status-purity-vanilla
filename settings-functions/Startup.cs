@@ -2,6 +2,8 @@ using System;
 using System.Text;
 using Endpointer.Authentication.API.Services.Authenticators;
 using Endpointer.Authentication.API.Services.TokenDecoders;
+using Firebase.Database;
+using Google.Apis.Auth.OAuth2;
 using MCLiveStatus.ServerSettings.Models;
 using MCLiveStatus.ServerSettings.Services;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
@@ -36,11 +38,26 @@ namespace MCLiveStatus.ServerSettings
                 ValidateAudience = true
             };
 
-            services.AddSingleton<IServerPingerSettingsRepository, FirebaseServerPingerSettingsRepository>();
-
             services.AddSingleton(tokenValidationParameters);
             services.AddSingleton<AccessTokenDecoder>();
             services.AddSingleton<HttpRequestAuthenticator>();
+
+            FirebaseClient firebaseClient = CreateFirebaseClient();
+            services.AddSingleton(firebaseClient);
+
+            services.AddSingleton<IServerPingerSettingsRepository, FirebaseServerPingerSettingsRepository>();
+        }
+
+        private FirebaseClient CreateFirebaseClient()
+        {
+            return new FirebaseClient("https://mclivestatus-default-rtdb.firebaseio.com/",
+                new FirebaseOptions
+                {
+                    AuthTokenAsyncFactory = () => GoogleCredential.FromFile("./firebase-credential.json")
+                        .CreateScoped("https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/firebase.database")
+                        .UnderlyingCredential.GetAccessTokenForRequestAsync(),
+                    AsAccessToken = true
+                });
         }
     }
 }

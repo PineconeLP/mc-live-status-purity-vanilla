@@ -40,6 +40,12 @@ namespace MCLiveStatus.ServerSettings.Functions
 
             ServerPingerSettings settings = await _settingsRepository.GetForUserId(user.Id);
 
+            if (settings == null)
+            {
+                log.LogError("Could not find server pinger settings for user id {userId}.", user.Id);
+                return new NotFoundResult();
+            }
+
             log.LogInformation("Successfully retrieved server pinger settings for user id {userId}.", user.Id);
 
             return new OkObjectResult(settings);
