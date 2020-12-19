@@ -6,6 +6,12 @@
             "samplingSettings": {
                 "isEnabled": true
             }
+        },
+        "console": {
+            "isEnabled": true
+        },
+        "logLevel": {
+            "default": "Information"
         }
     }
 }
