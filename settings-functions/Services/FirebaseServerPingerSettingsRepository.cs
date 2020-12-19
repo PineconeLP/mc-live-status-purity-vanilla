@@ -8,6 +8,8 @@ namespace MCLiveStatus.ServerSettings.Services
 {
     public class FirebaseServerPingerSettingsRepository : IServerPingerSettingsRepository
     {
+        private const string SERVER_PINGER_SETTINGS_KEY = "server-pinger-settings";
+
         private readonly FirebaseClient _client;
 
         public FirebaseServerPingerSettingsRepository(FirebaseClient client)
@@ -18,7 +20,7 @@ namespace MCLiveStatus.ServerSettings.Services
         public async Task<ServerPingerSettings> GetForUserId(Guid userId)
         {
             return await _client
-                .Child("server-pinger-settings")
+                .Child(SERVER_PINGER_SETTINGS_KEY)
                 .Child(userId.ToString)
                 .OnceSingleAsync<ServerPingerSettings>();
         }
@@ -26,7 +28,7 @@ namespace MCLiveStatus.ServerSettings.Services
         public async Task SaveForUserId(Guid userId, ServerPingerSettings settings)
         {
             await _client
-                .Child("server-pinger-settings")
+                .Child(SERVER_PINGER_SETTINGS_KEY)
                 .Child(userId.ToString)
                 .PutAsync(settings);
         }

@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using System.Threading.Tasks;
 using Endpointer.Authentication.API.Services.Authenticators;
 using Endpointer.Authentication.API.Services.TokenDecoders;
 using Firebase.Database;
@@ -17,6 +18,15 @@ namespace MCLiveStatus.ServerSettings
 {
     public class Startup : FunctionsStartup
     {
+        private readonly string _environment;
+
+        private bool IsDevelopment => _environment == "Development";
+
+        public Startup()
+        {
+            _environment = Environment.GetEnvironmentVariable("AZURE_FUNCTIONS_ENVIRONMENT");
+        }
+
         public override void Configure(IFunctionsHostBuilder builder)
         {
             IServiceCollection services = builder.Services;
@@ -53,11 +63,29 @@ namespace MCLiveStatus.ServerSettings
             return new FirebaseClient("https://mclivestatus-default-rtdb.firebaseio.com/",
                 new FirebaseOptions
                 {
-                    AuthTokenAsyncFactory = () => GoogleCredential.FromFile("./firebase-credential.json")
-                        .CreateScoped("https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/firebase.database")
-                        .UnderlyingCredential.GetAccessTokenForRequestAsync(),
+                    AuthTokenAsyncFactory = async () =>
+                    {
+                        GoogleCredential credential = GetGoogleCredential();
+
+                        return await credential.CreateScoped(
+                                "https://www.googleapis.com/auth/userinfo.email",
+                                "https://www.googleapis.com/auth/firebase.database")
+                            .UnderlyingCredential.GetAccessTokenForRequestAsync();
+                    },
                     AsAccessToken = true
                 });
+        }
+
+        private GoogleCredential GetGoogleCredential()
+        {
+            if (IsDevelopment)
+            {
+                return GoogleCredential.FromFile("./firebase-credential.json");
+            }
+            else
+            {
+                return GoogleCredential.FromJson(Environment.GetEnvironmentVariable("FIREBASE_CONFIG"));
+            }
         }
     }
 }
