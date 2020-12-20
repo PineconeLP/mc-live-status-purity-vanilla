@@ -34,6 +34,7 @@ namespace MCLiveStatus.ServerSettings.Functions
 
             if (user == null)
             {
+                log.LogError("Unable to authenticate user.");
                 return new UnauthorizedResult();
             }
 
@@ -42,7 +43,7 @@ namespace MCLiveStatus.ServerSettings.Functions
             log.LogInformation("Allow notify joinable: {allowNotifyJoinable}", settings.AllowNotifyJoinable);
             log.LogInformation("Allow notify queue joinable: {allowNotifyQueueJoinable}", settings.AllowNotifyQueueJoinable);
 
-            await _settingsRepository.SaveForUserId(user.Id, settings); 
+            await _settingsRepository.SaveForUserId(user.Id, settings);
 
             log.LogInformation("Successfully saved server pinger settings.");
 

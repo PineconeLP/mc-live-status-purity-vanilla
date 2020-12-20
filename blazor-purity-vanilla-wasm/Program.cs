@@ -44,8 +44,6 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM
             string trackingId = configuration.GetValue<string>("ANALYTICS_GTAG");
             services.AddGoogleAnalytics(trackingId, debug);
 
-            services.AddBlazoredLocalStorage();
-
             services.AddTransient<ServerDetails>(s => new ServerDetails()
             {
                 Host = "purityvanilla.com",
@@ -76,9 +74,11 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM
             services.AddScoped<IServerStatusNotificationPermitter, ServerStatusNotificationPermitter>();
             services.Decorate<IServerStatusNotificationPermitter, SettingsStoreServerStatusNotificationPermitter>();
 
-            services.AddScoped<WebStorageTokenStore>();
-            services.AddScoped<ITokenStore>(s => s.GetRequiredService<WebStorageTokenStore>());
-            services.AddScoped<IAutoRefreshTokenStore>(s => s.GetRequiredService<WebStorageTokenStore>());
+            // Must register as singleton because HttpMessageHandlers will create their own scopes.
+            services.AddSingleton<ILocalStorageService, LocalStorageService>();
+            services.AddSingleton<WebStorageTokenStore>();
+            services.AddSingleton<ITokenStore>(s => s.GetRequiredService<WebStorageTokenStore>());
+            services.AddSingleton<IAutoRefreshTokenStore>(s => s.GetRequiredService<WebStorageTokenStore>());
 
             services.AddScoped<AuthenticationStore>();
             services.AddScoped<ServerStatusPingerStoreState>();
