@@ -1,45 +1,59 @@
 using System;
 using System.Threading.Tasks;
+using MCLiveStatus.PurityVanilla.Blazor.Stores.Authentication;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores;
+using MCLiveStatus.PurityVanilla.Blazor.Stores.Tokens;
 using MCLiveStatus.PurityVanilla.Blazor.WASM.Services.ServerPingerSettingsServices;
+using MCLiveStatus.ServerSettings.Domain.Models;
 
-namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettings
+namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettingStores
 {
     public class ServerPingerSettingsStore : IAutoRefreshServerPingerSettingsStore
     {
+        private readonly ITokenStore _tokenStore;
+        private readonly AuthenticationStore _authenticationStore;
         private readonly IServerPingerSettingsService _settingsService;
 
-        private bool _autoRefreshEnabled;
-        private bool _allowNotifyJoinable;
-        private bool _allowNotifyQueueJoinable;
+        private TaskCompletionSource<object> _initializeTask;
         private bool _isLoading;
+
+        private ServerPingerSettings _settings;
+        private ServerPingerSettings Settings
+        {
+            get => _settings;
+            set
+            {
+                _settings = value;
+                OnSettingsChanged();
+            }
+        }
 
         public bool AutoRefreshEnabled
         {
-            get => _autoRefreshEnabled;
+            get => Settings.AutoRefresh;
             set
             {
-                _autoRefreshEnabled = value;
+                Settings.AutoRefresh = value;
                 OnSettingsChanged();
             }
         }
 
         public bool AllowNotifyJoinable
         {
-            get => _allowNotifyJoinable;
+            get => Settings.AllowNotifyJoinable;
             set
             {
-                _allowNotifyJoinable = value;
+                Settings.AllowNotifyJoinable = value;
                 OnSettingsChanged();
             }
         }
 
         public bool AllowNotifyQueueJoinable
         {
-            get => _allowNotifyQueueJoinable;
+            get => Settings.AllowNotifyQueueJoinable;
             set
             {
-                _allowNotifyQueueJoinable = value;
+                Settings.AllowNotifyQueueJoinable = value;
                 OnSettingsChanged();
             }
         }
@@ -47,7 +61,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettings
         public bool IsLoading
         {
             get => _isLoading;
-            set
+            private set
             {
                 _isLoading = value;
                 OnIsLoadingChanged();
@@ -57,19 +71,72 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettings
         public event Action SettingsChanged;
         public event Action IsLoadingChanged;
 
-        public ServerPingerSettingsStore(IServerPingerSettingsService settingsService)
+        public ServerPingerSettingsStore(ITokenStore tokenStore, AuthenticationStore authenticationStore, IServerPingerSettingsService settingsService)
         {
+            _tokenStore = tokenStore;
+            _authenticationStore = authenticationStore;
             _settingsService = settingsService;
+
+            Settings = CreateDefaultSettings();
+
+            _authenticationStore.IsLoggedInChanged += OnIsLoggedInChanged;
         }
 
         public async Task Load()
         {
-            throw new NotImplementedException();
+            await _authenticationStore.Initialize();
+
+            if (_initializeTask == null)
+            {
+                _initializeTask = new TaskCompletionSource<object>();
+
+                await LoadSettings();
+
+                _initializeTask.TrySetResult(null);
+            }
+
+            await _initializeTask.Task;
+        }
+
+        private async Task LoadSettings()
+        {
+            IsLoading = true;
+
+            if (_authenticationStore.IsLoggedIn)
+            {
+                ServerPingerSettings settings = await _settingsService.GetSettings(_tokenStore.BearerAccessToken);
+                if (settings != null)
+                {
+                    Settings = settings;
+                }
+            }
+            else
+            {
+                Settings = CreateDefaultSettings();
+            }
+
+            IsLoading = false;
         }
 
         public async Task Save()
         {
-            throw new NotImplementedException();
+            await _settingsService.SaveSettings(_tokenStore.BearerAccessToken, Settings);
+        }
+
+        private ServerPingerSettings CreateDefaultSettings()
+        {
+            return new ServerPingerSettings()
+            {
+                AutoRefresh = true
+            };
+        }
+
+        private void OnIsLoggedInChanged()
+        {
+            _initializeTask?.TrySetResult(null);
+            _initializeTask = null;
+
+            // TBD: Raise NeedsInitialization event?
         }
 
         private void OnIsLoadingChanged()

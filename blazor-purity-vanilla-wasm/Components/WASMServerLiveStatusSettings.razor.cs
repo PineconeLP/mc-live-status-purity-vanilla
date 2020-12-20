@@ -1,9 +1,9 @@
 using System;
 using System.Threading.Tasks;
+using MCLiveStatus.PurityVanilla.Blazor.Stores.Authentication;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers;
 using MCLiveStatus.PurityVanilla.Blazor.WASM.Services.NotificationSupportCheckers;
-using MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettings;
 using Microsoft.AspNetCore.Components;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Components
@@ -15,6 +15,9 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Components
 
         [Inject]
         public IServerStatusPingerStore ServerStatusPingerStore { get; set; }
+
+        [Inject]
+        public AuthenticationStore AuthenticationStore { get; set; }
 
         [Inject]
         public NotificationSupportChecker NotificationSupportChecker { get; set; }
@@ -47,22 +50,40 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Components
         protected override async Task OnInitializedAsync()
         {
             IsLoading = true;
+            StateHasChanged();
 
             ServerPingerSettingsStore.SettingsChanged += StateHasChanged;
             ServerStatusPingerStore.StateChanged += StateHasChanged;
+            AuthenticationStore.IsLoggedInChanged += RefreshServerPingerSettings;
 
+            await ServerPingerSettingsStore.Load();
             IsNotificationSupported = await NotificationSupportChecker.IsNotificationSupported();
-            IsLoading = false;
 
+            IsLoading = false;
             StateHasChanged();
 
-            base.OnInitialized();
+            await base.OnInitializedAsync();
+        }
+
+        private async void RefreshServerPingerSettings()
+        {
+            IsLoading = true;
+            StateHasChanged();
+
+            if (AuthenticationStore.IsLoggedIn)
+            {
+                await ServerPingerSettingsStore.Load();
+            }
+
+            IsLoading = false;
+            StateHasChanged();
         }
 
         public void Dispose()
         {
             ServerPingerSettingsStore.SettingsChanged -= StateHasChanged;
             ServerStatusPingerStore.StateChanged -= StateHasChanged;
+            AuthenticationStore.IsLoggedInChanged -= RefreshServerPingerSettings;
         }
     }
 }

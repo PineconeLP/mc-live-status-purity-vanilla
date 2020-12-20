@@ -6,6 +6,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Stores.Tokens
     public interface ITokenStore
     {
         string AccessToken { get; }
+        string BearerAccessToken { get; }
         bool IsAccessTokenExpired { get; }
 
         Task<bool> HasRefreshToken();

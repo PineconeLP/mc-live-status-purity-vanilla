@@ -13,7 +13,7 @@ using MCLiveStatus.PurityVanilla.Blazor.Services.Notifiers;
 using MCLiveStatus.PurityVanilla.Blazor.Models;
 using Blazor.Analytics;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers.NotificationPermitters;
-using MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettings;
+using MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettingStores;
 using System.Net.Http;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores;
 using MCLiveStatus.PurityVanilla.Blazor.WASM.Services.NotificationSupportCheckers;
@@ -86,14 +86,13 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM
 
             string settingsBaseUrl = configuration.GetValue<string>("SETTINGS_API_BASE_URL");
             services.AddScoped<AutoRefreshHttpMessageHandler>();
-            services.AddRefitClient<IAuthenticationServerPingerSettingsService>(new RefitSettings()
+            services.AddRefitClient<IServerPingerSettingsService>(new RefitSettings()
             {
                 ContentSerializer = new NewtonsoftJsonContentSerializer()
             }).ConfigureHttpClient(c =>
             {
                 c.BaseAddress = new Uri(settingsBaseUrl);
             }).AddHttpMessageHandler<AutoRefreshHttpMessageHandler>();
-            services.AddScoped<IServerPingerSettingsService, APIServerPingerSettingsService>();
 
             services.AddScoped<ServerPingerSettingsStore>();
             services.AddScoped<IServerPingerSettingsStore>(s => s.GetRequiredService<ServerPingerSettingsStore>());

@@ -41,15 +41,20 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Stores.Authentication
             {
                 _initializeTask = new TaskCompletionSource<object>();
 
-                if (!_tokenStore.IsAccessTokenExpired || await _tokenStore.HasRefreshToken())
-                {
-                    IsLoggedIn = true;
-                }
+                await Load();
 
                 _initializeTask.SetResult(null);
             }
 
             await _initializeTask.Task;
+        }
+
+        private async Task Load()
+        {
+            if (!_tokenStore.IsAccessTokenExpired || await _tokenStore.HasRefreshToken())
+            {
+                IsLoggedIn = true;
+            }
         }
 
         public async Task Login(string username, string password)
