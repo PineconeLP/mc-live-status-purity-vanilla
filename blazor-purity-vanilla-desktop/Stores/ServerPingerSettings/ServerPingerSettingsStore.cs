@@ -11,12 +11,17 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerPingerSettingsS
         private readonly IServerPingerSettingsRepository _settingsRepository;
 
         private ServerPingerSettings _settings;
+        private bool _isInvalidPingIntervalSeconds;
+        private bool _hasDirtySettings;
+        private bool _isLoading;
+
         private ServerPingerSettings Settings
         {
             get => _settings;
             set
             {
                 _settings = value;
+                HasDirtySettings = true;
                 OnSettingsChanged();
             }
         }
@@ -27,6 +32,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerPingerSettingsS
             set
             {
                 _settings.AllowNotifyJoinable = value;
+                HasDirtySettings = true;
                 OnSettingsChanged();
             }
         }
@@ -36,6 +42,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerPingerSettingsS
             set
             {
                 _settings.AllowNotifyQueueJoinable = value;
+                HasDirtySettings = true;
                 OnSettingsChanged();
             }
         }
@@ -45,11 +52,11 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerPingerSettingsS
             set
             {
                 _settings.PingIntervalSeconds = value;
+                HasDirtySettings = true;
                 OnSettingsChanged();
             }
         }
 
-        private bool _isInvalidPingIntervalSeconds;
         public bool IsInvalidPingIntervalSeconds
         {
             get => _isInvalidPingIntervalSeconds;
@@ -60,7 +67,16 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerPingerSettingsS
             }
         }
 
-        private bool _isLoading;
+        public bool HasDirtySettings
+        {
+            get => _hasDirtySettings;
+            private set
+            {
+                _hasDirtySettings = value;
+                OnHasDirtySettingsChanged();
+            }
+        }
+
         public bool IsLoading
         {
             get => _isLoading;
@@ -72,6 +88,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerPingerSettingsS
         }
 
         public event Action SettingsChanged;
+        public event Action HasDirtySettingsChanged;
         public event Action ValidationChanged;
         public event Action IsLoadingChanged;
 
@@ -126,6 +143,11 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerPingerSettingsS
         private void OnIsLoadingChanged()
         {
             IsLoadingChanged?.Invoke();
+        }
+
+        private void OnHasDirtySettingsChanged()
+        {
+            HasDirtySettingsChanged?.Invoke();
         }
     }
 }

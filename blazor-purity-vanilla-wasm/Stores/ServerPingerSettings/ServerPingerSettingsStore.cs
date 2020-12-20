@@ -15,6 +15,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettingStore
         private readonly IServerPingerSettingsService _settingsService;
 
         private TaskCompletionSource<object> _initializeTask;
+        private bool _hasDirtySettings;
         private bool _isLoading;
 
         private ServerPingerSettings _settings;
@@ -24,6 +25,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettingStore
             set
             {
                 _settings = value;
+                HasDirtySettings = true;
                 OnSettingsChanged();
             }
         }
@@ -34,6 +36,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettingStore
             set
             {
                 Settings.AutoRefresh = value;
+                HasDirtySettings = true;
                 OnSettingsChanged();
             }
         }
@@ -44,6 +47,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettingStore
             set
             {
                 Settings.AllowNotifyJoinable = value;
+                HasDirtySettings = true;
                 OnSettingsChanged();
             }
         }
@@ -54,7 +58,18 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettingStore
             set
             {
                 Settings.AllowNotifyQueueJoinable = value;
+                HasDirtySettings = true;
                 OnSettingsChanged();
+            }
+        }
+
+        public bool HasDirtySettings
+        {
+            get => _hasDirtySettings;
+            private set
+            {
+                _hasDirtySettings = value;
+                OnHasDirtySettingsChanged();
             }
         }
 
@@ -69,6 +84,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettingStore
         }
 
         public event Action SettingsChanged;
+        public event Action HasDirtySettingsChanged;
         public event Action IsLoadingChanged;
 
         public ServerPingerSettingsStore(ITokenStore tokenStore, AuthenticationStore authenticationStore, IServerPingerSettingsService settingsService)
@@ -115,12 +131,15 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettingStore
                 Settings = CreateDefaultSettings();
             }
 
+            HasDirtySettings = false;
             IsLoading = false;
         }
 
         public async Task Save()
         {
+            Console.WriteLine(_tokenStore.BearerAccessToken);
             await _settingsService.SaveSettings(_tokenStore.BearerAccessToken, Settings);
+            HasDirtySettings = false;
         }
 
         private ServerPingerSettings CreateDefaultSettings()
@@ -147,6 +166,11 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettingStore
         private void OnSettingsChanged()
         {
             SettingsChanged?.Invoke();
+        }
+
+        private void OnHasDirtySettingsChanged()
+        {
+            HasDirtySettingsChanged?.Invoke();
         }
     }
 }

@@ -44,7 +44,10 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Components
         private int MaxPlayers => ServerStatusPingerStore.ServerDetails.MaxPlayers;
         private int MaxPlayersExcludingQueue => ServerStatusPingerStore.ServerDetails.MaxPlayersExcludingQueue;
 
+        private bool CanSave => !IsLoading && AuthenticationStore.IsLoggedIn && ServerPingerSettingsStore.HasDirtySettings;
+
         private bool IsLoading { get; set; }
+        private bool IsSaving { get; set; }
         private bool IsNotificationSupported { get; set; }
 
         protected override async Task OnInitializedAsync()
@@ -53,6 +56,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Components
             StateHasChanged();
 
             ServerPingerSettingsStore.SettingsChanged += StateHasChanged;
+            ServerPingerSettingsStore.HasDirtySettingsChanged += StateHasChanged;
             ServerStatusPingerStore.StateChanged += StateHasChanged;
             AuthenticationStore.IsLoggedInChanged += RefreshServerPingerSettings;
 
@@ -63,6 +67,17 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Components
             StateHasChanged();
 
             await base.OnInitializedAsync();
+        }
+
+        private async Task SaveSettings()
+        {
+            IsSaving = true;
+            StateHasChanged();
+
+            await ServerPingerSettingsStore.Save();
+
+            IsSaving = false;
+            StateHasChanged();
         }
 
         private async void RefreshServerPingerSettings()
@@ -82,6 +97,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Components
         public void Dispose()
         {
             ServerPingerSettingsStore.SettingsChanged -= StateHasChanged;
+            ServerPingerSettingsStore.HasDirtySettingsChanged -= StateHasChanged;
             ServerStatusPingerStore.StateChanged -= StateHasChanged;
             AuthenticationStore.IsLoggedInChanged -= RefreshServerPingerSettings;
         }
