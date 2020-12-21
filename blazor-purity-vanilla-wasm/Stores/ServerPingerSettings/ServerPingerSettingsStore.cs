@@ -1,10 +1,12 @@
 using System;
+using System.Net;
 using System.Threading.Tasks;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.Authentication;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.Tokens;
 using MCLiveStatus.PurityVanilla.Blazor.WASM.Services.ServerPingerSettingsServices;
 using MCLiveStatus.ServerSettings.Domain.Models;
+using Refit;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettingStores
 {
@@ -118,26 +120,44 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettingStore
         {
             IsLoading = true;
 
-            if (_authenticationStore.IsLoggedIn)
+            try
             {
-                ServerPingerSettings settings = await _settingsService.GetSettings(_tokenStore.BearerAccessToken);
-                if (settings != null)
+                if (_authenticationStore.IsLoggedIn)
                 {
-                    Settings = settings;
+                    try
+                    {
+                        ServerPingerSettings settings = await _settingsService.GetSettings(_tokenStore.BearerAccessToken);
+                        if (settings != null)
+                        {
+                            Settings = settings;
+                        }
+                    }
+                    catch (ApiException ex)
+                    {
+                        if (ex.StatusCode == HttpStatusCode.NotFound)
+                        {
+                            Settings = CreateDefaultSettings();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                }
+                else
+                {
+                    Settings = CreateDefaultSettings();
                 }
             }
-            else
+            finally
             {
-                Settings = CreateDefaultSettings();
+                HasDirtySettings = false;
+                IsLoading = false;
             }
-
-            HasDirtySettings = false;
-            IsLoading = false;
         }
 
         public async Task Save()
         {
-            Console.WriteLine(_tokenStore.BearerAccessToken);
             await _settingsService.SaveSettings(_tokenStore.BearerAccessToken, Settings);
             HasDirtySettings = false;
         }
