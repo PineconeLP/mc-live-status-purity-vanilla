@@ -63,6 +63,8 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerStatusPingers
                 {
                     await _connection.StartAsync();
                 }
+                catch (OperationCanceledException) { }
+                catch (AggregateException) { }
                 catch (Exception ex)
                 {
                     _state.OnPingFailed(ex);
@@ -98,15 +100,20 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerStatusPingers
 
         private async void UpdateHubConnection()
         {
-            bool startConnectionRequested = _settingsStore.AutoRefreshEnabled;
-            if (startConnectionRequested && _connection.State == HubConnectionState.Disconnected)
+            try
             {
-                await _connection.StartAsync();
+                bool startConnectionRequested = _settingsStore.AutoRefreshEnabled;
+                if (startConnectionRequested && _connection.State == HubConnectionState.Disconnected)
+                {
+                    await _connection.StartAsync();
+                }
+                else if (!startConnectionRequested && _connection.State != HubConnectionState.Disconnected)
+                {
+                    await _connection.StopAsync();
+                }
             }
-            else if (!startConnectionRequested && _connection.State != HubConnectionState.Disconnected)
-            {
-                await _connection.StopAsync();
-            }
+            catch (OperationCanceledException) { }
+            catch (AggregateException) { }
         }
 
         public void Dispose()
