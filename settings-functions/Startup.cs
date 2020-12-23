@@ -1,14 +1,12 @@
 using System;
 using System.Text;
-using System.Threading.Tasks;
-using Endpointer.Authentication.API.Services.Authenticators;
-using Endpointer.Authentication.API.Services.TokenDecoders;
+using Endpointer.Core.API.Http;
+using Endpointer.Core.API.Services.TokenDecoders;
 using Firebase.Database;
 using Google.Apis.Auth.OAuth2;
 using MCLiveStatus.ServerSettings.Models;
 using MCLiveStatus.ServerSettings.Services;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 

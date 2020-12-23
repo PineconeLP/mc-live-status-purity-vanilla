@@ -4,11 +4,10 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System;
 using MCLiveStatus.ServerSettings.Services;
-using Endpointer.Authentication.API.Services.Authenticators;
 using MCLiveStatus.ServerSettings.Domain.Models;
-using Endpointer.Authentication.API.Models;
+using Endpointer.Core.API.Models;
+using Endpointer.Core.API.Http;
 
 namespace MCLiveStatus.ServerSettings.Functions
 {
