@@ -126,7 +126,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettingStore
                 {
                     try
                     {
-                        ServerPingerSettings settings = await _settingsService.GetSettings(_tokenStore.BearerAccessToken);
+                        ServerPingerSettings settings = await _settingsService.GetSettings();
                         if (settings != null)
                         {
                             Settings = settings;
@@ -158,7 +158,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettingStore
 
         public async Task Save()
         {
-            await _settingsService.SaveSettings(_tokenStore.BearerAccessToken, Settings);
+            await _settingsService.SaveSettings(Settings);
             HasDirtySettings = false;
         }
 

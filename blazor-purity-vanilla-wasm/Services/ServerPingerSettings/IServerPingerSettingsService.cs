@@ -7,9 +7,9 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Services.ServerPingerSettingsSe
     public interface IServerPingerSettingsService
     {
         [Get("")]
-        Task<ServerPingerSettings> GetSettings([Header("Authorization")] string token);
+        Task<ServerPingerSettings> GetSettings();
 
         [Post("")]
-        Task SaveSettings([Header("Authorization")] string token, [Body] ServerPingerSettings settings);
+        Task SaveSettings([Body] ServerPingerSettings settings);
     }
 }

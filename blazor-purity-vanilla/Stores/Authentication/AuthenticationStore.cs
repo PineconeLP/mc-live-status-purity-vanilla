@@ -1,8 +1,9 @@
 using System;
 using System.Threading.Tasks;
-using Endpointer.Authentication.Client.Services;
+using Endpointer.Authentication.Client.Services.Login;
+using Endpointer.Authentication.Client.Services.Logout;
 using Endpointer.Authentication.Core.Models.Requests;
-using Endpointer.Authentication.Core.Models.Responses;
+using Endpointer.Core.Models.Responses;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.Tokens;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.Stores.Authentication
@@ -65,21 +66,17 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Stores.Authentication
                 Password = password
             };
 
-            SuccessResponse<AuthenticatedUserResponse> response = await _loginService.Login(request);
-            AuthenticatedUserResponse responseData = response.Data;
+            AuthenticatedUserResponse response = await _loginService.Login(request);
 
-            if (responseData != null)
-            {
-                await _tokenStore.SetTokens(responseData.AccessToken, responseData.RefreshToken, responseData.AccessTokenExpirationTime);
-                IsLoggedIn = true;
-            }
+            await _tokenStore.SetTokens(response.AccessToken, response.RefreshToken, response.AccessTokenExpirationTime);
+            IsLoggedIn = true;
         }
 
         public async Task Logout()
         {
             try
             {
-                await _logoutService.Logout($"Bearer {_tokenStore.AccessToken}");
+                await _logoutService.Logout();
             }
             finally
             {

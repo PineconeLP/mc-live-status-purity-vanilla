@@ -25,10 +25,10 @@ using MCLiveStatus.PurityVanilla.Blazor.Desktop.Services.Notifiers;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers.NotificationPermitters;
 using Endpointer.Authentication.Client.Models;
 using Endpointer.Authentication.Client.Extensions;
-using Endpointer.Authentication.Client.Stores;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.Tokens;
 using MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.Tokens;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.Authentication;
+using Endpointer.Core.Client.Stores;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.Desktop
 {

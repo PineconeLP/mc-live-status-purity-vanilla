@@ -1,36 +1,33 @@
 using System;
 using System.Threading.Tasks;
-using Endpointer.Authentication.Client.Stores;
+using Endpointer.Core.Client.Stores;
 using MCLiveStatus.Domain.Services;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.Tokens;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.Tokens
 {
-    public class TokenStore : ITokenStore, IAutoRefreshTokenStore
+    public class TokenStore : AutoRefreshTokenStoreBase, ITokenStore
     {
         private readonly IRefreshTokenRepository _refreshTokenRepository;
 
-        private DateTime _accessTokenExpirationTime;
+        private string _accessToken;
 
-        public string AccessToken { get; private set; } = string.Empty;
-        public string BearerAccessToken => $"Bearer {AccessToken}";
-
-        public bool IsAccessTokenExpired => DateTime.UtcNow > _accessTokenExpirationTime;
+        public override string AccessToken => _accessToken;
 
         public TokenStore(IRefreshTokenRepository refreshTokenRepository)
         {
             _refreshTokenRepository = refreshTokenRepository;
         }
 
-        public async Task<string> GetRefreshToken()
+        public override async Task<string> GetRefreshToken()
         {
             return await _refreshTokenRepository.GetRefreshToken();
         }
 
-        public async Task SetTokens(string accessToken, string refreshToken, DateTime accessTokenExpirationTime)
+        public override async Task SetTokens(string accessToken, string refreshToken, DateTime accessTokenExpirationTime)
         {
-            AccessToken = accessToken;
-            _accessTokenExpirationTime = accessTokenExpirationTime;
+            _accessToken = accessToken;
+            AccessTokenExpirationTime = accessTokenExpirationTime;
 
             await _refreshTokenRepository.SetRefreshToken(refreshToken);
         }

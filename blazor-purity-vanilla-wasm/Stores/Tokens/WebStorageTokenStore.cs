@@ -1,39 +1,37 @@
 using System;
 using System.Threading.Tasks;
 using Blazored.LocalStorage;
-using Endpointer.Authentication.Client.Stores;
+using Endpointer.Core.Client.Stores;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.Tokens;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.Tokens
 {
-    public class WebStorageTokenStore : ITokenStore, IAutoRefreshTokenStore
+    public class WebStorageTokenStore : AutoRefreshTokenStoreBase, ITokenStore
     {
         private const string REFRESH_TOKEN_KEY = "refresh";
 
         private readonly ILocalStorageService _localStorage;
 
-        private DateTime _accessTokenExpirationTime;
+        private string _accessToken;
 
-        public string AccessToken { get; private set; } = string.Empty;
-        public string BearerAccessToken => $"Bearer {AccessToken}";
-
-        public bool IsAccessTokenExpired => DateTime.UtcNow > _accessTokenExpirationTime;
+        public override string AccessToken => _accessToken;
 
         public WebStorageTokenStore(ILocalStorageService localStorage)
         {
             _localStorage = localStorage;
         }
 
-        public async Task<string> GetRefreshToken()
+        public override async Task<string> GetRefreshToken()
         {
             return await _localStorage.GetItemAsStringAsync(REFRESH_TOKEN_KEY);
         }
 
-        public async Task SetTokens(string accessToken, string refreshToken, DateTime accessTokenExpirationTime)
+        public override async Task SetTokens(string accessToken, string refreshToken, DateTime accessTokenExpirationTime)
         {
-            AccessToken = accessToken;
+            _accessToken = accessToken;
+            AccessTokenExpirationTime = accessTokenExpirationTime;
+
             await _localStorage.SetItemAsync(REFRESH_TOKEN_KEY, refreshToken);
-            _accessTokenExpirationTime = accessTokenExpirationTime;
         }
 
         public async Task<bool> HasRefreshToken()

@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using Endpointer.Authentication.Client.Services;
+using Endpointer.Authentication.Client.Services.Register;
 using Endpointer.Authentication.Core.Models.Requests;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
