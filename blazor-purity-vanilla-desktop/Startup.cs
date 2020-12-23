@@ -51,6 +51,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Desktop
 
             services.AddSingleton<TokenStore>();
             services.AddSingleton<ITokenStore>(s => s.GetRequiredService<TokenStore>());
+            services.AddSingleton<IAccessTokenStore>(s => s.GetRequiredService<TokenStore>());
             services.AddSingleton<IAutoRefreshTokenStore>(s => s.GetRequiredService<TokenStore>());
 
             string authenticationBaseUrl = Configuration.GetValue<string>("AUTHENTICATION_API_BASE_URL");
@@ -61,7 +62,9 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Desktop
                 RefreshEndpoint = authenticationBaseUrl + "refresh",
                 LogoutEndpoint = authenticationBaseUrl + "logout"
             };
-            services.AddEndpointerAuthenticationClient(endpointsConfiguration, s => s.GetRequiredService<IAutoRefreshTokenStore>());
+            services.AddEndpointerAuthenticationClient(endpointsConfiguration,
+                s => s.GetRequiredService<IAutoRefreshTokenStore>(),
+                o => o.WithAutoTokenRefresh(s => s.GetRequiredService<IAutoRefreshTokenStore>()));
 
             services.AddTransient<ServerDetails>(s => new ServerDetails()
             {
