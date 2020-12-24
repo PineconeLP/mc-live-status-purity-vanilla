@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Endpointer.Authentication.Client.Exceptions;
 using Endpointer.Authentication.Client.Services.Register;
 using Endpointer.Authentication.Core.Models.Requests;
 using Microsoft.AspNetCore.Components;
@@ -26,6 +27,13 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components.Authentication
 
         private bool IsRegistering { get; set; }
 
+        private bool PasswordsDoNotMatch { get; set; }
+        private bool EmailAlreadyExists { get; set; }
+        private string AlreadyExistingEmail { get; set; }
+        private bool UsernameAlreadyExists { get; set; }
+        private string AlreadyExistingUsername { get; set; }
+        private bool RegisterFailed { get; set; }
+
         protected override void OnInitialized()
         {
             _registerEditContext = new EditContext(RegisterRequest);
@@ -35,26 +43,57 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components.Authentication
 
         private async Task OnRegister()
         {
+            ClearErrors();
+
             if (_registerEditContext.Validate())
             {
-
-                IsRegistering = true;
-                StateHasChanged();
-
-                try
+                if (RegisterRequest.Password != RegisterRequest.ConfirmPassword)
                 {
-                    await RegisterService.Register(RegisterRequest);
-                    NavigationManager.NavigateTo("/login");
+                    PasswordsDoNotMatch = true;
                 }
-                catch (Exception)
+                else
                 {
-                }
-                finally
-                {
+                    IsRegistering = true;
+                    StateHasChanged();
+
+                    try
+                    {
+                        await RegisterService.Register(RegisterRequest);
+                        NavigationManager.NavigateTo("/login");
+                    }
+                    catch (ConfirmPasswordException)
+                    {
+                        PasswordsDoNotMatch = true;
+                    }
+                    catch (EmailAlreadyExistsException)
+                    {
+                        EmailAlreadyExists = true;
+                        AlreadyExistingEmail = RegisterRequest.Email;
+                    }
+                    catch (UsernameAlreadyExistsException)
+                    {
+                        UsernameAlreadyExists = true;
+                        AlreadyExistingUsername = RegisterRequest.Username;
+                    }
+                    catch (Exception)
+                    {
+                        RegisterFailed = true;
+                    }
+
                     IsRegistering = false;
                     StateHasChanged();
                 }
             }
+        }
+
+        private void ClearErrors()
+        {
+            PasswordsDoNotMatch = false;
+            EmailAlreadyExists = false;
+            AlreadyExistingEmail = string.Empty;
+            UsernameAlreadyExists = false;
+            AlreadyExistingUsername = string.Empty;
+            RegisterFailed = false;
         }
     }
 }

@@ -25,6 +25,15 @@
             }
         </div>
 
+        @if (HasInvalidCredentials)
+        {
+            <div class="mt-3 text-danger">Invalid credentials.</div>
+        }
+        else if (LoginFailed)
+        {
+            <div class="mt-3 text-danger">Login failed. Please try again later.</div>
+        }
+
         <div class="mt-3">
             <a href="/register" class="font-weight-light text-small">
                 Need an account? Register

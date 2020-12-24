@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Endpointer.Authentication.Client.Exceptions;
 using Endpointer.Authentication.Core.Models.Requests;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.Authentication;
 using Microsoft.AspNetCore.Components;
@@ -22,6 +23,8 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components.Authentication
         private bool CanNotLogin => string.IsNullOrEmpty(LoginRequest.Username) || string.IsNullOrEmpty(LoginRequest.Password);
 
         private bool IsLoggingIn { get; set; }
+        private bool HasInvalidCredentials { get; set; }
+        private bool LoginFailed { get; set; }
 
         protected override void OnInitialized()
         {
@@ -32,6 +35,8 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components.Authentication
 
         private async Task OnLogin()
         {
+            ClearErrors();
+
             if (_loginEditContext.Validate())
             {
                 IsLoggingIn = true;
@@ -42,16 +47,24 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components.Authentication
                     await AuthenticationStore.Login(LoginRequest.Username, LoginRequest.Password);
                     NavigationManager.NavigateTo("/");
                 }
+                catch (UnauthorizedException)
+                {
+                    HasInvalidCredentials = true;
+                }
                 catch (Exception)
                 {
+                    LoginFailed = true;
+                }
 
-                }
-                finally
-                {
-                    IsLoggingIn = false;
-                    StateHasChanged();
-                }
+                IsLoggingIn = false;
+                StateHasChanged();
             }
+        }
+
+        private void ClearErrors()
+        {
+            HasInvalidCredentials = false;
+            LoginFailed = false;
         }
     }
 }

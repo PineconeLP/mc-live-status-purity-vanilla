@@ -4,6 +4,8 @@ using Endpointer.Authentication.Client.Services.Login;
 using Endpointer.Authentication.Client.Services.Logout;
 using Endpointer.Authentication.Core.Models.Requests;
 using Endpointer.Core.Models.Responses;
+using Endpointer.Core.Client.Exceptions;
+using Endpointer.Authentication.Client.Exceptions;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.Tokens;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.Stores.Authentication
@@ -58,6 +60,14 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Stores.Authentication
             }
         }
 
+        /// <summary>
+        /// Login a user.
+        /// </summary>
+        /// <param name="username">The user's username.</param>
+        /// <param name="password">The user's password.</param>
+        /// <exception cref="UnauthorizedException">Thrown if user has invalid username or password.</exception>
+        /// <exception cref="ValidationFailedException">Thrown if request has validation errors.</exception>
+        /// <exception cref="Exception">Thrown if login fails.</exception>
         public async Task Login(string username, string password)
         {
             LoginRequest request = new LoginRequest()
@@ -72,6 +82,11 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Stores.Authentication
             IsLoggedIn = true;
         }
 
+        /// <summary>
+        /// Logout the current user.
+        /// </summary>
+        /// <exception cref="UnauthorizedException">Thrown if user has invalid access.</exception>
+        /// <exception cref="Exception">Thrown if logout fails.</exception>
         public async Task Logout()
         {
             try
