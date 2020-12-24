@@ -20,7 +20,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components.Authentication
 
         private LoginRequest LoginRequest { get; } = new LoginRequest();
 
-        private bool CanNotLogin => string.IsNullOrEmpty(LoginRequest.Username) || string.IsNullOrEmpty(LoginRequest.Password);
+        private bool CanNotLogin => IsLoggingIn || string.IsNullOrEmpty(LoginRequest.Username) || string.IsNullOrEmpty(LoginRequest.Password);
 
         private bool IsLoggingIn { get; set; }
         private bool HasInvalidCredentials { get; set; }

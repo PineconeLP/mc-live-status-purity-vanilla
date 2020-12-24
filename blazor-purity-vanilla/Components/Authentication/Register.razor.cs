@@ -20,7 +20,8 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components.Authentication
 
         private RegisterRequest RegisterRequest { get; } = new RegisterRequest();
 
-        private bool CanNotRegister => string.IsNullOrEmpty(RegisterRequest.Email) ||
+        private bool CanNotRegister => IsRegistering ||
+            string.IsNullOrEmpty(RegisterRequest.Email) ||
             string.IsNullOrEmpty(RegisterRequest.Username) ||
             string.IsNullOrEmpty(RegisterRequest.Password) ||
             string.IsNullOrEmpty(RegisterRequest.ConfirmPassword);

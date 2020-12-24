@@ -45,7 +45,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Components
         private int MaxPlayersExcludingQueue => ServerStatusPingerStore.ServerDetails.MaxPlayersExcludingQueue;
 
         private bool IsLoggedIn => AuthenticationStore.IsLoggedIn;
-        private bool CanSave => !IsLoading && AuthenticationStore.IsLoggedIn && ServerPingerSettingsStore.HasDirtySettings;
+        private bool CanSave => !IsLoading && !IsSaving && AuthenticationStore.IsLoggedIn && ServerPingerSettingsStore.HasDirtySettings;
 
         private bool IsLoading { get; set; }
         private bool IsSaving { get; set; }
