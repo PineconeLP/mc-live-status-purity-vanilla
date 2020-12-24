@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using Endpointer.Authentication.Client.Exceptions;
 using Endpointer.Authentication.Client.Services.Register;
@@ -60,7 +61,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components.Authentication
                     try
                     {
                         await RegisterService.Register(RegisterRequest);
-                        NavigationManager.NavigateTo("/login");
+                        NavigationManager.NavigateTo(Path.Combine(NavigationManager.BaseUri, "login"));
                     }
                     catch (ConfirmPasswordException)
                     {

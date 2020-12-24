@@ -45,7 +45,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components.Authentication
                 try
                 {
                     await AuthenticationStore.Login(LoginRequest.Username, LoginRequest.Password);
-                    NavigationManager.NavigateTo("/");
+                    NavigationManager.NavigateTo(NavigationManager.BaseUri);
                 }
                 catch (UnauthorizedException)
                 {
