@@ -30,11 +30,13 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components.Navbars
             {
                 await AuthenticationStore.Logout();
             }
-            finally
+            catch (Exception)
             {
-                IsLoggingOut = false;
-                StateHasChanged();
+                // Just do nothing for now. 
             }
+
+            IsLoggingOut = false;
+            StateHasChanged();
         }
 
         public void Dispose()
