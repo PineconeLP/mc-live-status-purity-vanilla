@@ -15,6 +15,20 @@ namespace MCLiveStatus.EntityFramework.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.9");
 
+            modelBuilder.Entity("MCLiveStatus.EntityFramework.Models.RefreshTokenDTO", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Token")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RefreshTokens");
+                });
+
             modelBuilder.Entity("MCLiveStatus.EntityFramework.Models.ServerPingerSettingsDTO", b =>
                 {
                     b.Property<int>("Id")

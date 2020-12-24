@@ -1,14 +1,8 @@
 ﻿@page "/"
+@layout AuthenticationNavLayout
 
-<NavLayout>
-    <Header>
-        <Navbar />
-    </Header>
-    <Content>
-        <StatusSettingsLayout>
-            <SettingsContent>
-                <ServerLiveStatusSettings />
-            </SettingsContent>
-        </StatusSettingsLayout>
-    </Content>
-</NavLayout>
+<StatusSettingsLayout>
+    <SettingsContent>
+        <ServerLiveStatusSettings />
+    </SettingsContent>
+</StatusSettingsLayout>

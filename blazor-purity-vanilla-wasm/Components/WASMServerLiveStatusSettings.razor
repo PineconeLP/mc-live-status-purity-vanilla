@@ -7,7 +7,7 @@
 else
 {
     <form>
-        @if (IsNotificationSupported)
+    @if (IsNotificationSupported)
         {
             <div class="mb-3">
                 <NotificationSettings HasQueue="HasQueue" MaxPlayers="MaxPlayers"
@@ -24,6 +24,31 @@ else
                     title="Auto-refresh interval is currently not configurable." disabled />
                 <span>seconds.</span>
             </label>
+        </div>
+
+        <div class="mt-3 row align-items-center">
+            <div class="col-sm-auto">
+                <div class="d-flex align-items-center">
+                    <button class="btn btn-primary" type="button" disabled="@(!CanSave)"
+                        @onclick="SaveSettings">Save</button>
+                    @if (IsSaving)
+                    {
+                        <div class="ml-3 spinner-border text-secondary" role="status" style="width: 1.5em; height: 1.5em;">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="col-sm-auto px-sm-0">
+                @if (!IsLoggedIn)
+                {
+                    <div class="mt-2 text-sm-left mt-sm-0 mt-sm-0 ml-sm-1">
+                        <a href="/login" class="font-weight-light text-small text-muted">
+                            (Must be logged in to save settings)
+                        </a>
+                    </div>
+                }
+            </div>
         </div>
     </form>
 }

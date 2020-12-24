@@ -5,7 +5,7 @@ using MCLiveStatus.PurityVanilla.Blazor.Services.ServerStatusNotifiers;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers;
 using MCLiveStatus.PurityVanilla.Blazor.WASM.Models;
 using MCLiveStatus.PurityVanilla.Blazor.WASM.Services.ServerPingers;
-using MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettings;
+using MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettingStores;
 using Microsoft.AspNetCore.SignalR.Client;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerStatusPingers
@@ -41,27 +41,34 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerStatusPingers
 
             _state.StateChanged += OnStateChanged;
             _settingsStore.SettingsChanged += UpdateHubConnection;
+
+            _connection = new HubConnectionBuilder()
+                .WithUrl(_negotiateUrl)
+                .WithAutomaticReconnect()
+                .Build();
+            _connection.On<int, int>("ping", (online, max) => _state.OnNotificationPingCompleted(_serverStatusNotifier, online, max));
         }
 
         public async Task Load()
         {
             await LoadServerStatus();
 
+            await _settingsStore.Load();
+
             await _serverStatusNotifier.RequestPermission();
 
-            _connection = new HubConnectionBuilder()
-                .WithUrl(_negotiateUrl)
-                .Build();
-
-            _connection.On<int, int>("ping", (online, max) => _state.OnNotificationPingCompleted(_serverStatusNotifier, online, max));
-
-            try
+            if (_settingsStore.AutoRefreshEnabled && _connection.State == HubConnectionState.Disconnected)
             {
-                await _connection.StartAsync();
-            }
-            catch (Exception ex)
-            {
-                _state.OnPingFailed(ex);
+                try
+                {
+                    await _connection.StartAsync();
+                }
+                catch (OperationCanceledException) { }
+                catch (AggregateException) { }
+                catch (Exception ex)
+                {
+                    _state.OnPingFailed(ex);
+                }
             }
         }
 
@@ -93,15 +100,20 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerStatusPingers
 
         private async void UpdateHubConnection()
         {
-            bool startConnectionRequested = _settingsStore.AutoRefreshEnabled;
-            if (startConnectionRequested && _connection.State == HubConnectionState.Disconnected)
+            try
             {
-                await _connection.StartAsync();
+                bool startConnectionRequested = _settingsStore.AutoRefreshEnabled;
+                if (startConnectionRequested && _connection.State == HubConnectionState.Disconnected)
+                {
+                    await _connection.StartAsync();
+                }
+                else if (!startConnectionRequested && _connection.State != HubConnectionState.Disconnected)
+                {
+                    await _connection.StopAsync();
+                }
             }
-            else if (!startConnectionRequested && _connection.State != HubConnectionState.Disconnected)
-            {
-                await _connection.StopAsync();
-            }
+            catch (OperationCanceledException) { }
+            catch (AggregateException) { }
         }
 
         public void Dispose()

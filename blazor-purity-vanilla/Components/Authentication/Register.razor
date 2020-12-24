@@ -1,0 +1,64 @@
+<AuthenticationFormLayout Header="Register">
+    <EditForm EditContext="_registerEditContext" OnValidSubmit="@OnRegister">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input class="mt-2 form-control" style="outline:none;" id="email" placeholder="Email"
+                @bind="RegisterRequest.Email" @bind:event="oninput" />
+        </div>
+
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input class="mt-2 form-control" style="outline:none;" id="username" placeholder="Username"
+                @bind="RegisterRequest.Username" @bind:event="oninput" />
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="mt-2 form-control" style="outline:none;" id="password" placeholder="Password"
+                @bind="RegisterRequest.Password" @bind:event="oninput" />
+        </div>
+
+        <div class="form-group">
+            <label for="cpassword">Confirm Password</label>
+            <input type="password" class="mt-2 form-control" style="outline:none;" id="cpassword"
+                placeholder="Confirm Password" @bind="RegisterRequest.ConfirmPassword" @bind:event="oninput" />
+        </div>
+
+        <div class="mt-3 d-flex align-items-center">
+            <button type="submit" class="btn btn-primary" disabled="@CanNotRegister">Register</button>
+            @if (IsRegistering)
+            {
+                <div class="ml-3 spinner-border text-secondary" role="status" style="width: 1.5em; height: 1.5em;">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            }
+        </div>
+
+        @if (PasswordsDoNotMatch)
+        {
+            <div class="mt-3 text-danger">Confirm password does not match password.</div>
+        }
+        else if (EmailAlreadyExists)
+        {
+            <div class="mt-3 text-danger">Email '@AlreadyExistingEmail' is already in use.</div>
+        }
+        else if (UsernameAlreadyExists)
+        {
+            <div class="mt-3 text-danger">Username '@AlreadyExistingUsername' is taken.</div>
+        }
+        else if (RegisterFailed)
+        {
+            <div class="mt-3 text-danger">Registration failed. Please try again later.</div>
+        }
+
+        <div class="mt-3">
+            <a href="/login" class="font-weight-light text-small">
+                Already have an account? Login
+            </a>
+        </div>
+
+    </EditForm>
+</AuthenticationFormLayout>

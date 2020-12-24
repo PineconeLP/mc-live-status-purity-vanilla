@@ -4,8 +4,8 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Endpointer.Authentication.API.Models.Requests;
 using Endpointer.Authentication.API.EndpointHandlers;
+using Endpointer.Authentication.Core.Models.Requests;
 
 namespace MCLiveStatus.Authentication.Functions
 {

@@ -9,6 +9,8 @@ on:
       - 'bpv-osx/v*'
       - 'bpv-wasm/v*'
       - 'bpv-functions/v*'
+      - 'auth-functions/v*'
+      - 'settings-functions/v*'
     paths-ignore:
       - '**/README.md'
   pull_request:

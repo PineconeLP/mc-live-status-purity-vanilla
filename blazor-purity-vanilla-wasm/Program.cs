@@ -13,10 +13,20 @@ using MCLiveStatus.PurityVanilla.Blazor.Services.Notifiers;
 using MCLiveStatus.PurityVanilla.Blazor.Models;
 using Blazor.Analytics;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers.NotificationPermitters;
-using MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettings;
+using MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettingStores;
 using System.Net.Http;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores;
 using MCLiveStatus.PurityVanilla.Blazor.WASM.Services.NotificationSupportCheckers;
+using Endpointer.Authentication.Client.Extensions;
+using Endpointer.Authentication.Client.Models;
+using MCLiveStatus.PurityVanilla.Blazor.Stores.Authentication;
+using Blazored.LocalStorage;
+using MCLiveStatus.PurityVanilla.Blazor.Stores.Tokens;
+using MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.Tokens;
+using Refit;
+using MCLiveStatus.PurityVanilla.Blazor.WASM.Services.ServerPingerSettingsServices;
+using Endpointer.Core.Client.Stores;
+using Endpointer.Core.Client.Http;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.WASM
 {
@@ -45,15 +55,50 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM
 
             services.AddHttpClient<IServerPinger, APIServerPinger>(client => CreateServerPinger(client, configuration));
 
+            string authenticationBaseUrl = configuration.GetValue<string>("AUTHENTICATION_API_BASE_URL");
+            AuthenticationEndpointsConfiguration endpointsConfiguration = new AuthenticationEndpointsConfiguration()
+            {
+                RegisterEndpoint = authenticationBaseUrl + "register",
+                LoginEndpoint = authenticationBaseUrl + "login",
+                RefreshEndpoint = authenticationBaseUrl + "refresh",
+                LogoutEndpoint = authenticationBaseUrl + "logout"
+            };
+            services.AddEndpointerAuthenticationClient(endpointsConfiguration,
+                s => s.GetRequiredService<IAccessTokenStore>(),
+                o => o.WithAutoTokenRefresh(s => s.GetRequiredService<IAutoRefreshTokenStore>()));
+
             services.AddNotifications();
-            services.AddSingleton<NotificationSupportChecker>();
+            services.AddScoped<NotificationSupportChecker>();
             services.AddScoped<INotifier, AppendNotifier>();
             services.AddScoped<ServerStatusNotificationFactory>();
             services.AddScoped<ServerStatusNotifier>();
-            services.AddScoped<ServerStatusNotificationPermitter>();
-            services.AddScoped<IServerStatusNotificationPermitter, SettingsStoreServerStatusNotificationPermitter>();
+
+            services.AddScoped<IServerStatusNotificationPermitter, ServerStatusNotificationPermitter>();
+            services.Decorate<IServerStatusNotificationPermitter, SettingsStoreServerStatusNotificationPermitter>();
+
+            // Must register as singleton because HttpMessageHandlers will create their own scopes.
+            services.AddSingleton<ILocalStorageService, LocalStorageService>();
+            services.AddSingleton<WebStorageTokenStore>();
+            services.AddSingleton<ITokenStore>(s => s.GetRequiredService<WebStorageTokenStore>());
+            services.AddSingleton<IAccessTokenStore>(s => s.GetRequiredService<WebStorageTokenStore>());
+            services.AddSingleton<IAutoRefreshTokenStore>(s => s.GetRequiredService<WebStorageTokenStore>());
+
+            services.AddScoped<AuthenticationStore>();
             services.AddScoped<ServerStatusPingerStoreState>();
             services.AddScoped<IServerStatusPingerStore, SignalRServerStatusPingerStore>(s => CreateServerStatusPingerStore(s, configuration));
+
+            string settingsBaseUrl = configuration.GetValue<string>("SETTINGS_API_BASE_URL");
+            services.AddScoped<AutoRefreshHttpMessageHandler>();
+            services.AddScoped<AccessTokenHttpMessageHandler>();
+            services.AddRefitClient<IServerPingerSettingsService>(new RefitSettings()
+            {
+                ContentSerializer = new NewtonsoftJsonContentSerializer()
+            }).ConfigureHttpClient(c =>
+            {
+                c.BaseAddress = new Uri(settingsBaseUrl);
+            })
+            .AddHttpMessageHandler<AutoRefreshHttpMessageHandler>()
+            .AddHttpMessageHandler<AccessTokenHttpMessageHandler>();
 
             services.AddScoped<ServerPingerSettingsStore>();
             services.AddScoped<IServerPingerSettingsStore>(s => s.GetRequiredService<ServerPingerSettingsStore>());

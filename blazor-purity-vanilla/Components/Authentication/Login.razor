@@ -1,0 +1,44 @@
+<AuthenticationFormLayout Header="Login">
+    <EditForm EditContext="_loginEditContext" OnValidSubmit="@OnLogin">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input class="mt-2 form-control" style="outline:none;" id="username" placeholder="Username"
+                @bind="LoginRequest.Username" @bind:event="oninput" />
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="mt-2 form-control" style="outline:none;" id="password" placeholder="Password"
+                @bind="LoginRequest.Password" @bind:event="oninput" />
+        </div>
+
+        <div class="mt-3 d-flex align-items-center">
+            <button type="submit" class="btn btn-primary" disabled="@CanNotLogin">Login</button>
+            @if (IsLoggingIn)
+            {
+                <div class="ml-3 spinner-border text-secondary" role="status" style="width: 1.5em; height: 1.5em;">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            }
+        </div>
+
+        @if (HasInvalidCredentials)
+        {
+            <div class="mt-3 text-danger">Invalid credentials.</div>
+        }
+        else if (LoginFailed)
+        {
+            <div class="mt-3 text-danger">Login failed. Please try again later.</div>
+        }
+
+        <div class="mt-3">
+            <a href="/register" class="font-weight-light text-small">
+                Need an account? Register
+            </a>
+        </div>
+
+    </EditForm>
+</AuthenticationFormLayout>

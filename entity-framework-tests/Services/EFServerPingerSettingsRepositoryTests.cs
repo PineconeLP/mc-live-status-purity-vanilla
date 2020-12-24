@@ -18,33 +18,18 @@ namespace MCLiveStatus.EntityFramework.Tests.Services
     /// Kind of an integration test.
     /// </summary>
     [TestFixture]
-    public class EFServerPingerSettingsRepositoryTests
+    public class EFServerPingerSettingsRepositoryTests : EFTestsFixture
     {
         private EFServerPingerSettingsRepository _repository;
 
-        private MCLiveStatusDbContextFactory _contextFactory;
-        private DbConnection _connection;
         private IMapper _mapper;
 
         [SetUp]
         public void SetUp()
         {
-            _connection = new SqliteConnection("Data Source=:memory:");
-            _connection.Open();
-            _contextFactory = new MCLiveStatusDbContextFactory(o => o.UseSqlite(_connection));
-            using (MCLiveStatusDbContext context = _contextFactory.CreateDbContext())
-            {
-                context.Database.Migrate();
-            }
             _mapper = new MapperConfiguration(c => c.AddProfile<DTOMappingProfile>()).CreateMapper();
 
             _repository = new EFServerPingerSettingsRepository(_contextFactory, _mapper);
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            _connection.Dispose();
         }
 
         [Test]

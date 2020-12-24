@@ -1,50 +1,84 @@
 using System;
+using System.Net;
 using System.Threading.Tasks;
+using MCLiveStatus.PurityVanilla.Blazor.Stores.Authentication;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores;
+using MCLiveStatus.PurityVanilla.Blazor.Stores.Tokens;
+using MCLiveStatus.PurityVanilla.Blazor.WASM.Services.ServerPingerSettingsServices;
+using MCLiveStatus.ServerSettings.Domain.Models;
+using Refit;
 
-namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettings
+namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettingStores
 {
     public class ServerPingerSettingsStore : IAutoRefreshServerPingerSettingsStore
     {
-        private bool _autoRefreshEnabled;
-        private bool _allowNotifyJoinable;
-        private bool _allowNotifyQueueJoinable;
+        private readonly ITokenStore _tokenStore;
+        private readonly AuthenticationStore _authenticationStore;
+        private readonly IServerPingerSettingsService _settingsService;
+
+        private TaskCompletionSource<object> _initializeTask;
+        private bool _hasDirtySettings;
         private bool _isLoading;
+
+        private ServerPingerSettings _settings;
+        private ServerPingerSettings Settings
+        {
+            get => _settings;
+            set
+            {
+                _settings = value;
+                HasDirtySettings = true;
+                OnSettingsChanged();
+            }
+        }
 
         public bool AutoRefreshEnabled
         {
-            get => _autoRefreshEnabled;
+            get => Settings.AutoRefresh;
             set
             {
-                _autoRefreshEnabled = value;
+                Settings.AutoRefresh = value;
+                HasDirtySettings = true;
                 OnSettingsChanged();
             }
         }
 
         public bool AllowNotifyJoinable
         {
-            get => _allowNotifyJoinable;
+            get => Settings.AllowNotifyJoinable;
             set
             {
-                _allowNotifyJoinable = value;
+                Settings.AllowNotifyJoinable = value;
+                HasDirtySettings = true;
                 OnSettingsChanged();
             }
         }
 
         public bool AllowNotifyQueueJoinable
         {
-            get => _allowNotifyQueueJoinable;
+            get => Settings.AllowNotifyQueueJoinable;
             set
             {
-                _allowNotifyQueueJoinable = value;
+                Settings.AllowNotifyQueueJoinable = value;
+                HasDirtySettings = true;
                 OnSettingsChanged();
+            }
+        }
+
+        public bool HasDirtySettings
+        {
+            get => _hasDirtySettings;
+            private set
+            {
+                _hasDirtySettings = value;
+                OnHasDirtySettingsChanged();
             }
         }
 
         public bool IsLoading
         {
             get => _isLoading;
-            set
+            private set
             {
                 _isLoading = value;
                 OnIsLoadingChanged();
@@ -52,21 +86,96 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettings
         }
 
         public event Action SettingsChanged;
+        public event Action HasDirtySettingsChanged;
         public event Action IsLoadingChanged;
 
-        public ServerPingerSettingsStore()
+        public ServerPingerSettingsStore(ITokenStore tokenStore, AuthenticationStore authenticationStore, IServerPingerSettingsService settingsService)
         {
-            AutoRefreshEnabled = true;
+            _tokenStore = tokenStore;
+            _authenticationStore = authenticationStore;
+            _settingsService = settingsService;
+
+            Settings = CreateDefaultSettings();
+
+            _authenticationStore.IsLoggedInChanged += OnIsLoggedInChanged;
         }
 
-        public Task Load()
+        public async Task Load()
         {
-            throw new NotImplementedException();
+            await _authenticationStore.Initialize();
+
+            if (_initializeTask == null)
+            {
+                _initializeTask = new TaskCompletionSource<object>();
+
+                await LoadSettings();
+
+                _initializeTask.TrySetResult(null);
+            }
+
+            await _initializeTask.Task;
         }
 
-        public Task Save()
+        private async Task LoadSettings()
         {
-            throw new NotImplementedException();
+            IsLoading = true;
+
+            try
+            {
+                if (_authenticationStore.IsLoggedIn)
+                {
+                    try
+                    {
+                        ServerPingerSettings settings = await _settingsService.GetSettings();
+                        if (settings != null)
+                        {
+                            Settings = settings;
+                        }
+                    }
+                    catch (ApiException ex)
+                    {
+                        if (ex.StatusCode == HttpStatusCode.NotFound)
+                        {
+                            Settings = CreateDefaultSettings();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                }
+                else
+                {
+                    Settings = CreateDefaultSettings();
+                }
+            }
+            finally
+            {
+                HasDirtySettings = false;
+                IsLoading = false;
+            }
+        }
+
+        public async Task Save()
+        {
+            await _settingsService.SaveSettings(Settings);
+            HasDirtySettings = false;
+        }
+
+        private ServerPingerSettings CreateDefaultSettings()
+        {
+            return new ServerPingerSettings()
+            {
+                AutoRefresh = true
+            };
+        }
+
+        private void OnIsLoggedInChanged()
+        {
+            _initializeTask?.TrySetResult(null);
+            _initializeTask = null;
+
+            // TBD: Raise NeedsInitialization event?
         }
 
         private void OnIsLoadingChanged()
@@ -77,6 +186,11 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettings
         private void OnSettingsChanged()
         {
             SettingsChanged?.Invoke();
+        }
+
+        private void OnHasDirtySettingsChanged()
+        {
+            HasDirtySettingsChanged?.Invoke();
         }
     }
 }

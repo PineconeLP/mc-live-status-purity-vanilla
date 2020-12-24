@@ -14,6 +14,7 @@ namespace MCLiveStatus.EntityFramework.Containers
             services.AddDbContext<MCLiveStatusDbContext>(configureDbContext);
             services.AddSingleton<MCLiveStatusDbContextFactory>(new MCLiveStatusDbContextFactory(configureDbContext));
 
+            services.AddSingleton<IRefreshTokenRepository, EFRefreshTokenRepository>();
             services.AddSingleton<IServerPingerSettingsRepository, EFServerPingerSettingsRepository>();
 
             return services;

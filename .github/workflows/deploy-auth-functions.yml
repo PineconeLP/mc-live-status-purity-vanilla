@@ -2,8 +2,6 @@ name: Deploy Authentication Functions
 
 on:
   push:
-    branches:
-      - 'auth'
     tags:
       - 'auth-functions/v*'
     paths-ignore:
