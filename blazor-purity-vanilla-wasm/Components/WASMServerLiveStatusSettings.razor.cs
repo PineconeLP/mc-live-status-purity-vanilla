@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.Authentication;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores;
@@ -18,6 +19,9 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Components
 
         [Inject]
         public AuthenticationStore AuthenticationStore { get; set; }
+
+        [Inject]
+        public NavigationManager NavigationManager { get; set; }
 
         [Inject]
         public NotificationSupportChecker NotificationSupportChecker { get; set; }
@@ -50,6 +54,8 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Components
         private bool IsLoading { get; set; }
         private bool IsSaving { get; set; }
         private bool IsNotificationSupported { get; set; }
+
+        private string LoginRedirect => Path.Combine(NavigationManager.BaseUri, "login");
 
         protected override async Task OnInitializedAsync()
         {

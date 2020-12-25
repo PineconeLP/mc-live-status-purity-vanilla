@@ -19,11 +19,12 @@ namespace MCLiveStatus.Authentication.Functions
 
         [FunctionName("LogoutFunction")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "logout")]
+            [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "logout/{refreshToken}")]
             HttpRequest request,
+            string refreshToken,
             ILogger log)
         {
-            return await _logoutHandler.HandleLogout(request);
+            return await _logoutHandler.HandleLogout(refreshToken);
         }
     }
 }

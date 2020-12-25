@@ -9,6 +9,8 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Stores.Tokens
         bool IsAccessTokenExpired { get; }
 
         Task<bool> HasRefreshToken();
+        Task<string> GetRefreshToken();
+
         Task SetTokens(string accessToken, string refreshToken, DateTime accessTokenExpirationTime);
 
         Task ClearRefreshToken();

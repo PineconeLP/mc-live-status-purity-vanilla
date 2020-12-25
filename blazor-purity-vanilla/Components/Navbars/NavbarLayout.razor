@@ -4,7 +4,7 @@
     <div class="container">
         <div class="row flex-grow-1 justify-content-center justify-content-sm-start">
             <div class="col-sm navbar-brand mb-0 mr-0 h1 text-wrap text-center text-sm-left">
-                <NavLink href="/" class="text-decoration-none text-body">
+                <NavLink href="@NavigationManager.BaseUri" class="text-decoration-none text-body">
                     Purity Vanilla Live Status
                 </NavLink>
             </div>
@@ -18,4 +18,7 @@
 @code {
     [Parameter]
     public RenderFragment ChildContent { get; set; }
+
+    [Inject]
+    public NavigationManager NavigationManager { get; set; }
 }

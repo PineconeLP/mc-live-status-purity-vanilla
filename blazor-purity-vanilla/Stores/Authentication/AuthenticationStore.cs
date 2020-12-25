@@ -91,7 +91,8 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Stores.Authentication
         {
             try
             {
-                await _logoutService.Logout();
+                string refreshToken = await _tokenStore.GetRefreshToken();
+                await _logoutService.Logout(refreshToken);
             }
             finally
             {

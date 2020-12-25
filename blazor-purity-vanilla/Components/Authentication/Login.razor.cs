@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using Endpointer.Authentication.Client.Exceptions;
 using Endpointer.Authentication.Core.Models.Requests;
@@ -25,6 +26,8 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components.Authentication
         private bool IsLoggingIn { get; set; }
         private bool HasInvalidCredentials { get; set; }
         private bool LoginFailed { get; set; }
+
+        private string RegisterRedirect => Path.Combine(NavigationManager.BaseUri, "register");
 
         protected override void OnInitialized()
         {

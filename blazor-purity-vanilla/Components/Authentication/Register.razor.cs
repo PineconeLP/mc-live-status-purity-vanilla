@@ -36,6 +36,8 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components.Authentication
         private string AlreadyExistingUsername { get; set; }
         private bool RegisterFailed { get; set; }
 
+        private string LoginRedirect => Path.Combine(NavigationManager.BaseUri, "login");
+
         protected override void OnInitialized()
         {
             _registerEditContext = new EditContext(RegisterRequest);
