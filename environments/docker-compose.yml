@@ -1,6 +1,6 @@
 version: '3.3'
 services:
-  auth-db:
+  authdb:
     image: mcr.microsoft.com/mssql/server:2017-latest
     environment:
       ACCEPT_EULA: 'Y'
@@ -10,6 +10,19 @@ services:
       - '1433:1433'
     volumes:
       - 'auth-data:/var/opt/mssql/data'
+  authfunctions:
+    build:
+      context: ../authentication-functions
+      dockerfile: Dockerfile.Development
+    environment:
+      AzureWebJobsStorage: 'UseDevelopmentStorage=true'
+      SqlServerConnectionString: 'Server=authdb,1433;Initial Catalog=LiveStatus;User ID=sa;Password=iLovePineconeLP*123;'
+      Authentication_AccessTokenSecret: '8fG65iUioPT55s9oKwSngv28DDLH3jO9BErlbuID50uR876pmy-yWfRn_SK46nH6lG14vtnZOssYP6_JvDRuaYpa1dSImDi7bijYt24ZzosOyoeeXSEF2_rHqIqlLAyyCEdDiPvUyyzIVNM-dIvnk5FMaoQdV56Gy-nvlTT-Wj8'
+      Authentication_RefreshTokenSecret: '7fG65iUioPT55s9oKwSngv28DDLH3jO9BErlbuID50uR876pmy-yWfRn_SK46nH6lG14vtnZOssYP6_JvDRuaYpa1dSImDi7bijYt24ZzosOyoeeXSEF2_rHqIqlLAyyCEdDiPvUyyzIVNM-dIvnk5FMaoQdV56Gy-nvlTT-Wj8'
+      Authentication_Issuer: 'https://localhost:7072'
+      Authentication_Audience: 'https://localhost:7072'
+    ports:
+      - '7072:7072'
 
 volumes:
   auth-data:
