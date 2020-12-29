@@ -11,6 +11,12 @@ services:
     volumes:
       - 'auth-data:/var/opt/mssql/data'
 
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    ports:
+      - '10000:10000'
+      - '10001:10001'
+
   authfunctions:
     build:
       context: ../authentication-functions
@@ -35,11 +41,17 @@ services:
     ports:
       - '7071:7071'
 
-  azurite:
-    image: mcr.microsoft.com/azure-storage/azurite
+  settingsfunctions:
+    build:
+      context: ../
+      dockerfile: settings-functions/Dockerfile.Development
+    environment:
+      AzureWebJobsStorage: 'UseDevelopmentStorage=true;DevelopmentStorageProxyUri=http://azurite'
+      Authentication_AccessTokenSecret: '8fG65iUioPT55s9oKwSngv28DDLH3jO9BErlbuID50uR876pmy-yWfRn_SK46nH6lG14vtnZOssYP6_JvDRuaYpa1dSImDi7bijYt24ZzosOyoeeXSEF2_rHqIqlLAyyCEdDiPvUyyzIVNM-dIvnk5FMaoQdV56Gy-nvlTT-Wj8'
+      Authentication_Issuer: 'https://localhost:7072'
+      Authentication_Audience: 'https://localhost:7072'
     ports:
-      - '10000:10000'
-      - '10001:10001'
+      - '7073:7073'
 
 volumes:
   auth-data:
