@@ -15,4 +15,5 @@ todo.txt
 .vs/
 *.db
 *.db-*
+*secrets.env
 

@@ -4,7 +4,7 @@ services:
     image: mcr.microsoft.com/mssql/server:2017-latest
     environment:
       ACCEPT_EULA: 'Y'
-      SA_PASSWORD: 'iLovePineconeLP*123'
+      SA_PASSWORD: '${DATABASE_SA_PASSWORD}'
       MSSQL_PID: 'Express'
     ports:
       - '1433:1433'
@@ -22,12 +22,12 @@ services:
       context: ../authentication-functions
       dockerfile: Dockerfile.Development
     environment:
-      AzureWebJobsStorage: 'UseDevelopmentStorage=true;DevelopmentStorageProxyUri=http://azurite'
-      SqlServerConnectionString: 'Server=authdb,1433;Initial Catalog=LiveStatus;User ID=sa;Password=iLovePineconeLP*123;'
-      Authentication_AccessTokenSecret: '8fG65iUioPT55s9oKwSngv28DDLH3jO9BErlbuID50uR876pmy-yWfRn_SK46nH6lG14vtnZOssYP6_JvDRuaYpa1dSImDi7bijYt24ZzosOyoeeXSEF2_rHqIqlLAyyCEdDiPvUyyzIVNM-dIvnk5FMaoQdV56Gy-nvlTT-Wj8'
+      AzureWebJobsStorage: '${AZURE_STORAGE_CONNECTION_STRING}'
+      SqlServerConnectionString: 'Server=authdb,1433;Initial Catalog=LiveStatus;User ID=sa;Password=${DATABASE_SA_PASSWORD};'
+      Authentication_AccessTokenSecret: '${AUTHENTICATION_ACCESS_TOKEN_SECRET}'
       Authentication_RefreshTokenSecret: '7fG65iUioPT55s9oKwSngv28DDLH3jO9BErlbuID50uR876pmy-yWfRn_SK46nH6lG14vtnZOssYP6_JvDRuaYpa1dSImDi7bijYt24ZzosOyoeeXSEF2_rHqIqlLAyyCEdDiPvUyyzIVNM-dIvnk5FMaoQdV56Gy-nvlTT-Wj8'
-      Authentication_Issuer: 'https://localhost:7072'
-      Authentication_Audience: 'https://localhost:7072'
+      Authentication_Issuer: '${AUTHENTICATION_ISSUER}'
+      Authentication_Audience: '${AUTHENTICATION_AUDIENCE}'
     ports:
       - '7072:7072'
 
@@ -35,9 +35,11 @@ services:
     build:
       context: ../blazor-purity-vanilla-functions
       dockerfile: Dockerfile.Development
+    env_file:
+      # Contains AzureSignalRConnectionString
+      - pinger-functions-secrets.env
     environment:
-      AzureWebJobsStorage: 'UseDevelopmentStorage=true;DevelopmentStorageProxyUri=http://azurite'
-      AzureSignalRConnectionString: '<VALUE>'
+      AzureWebJobsStorage: '${AZURE_STORAGE_CONNECTION_STRING}'
     ports:
       - '7071:7071'
 
@@ -46,10 +48,10 @@ services:
       context: ../
       dockerfile: settings-functions/Dockerfile.Development
     environment:
-      AzureWebJobsStorage: 'UseDevelopmentStorage=true;DevelopmentStorageProxyUri=http://azurite'
-      Authentication_AccessTokenSecret: '8fG65iUioPT55s9oKwSngv28DDLH3jO9BErlbuID50uR876pmy-yWfRn_SK46nH6lG14vtnZOssYP6_JvDRuaYpa1dSImDi7bijYt24ZzosOyoeeXSEF2_rHqIqlLAyyCEdDiPvUyyzIVNM-dIvnk5FMaoQdV56Gy-nvlTT-Wj8'
-      Authentication_Issuer: 'https://localhost:7072'
-      Authentication_Audience: 'https://localhost:7072'
+      AzureWebJobsStorage: '${AZURE_STORAGE_CONNECTION_STRING}'
+      Authentication_AccessTokenSecret: '${AUTHENTICATION_ACCESS_TOKEN_SECRET}'
+      Authentication_Issuer: '${AUTHENTICATION_ISSUER}'
+      Authentication_Audience: '${AUTHENTICATION_AUDIENCE}'
     ports:
       - '7073:7073'
 
