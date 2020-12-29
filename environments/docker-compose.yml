@@ -10,12 +10,13 @@ services:
       - '1433:1433'
     volumes:
       - 'auth-data:/var/opt/mssql/data'
+
   authfunctions:
     build:
       context: ../authentication-functions
       dockerfile: Dockerfile.Development
     environment:
-      AzureWebJobsStorage: 'UseDevelopmentStorage=true'
+      AzureWebJobsStorage: 'UseDevelopmentStorage=true;DevelopmentStorageProxyUri=http://azurite'
       SqlServerConnectionString: 'Server=authdb,1433;Initial Catalog=LiveStatus;User ID=sa;Password=iLovePineconeLP*123;'
       Authentication_AccessTokenSecret: '8fG65iUioPT55s9oKwSngv28DDLH3jO9BErlbuID50uR876pmy-yWfRn_SK46nH6lG14vtnZOssYP6_JvDRuaYpa1dSImDi7bijYt24ZzosOyoeeXSEF2_rHqIqlLAyyCEdDiPvUyyzIVNM-dIvnk5FMaoQdV56Gy-nvlTT-Wj8'
       Authentication_RefreshTokenSecret: '7fG65iUioPT55s9oKwSngv28DDLH3jO9BErlbuID50uR876pmy-yWfRn_SK46nH6lG14vtnZOssYP6_JvDRuaYpa1dSImDi7bijYt24ZzosOyoeeXSEF2_rHqIqlLAyyCEdDiPvUyyzIVNM-dIvnk5FMaoQdV56Gy-nvlTT-Wj8'
@@ -23,6 +24,22 @@ services:
       Authentication_Audience: 'https://localhost:7072'
     ports:
       - '7072:7072'
+
+  pingerfunctions:
+    build:
+      context: ../blazor-purity-vanilla-functions
+      dockerfile: Dockerfile.Development
+    environment:
+      AzureWebJobsStorage: 'UseDevelopmentStorage=true;DevelopmentStorageProxyUri=http://azurite'
+      AzureSignalRConnectionString: '<VALUE>'
+    ports:
+      - '7071:7071'
+
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    ports:
+      - '10000:10000'
+      - '10001:10001'
 
 volumes:
   auth-data:

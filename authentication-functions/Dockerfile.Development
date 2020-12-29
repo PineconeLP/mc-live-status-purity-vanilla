@@ -3,7 +3,7 @@ FROM node:12
 # Create app directory
 WORKDIR /usr/src/app
 
-# Install Azure Function Tools
+# Install Development Tools
 RUN npm -g config set user root
 RUN npm i -g azure-functions-core-tools@3
 RUN npm i -g dotnet-sdk-3.1

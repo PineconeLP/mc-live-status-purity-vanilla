@@ -1,0 +1,20 @@
+FROM nikolaik/python-nodejs:python3.6-nodejs12
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Install Development Tools
+RUN npm -g config set user root
+RUN npm i -g azure-functions-core-tools@3
+
+# Copy app
+COPY . ./
+
+# Expose ports
+EXPOSE 7071
+
+# Install packages
+RUN python3 -m pip install -r requirements.txt
+
+# Run app
+CMD [ "func", "start", "--port", "7071", "--cors", "http://localhost:5000", "--python" ]
