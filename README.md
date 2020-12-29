@@ -8,6 +8,7 @@ Observe and receive notifications about Purity Vanilla's player count.
 - [Downloads](#downloads)
 - [Installation](#installation)
 - [Features](#features)
+- [Local Development](#local-development)
 
 ## Description
 
@@ -42,3 +43,91 @@ Accept any of the above security warnings at your own risk. If you are unsure ab
 - Subscribe to notifications on server queue status
 - Configure server status ping interval
 - Lots more on the way!
+
+## Local Development
+
+### Requirements
+
+1. [.NET 5 SDK](https://dotnet.microsoft.com/download/dotnet/5.0)
+
+2. [.NET EF Core Tools](https://dotnet.microsoft.com/download/dotnet/5.0)
+
+3. [Docker](https://www.docker.com/products/docker-desktop)
+
+4. [Azure Functions Core Tools V3](https://dotnet.microsoft.com/download/dotnet/5.0)
+
+5. An Azure SignalR Connection String
+
+6. [A Firebase Service Credential](https://firebase.google.com/docs/admin/setup#initialize-sdk)
+
+### Microservices
+
+Running the MC Live Status supporting microservices locally is made easy via Docker. To run all microservices locally:
+
+1. Add an AzureSignalRConnectionString to 'pinger-functions-secrets.env'. Replace 'VALUE' with your connection string
+
+```
+cd environments
+echo 'AzureSignalRConnectionString=VALUE' > pinger-functions-secrets.env
+```
+
+3. Create a [Firebase Service Credential](https://firebase.google.com/docs/admin/setup#initialize-sdk)
+
+4. Copy the Firebase Credential JSON to 'settings-functions/firebase-credential.json'
+
+```
+cd settings-functions
+cp PATH_TO_FIREBASE_CREDNETIAL_JSON firebase-credential.json
+```
+
+4. Start the docker-compose authentication database service
+
+```
+cd environments
+docker-compose up authdb
+```
+
+5. With the authentication database still running, run database migrations
+
+```
+cd authentication-functions
+dotnet ef database update
+```
+
+6. Stop authentication database service and start ALL docker-compose services
+
+```
+cd environments
+docker-compose down
+docker-compose up
+```
+
+7. (Optional) Run a few docker-compose services. Replace SERVICE1 and SERVICE2 with docker-compose service names
+
+```
+cd environments
+docker-compose up SERVICE1 SERVICE2 ...
+```
+
+Example (start authentication services):
+
+```
+cd environments
+docker-compose up authdb azurite authfunctions
+```
+
+### Web
+
+To run the Blazor WASM web application:
+
+1. Go to WASM directory
+
+```
+cd blazor-purity-vanilla-wasm
+```
+
+2. Start the application
+
+```
+dotnet run
+```
