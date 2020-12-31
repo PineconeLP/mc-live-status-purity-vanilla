@@ -27,6 +27,8 @@
                 placeholder="Confirm Password" @bind="RegisterRequest.ConfirmPassword" @bind:event="oninput" />
         </div>
 
+        <div id="recaptcha"></div>
+
         <div class="mt-3 d-flex align-items-center">
             <button type="submit" class="btn btn-primary" disabled="@CanNotRegister">Register</button>
             @if (IsRegistering)

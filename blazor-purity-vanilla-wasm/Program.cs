@@ -27,6 +27,8 @@ using Refit;
 using MCLiveStatus.PurityVanilla.Blazor.WASM.Services.ServerPingerSettingsServices;
 using Endpointer.Core.Client.Stores;
 using Endpointer.Core.Client.Http;
+using MCLiveStatus.PurityVanilla.Blazor.Services.Recaptchas;
+using Microsoft.JSInterop;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.WASM
 {
@@ -73,6 +75,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM
             services.AddScoped<ServerStatusNotificationFactory>();
             services.AddScoped<ServerStatusNotifier>();
 
+            services.AddScoped<IRecaptchaLoader>(s => new InteropRecaptchaLoader(s.GetRequiredService<IJSRuntime>(), "6Ldq2hsaAAAAAFuV66KXoBDJUd73hKsBgR20w4xH"));
             services.AddScoped<IServerStatusNotificationPermitter, ServerStatusNotificationPermitter>();
             services.Decorate<IServerStatusNotificationPermitter, SettingsStoreServerStatusNotificationPermitter>();
 
