@@ -41,7 +41,8 @@ namespace MCLiveStatus.Authentication
             string connectionString = Environment.GetEnvironmentVariable("SqlServerConnectionString");
             services.AddEndpointerAuthentication(authenticationConfiguration,
                 tokenValidationParameters,
-                o => o.UseSqlServer(connectionString));
+                o => o.WithDatabase(
+                    d => d.UseSqlServer(connectionString)));
         }
     }
 }

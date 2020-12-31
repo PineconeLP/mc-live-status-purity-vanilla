@@ -1,8 +1,8 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Endpointer.Authentication.Client.Exceptions;
 using Endpointer.Authentication.Core.Models.Requests;
+using Endpointer.Core.Client.Exceptions;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.Authentication;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
