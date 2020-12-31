@@ -56,7 +56,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components.Authentication
         {
             if (firstRender)
             {
-                await RecaptchaLoader.LoadRecaptcha("recaptcha", HandleRecaptchaSubmit);
+                await RecaptchaLoader.LoadRecaptcha("recaptcha", HandleRecaptchaSubmit, HandleRecaptchaExpire);
             }
 
             await base.OnAfterRenderAsync(firstRender);
@@ -65,6 +65,12 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Components.Authentication
         private void HandleRecaptchaSubmit()
         {
             RecaptchaValidated = true;
+            StateHasChanged();
+        }
+
+        private void HandleRecaptchaExpire()
+        {
+            RecaptchaValidated = false;
             StateHasChanged();
         }
 

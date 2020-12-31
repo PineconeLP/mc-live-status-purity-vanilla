@@ -16,15 +16,11 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Services.Recaptchas
             _siteKey = siteKey;
         }
 
-        public async Task LoadRecaptcha(string targetElementId)
+        public async Task LoadRecaptcha(string targetElementId, Action onSubmit = null, Action onExpire = null)
         {
-            await LoadRecaptcha(targetElementId, () => { });
-        }
-
-        public async Task LoadRecaptcha(string targetElementId, Action onSubmit)
-        {
-            DotNetObjectReference<InteropCallbackWrapper> callbackWrapper = DotNetObjectReference.Create(new InteropCallbackWrapper(onSubmit));
-            await _js.InvokeVoidAsync("onloadCallback", targetElementId, _siteKey, callbackWrapper);
+            DotNetObjectReference<InteropCallbackWrapper> submitWrapper = DotNetObjectReference.Create(new InteropCallbackWrapper(onSubmit));
+            DotNetObjectReference<InteropCallbackWrapper> expireWrapper = DotNetObjectReference.Create(new InteropCallbackWrapper(onExpire));
+            await _js.InvokeVoidAsync("onloadCallback", targetElementId, _siteKey, submitWrapper, expireWrapper);
         }
 
         private class InteropCallbackWrapper
