@@ -47,6 +47,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerStatusPingers
                 .WithAutomaticReconnect()
                 .Build();
             _connection.On<int, int>("ping", (online, max) => _state.OnNotificationPingCompleted(_serverStatusNotifier, online, max));
+            _connection.On<int, string>("ping_failed", (code, message) => _state.OnPingFailed());
         }
 
         public async Task Load()
