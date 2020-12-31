@@ -91,6 +91,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerPingerSettingsS
         public event Action HasDirtySettingsChanged;
         public event Action ValidationChanged;
         public event Action IsLoadingChanged;
+        public event Action LoadRequested;
 
         public ServerPingerSettingsStore(IServerPingerSettingsRepository settingsRepository)
         {
