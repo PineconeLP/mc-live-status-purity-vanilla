@@ -77,6 +77,8 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerPingerSettingsS
             }
         }
 
+        public bool HasSettingsAuthentication => true;
+
         public bool IsLoading
         {
             get => _isLoading;
@@ -91,7 +93,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Desktop.Stores.ServerPingerSettingsS
         public event Action HasDirtySettingsChanged;
         public event Action ValidationChanged;
         public event Action IsLoadingChanged;
-        public event Action LoadRequested;
+        public event Action HasSettingsAuthenticationChanged;
 
         public ServerPingerSettingsStore(IServerPingerSettingsRepository settingsRepository)
         {

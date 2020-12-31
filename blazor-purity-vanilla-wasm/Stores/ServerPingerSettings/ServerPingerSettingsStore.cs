@@ -84,9 +84,11 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettingStore
             }
         }
 
+        public bool HasSettingsAuthentication => _authenticationStore.IsLoggedIn;
+
         public event Action SettingsChanged;
+        public event Action HasSettingsAuthenticationChanged;
         public event Action HasDirtySettingsChanged;
-        public event Action LoadRequested;
         public event Action IsLoadingChanged;
 
         public ServerPingerSettingsStore(ITokenStore tokenStore, AuthenticationStore authenticationStore, IServerPingerSettingsService settingsService)
@@ -123,7 +125,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettingStore
 
             try
             {
-                if (_authenticationStore.IsLoggedIn)
+                if (HasSettingsAuthentication)
                 {
                     try
                     {
@@ -171,7 +173,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettingStore
             _initializeTask?.TrySetResult(null);
             _initializeTask = null;
 
-            LoadRequested?.Invoke();
+            HasSettingsAuthenticationChanged?.Invoke();
         }
 
         private void OnIsLoadingChanged()

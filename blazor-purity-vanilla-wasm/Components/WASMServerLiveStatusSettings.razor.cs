@@ -18,9 +18,6 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Components
         public IServerStatusPingerStore ServerStatusPingerStore { get; set; }
 
         [Inject]
-        public AuthenticationStore AuthenticationStore { get; set; }
-
-        [Inject]
         public NavigationManager NavigationManager { get; set; }
 
         [Inject]
@@ -48,7 +45,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Components
         private int MaxPlayers => ServerStatusPingerStore.ServerDetails.MaxPlayers;
         private int MaxPlayersExcludingQueue => ServerStatusPingerStore.ServerDetails.MaxPlayersExcludingQueue;
 
-        private bool IsLoggedIn => AuthenticationStore.IsLoggedIn;
+        private bool IsLoggedIn => ServerPingerSettingsStore.HasSettingsAuthentication;
         private bool CanSave => !IsLoading && !IsSaving && IsLoggedIn && ServerPingerSettingsStore.HasDirtySettings;
 
         private bool IsLoading { get; set; }
@@ -61,22 +58,36 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Components
 
         protected override async Task OnInitializedAsync()
         {
-            IsLoading = true;
-            StateHasChanged();
-
             ServerPingerSettingsStore.SettingsChanged += StateHasChanged;
-            ServerPingerSettingsStore.LoadRequested += ReloadServerPingerSettings;
+            ServerPingerSettingsStore.HasSettingsAuthenticationChanged += HandleHasSettingsAuthenticationChanged;
             ServerPingerSettingsStore.HasDirtySettingsChanged += StateHasChanged;
             ServerStatusPingerStore.StateChanged += StateHasChanged;
-            AuthenticationStore.IsLoggedInChanged += StateHasChanged;
 
-            await ServerPingerSettingsStore.Load();
-            IsNotificationSupported = await NotificationSupportChecker.IsNotificationSupported();
-
-            IsLoading = false;
-            StateHasChanged();
+            await Load();
 
             await base.OnInitializedAsync();
+        }
+
+        private async Task Load()
+        {
+            IsLoading = true;
+            LoadFailed = false;
+            StateHasChanged();
+
+            try
+            {
+                IsNotificationSupported = await NotificationSupportChecker.IsNotificationSupported();
+                await ServerPingerSettingsStore.Load();
+            }
+            catch (Exception)
+            {
+                LoadFailed = true;
+            }
+            finally
+            {
+                IsLoading = false;
+                StateHasChanged();
+            }
         }
 
         private async Task SaveSettings()
@@ -100,24 +111,22 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Components
             }
         }
 
-        private async void ReloadServerPingerSettings()
+        private async void HandleHasSettingsAuthenticationChanged()
         {
-            IsLoading = true;
-            StateHasChanged();
+            if (IsLoggedIn)
+            {
+                await Load();
+            }
 
-            await ServerPingerSettingsStore.Load();
-
-            IsLoading = false;
             StateHasChanged();
         }
 
         public void Dispose()
         {
             ServerPingerSettingsStore.SettingsChanged -= StateHasChanged;
-            ServerPingerSettingsStore.LoadRequested -= ReloadServerPingerSettings;
+            ServerPingerSettingsStore.HasSettingsAuthenticationChanged -= HandleHasSettingsAuthenticationChanged;
             ServerPingerSettingsStore.HasDirtySettingsChanged -= StateHasChanged;
             ServerStatusPingerStore.StateChanged -= StateHasChanged;
-            AuthenticationStore.IsLoggedInChanged -= StateHasChanged;
         }
     }
 }

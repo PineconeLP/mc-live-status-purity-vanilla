@@ -8,11 +8,12 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores
     {
         bool AllowNotifyJoinable { get; set; }
         bool AllowNotifyQueueJoinable { get; set; }
+        bool HasSettingsAuthentication { get; }
         bool HasDirtySettings { get; }
         bool IsLoading { get; }
 
         event Action SettingsChanged;
-        event Action LoadRequested;
+        event Action HasSettingsAuthenticationChanged;
         event Action HasDirtySettingsChanged;
         event Action IsLoadingChanged;
 
