@@ -1,12 +1,11 @@
 using System;
-using System.Net;
 using System.Threading.Tasks;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.Authentication;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.ServerPingerSettingsStores;
 using MCLiveStatus.PurityVanilla.Blazor.Stores.Tokens;
+using MCLiveStatus.PurityVanilla.Blazor.WASM.Exceptions;
 using MCLiveStatus.PurityVanilla.Blazor.WASM.Services.ServerPingerSettingsServices;
 using MCLiveStatus.ServerSettings.Domain.Models;
-using Refit;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettingStores
 {
@@ -87,6 +86,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettingStore
 
         public event Action SettingsChanged;
         public event Action HasDirtySettingsChanged;
+        public event Action LoadRequested;
         public event Action IsLoadingChanged;
 
         public ServerPingerSettingsStore(ITokenStore tokenStore, AuthenticationStore authenticationStore, IServerPingerSettingsService settingsService)
@@ -100,6 +100,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettingStore
             _authenticationStore.IsLoggedInChanged += OnIsLoggedInChanged;
         }
 
+        /// <inheritdoc/>
         public async Task Load()
         {
             await _authenticationStore.Initialize();
@@ -126,22 +127,16 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettingStore
                 {
                     try
                     {
-                        ServerPingerSettings settings = await _settingsService.GetSettings();
-                        if (settings != null)
-                        {
-                            Settings = settings;
-                        }
+                        Settings = await _settingsService.GetSettings();
                     }
-                    catch (ApiException ex)
+                    catch (ServerPingerSettingsNotFoundException)
                     {
-                        if (ex.StatusCode == HttpStatusCode.NotFound)
-                        {
-                            Settings = CreateDefaultSettings();
-                        }
-                        else
-                        {
-                            throw;
-                        }
+                        Settings = CreateDefaultSettings();
+                    }
+                    catch (Exception)
+                    {
+                        Settings = CreateDefaultSettings();
+                        throw;
                     }
                 }
                 else
@@ -156,6 +151,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettingStore
             }
         }
 
+        /// <inheritdoc/>
         public async Task Save()
         {
             await _settingsService.SaveSettings(Settings);
@@ -175,7 +171,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettingStore
             _initializeTask?.TrySetResult(null);
             _initializeTask = null;
 
-            // TBD: Raise NeedsInitialization event?
+            LoadRequested?.Invoke();
         }
 
         private void OnIsLoadingChanged()

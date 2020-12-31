@@ -90,7 +90,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM
             string settingsBaseUrl = configuration.GetValue<string>("SETTINGS_API_BASE_URL");
             services.AddScoped<AutoRefreshHttpMessageHandler>();
             services.AddScoped<AccessTokenHttpMessageHandler>();
-            services.AddRefitClient<IServerPingerSettingsService>(new RefitSettings()
+            services.AddRefitClient<IAPIServerPingerSettingsService>(new RefitSettings()
             {
                 ContentSerializer = new NewtonsoftJsonContentSerializer()
             }).ConfigureHttpClient(c =>
@@ -99,6 +99,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM
             })
             .AddHttpMessageHandler<AutoRefreshHttpMessageHandler>()
             .AddHttpMessageHandler<AccessTokenHttpMessageHandler>();
+            services.AddScoped<IServerPingerSettingsService, ServerPingerSettingsService>();
 
             services.AddScoped<ServerPingerSettingsStore>();
             services.AddScoped<IServerPingerSettingsStore>(s => s.GetRequiredService<ServerPingerSettingsStore>());
