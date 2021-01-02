@@ -7,6 +7,7 @@ using MCLiveStatus.PurityVanilla.Blazor.WASM.Models;
 using MCLiveStatus.PurityVanilla.Blazor.WASM.Services.ServerPingers;
 using MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettingStores;
 using Microsoft.AspNetCore.SignalR.Client;
+using Polly;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerStatusPingers
 {
@@ -17,6 +18,8 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerStatusPingers
         private readonly IServerPinger _pinger;
         private readonly IServerStatusNotifier _serverStatusNotifier;
         private readonly string _negotiateUrl;
+
+        private readonly AsyncPolicy _initalServerPingRetryPolicy;
 
         private HubConnection _connection;
 
@@ -39,6 +42,10 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerStatusPingers
             _serverStatusNotifier = serverStatusNotifier;
             _negotiateUrl = negotiateUrl;
 
+            _initalServerPingRetryPolicy = Policy
+                .Handle<Exception>()
+                .WaitAndRetryForeverAsync(retryNumber => TimeSpan.FromSeconds(5));
+
             _state.StateChanged += OnStateChanged;
             _settingsStore.SettingsChanged += UpdateHubConnection;
 
@@ -52,9 +59,13 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerStatusPingers
 
         public async Task Load()
         {
-            await LoadServerStatus();
+            await _initalServerPingRetryPolicy.ExecuteAsync(LoadInitialServerStatus);
 
-            await _settingsStore.Load();
+            try
+            {
+                await _settingsStore.Load();
+            }
+            catch (Exception) { } // Ignore settings store load exceptions.
 
             await _serverStatusNotifier.RequestPermission();
 
@@ -73,7 +84,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerStatusPingers
             }
         }
 
-        private async Task LoadServerStatus()
+        private async Task LoadInitialServerStatus()
         {
             try
             {
@@ -83,6 +94,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerStatusPingers
             catch (Exception ex)
             {
                 _state.OnPingFailed(ex);
+                throw;
             }
         }
 
@@ -115,6 +127,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerStatusPingers
             }
             catch (OperationCanceledException) { }
             catch (AggregateException) { }
+            catch (Exception) { } // Yuck, this needs to be cleaned up somehow, retries?
         }
 
         public void Dispose()
