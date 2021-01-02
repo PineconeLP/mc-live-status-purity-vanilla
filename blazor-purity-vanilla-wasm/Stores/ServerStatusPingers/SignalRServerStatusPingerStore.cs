@@ -7,6 +7,7 @@ using MCLiveStatus.PurityVanilla.Blazor.WASM.Models;
 using MCLiveStatus.PurityVanilla.Blazor.WASM.Services.ServerPingers;
 using MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerPingerSettingStores;
 using Microsoft.AspNetCore.SignalR.Client;
+using Polly;
 
 namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerStatusPingers
 {
@@ -17,6 +18,8 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerStatusPingers
         private readonly IServerPinger _pinger;
         private readonly IServerStatusNotifier _serverStatusNotifier;
         private readonly string _negotiateUrl;
+
+        private readonly AsyncPolicy _initalServerPingRetryPolicy;
 
         private HubConnection _connection;
 
@@ -39,40 +42,41 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerStatusPingers
             _serverStatusNotifier = serverStatusNotifier;
             _negotiateUrl = negotiateUrl;
 
+            _initalServerPingRetryPolicy = Policy
+                .Handle<Exception>()
+                .WaitAndRetryForeverAsync(retryNumber => TimeSpan.FromSeconds(5));
+
             _state.StateChanged += OnStateChanged;
-            _settingsStore.SettingsChanged += UpdateHubConnection;
+            _settingsStore.SettingsChanged += HandleSettingsChanged;
 
             _connection = new HubConnectionBuilder()
                 .WithUrl(_negotiateUrl)
                 .WithAutomaticReconnect()
                 .Build();
             _connection.On<int, int>("ping", (online, max) => _state.OnNotificationPingCompleted(_serverStatusNotifier, online, max));
+            _connection.On<int, string>("ping_failed", (code, message) => _state.OnPingFailed());
         }
 
         public async Task Load()
         {
-            await LoadServerStatus();
-
-            await _settingsStore.Load();
+            try
+            {
+                await _settingsStore.Load();
+            }
+            catch (Exception) { } // Ignore settings store load exceptions. Throw exception at end of this method?
 
             await _serverStatusNotifier.RequestPermission();
 
-            if (_settingsStore.AutoRefreshEnabled && _connection.State == HubConnectionState.Disconnected)
-            {
-                try
-                {
-                    await _connection.StartAsync();
-                }
-                catch (OperationCanceledException) { }
-                catch (AggregateException) { }
-                catch (Exception ex)
-                {
-                    _state.OnPingFailed(ex);
-                }
-            }
+            await _initalServerPingRetryPolicy.ExecuteAsync(LoadInitialServerStatus);
+
+            await UpdateHubConnection();
         }
 
-        private async Task LoadServerStatus()
+        /// <summary>
+        /// Load the initial server ping status.
+        /// </summary>
+        /// <exception cref="Exception">Thrown if ping fails.</exception>
+        private async Task LoadInitialServerStatus()
         {
             try
             {
@@ -82,6 +86,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerStatusPingers
             catch (Exception ex)
             {
                 _state.OnPingFailed(ex);
+                throw;
             }
         }
 
@@ -98,7 +103,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerStatusPingers
             }
         }
 
-        private async void UpdateHubConnection()
+        private async Task UpdateHubConnection()
         {
             try
             {
@@ -112,13 +117,23 @@ namespace MCLiveStatus.PurityVanilla.Blazor.WASM.Stores.ServerStatusPingers
                     await _connection.StopAsync();
                 }
             }
-            catch (OperationCanceledException) { }
-            catch (AggregateException) { }
+            // catch (OperationCanceledException) { }
+            // catch (AggregateException) { }
+            catch (Exception ex)
+            {
+                _state.OnPingFailed(ex);
+                // _state.OnPingerConnectionFailed(ex)?
+            } // Yuck, this needs to be cleaned up somehow, retries?
+        }
+
+        private async void HandleSettingsChanged()
+        {
+            await UpdateHubConnection();
         }
 
         public void Dispose()
         {
-            _settingsStore.SettingsChanged -= UpdateHubConnection;
+            _settingsStore.SettingsChanged -= HandleSettingsChanged;
             _connection?.DisposeAsync();
             _state.StateChanged -= OnStateChanged;
         }

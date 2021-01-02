@@ -45,7 +45,7 @@ namespace MCLiveStatus.PurityVanilla.Blazor.Stores.ServerStatusPingers
             OnStateChanged();
         }
 
-        public void OnPingFailed(Exception ex)
+        public void OnPingFailed(Exception ex = null)
         {
             HasUpdateError = true;
             LastUpdateErrorTime = DateTime.Now;

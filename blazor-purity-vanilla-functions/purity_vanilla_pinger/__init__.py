@@ -1,6 +1,8 @@
 import logging
-from mcstatus import MinecraftServer
 import json
+import os
+from ..services.server_status_pinger import ping_server
+from ..models.error_code import ErrorCode
 
 import azure.functions as func
 
@@ -8,18 +10,33 @@ import azure.functions as func
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info("Executing Purity Vanilla ping from HTTP request.")
 
-    server = MinecraftServer("purityvanilla.com", 25565)
-    info = server.status()
-    online_players = info.players.online
-    max_players = info.players.max
+    host = os.environ["SERVER_HOST"]
+    port = os.environ["SERVER_PORT"]
 
-    logging.info("Retrieved Purity Vanilla player data.")
-    logging.info(f"Online: {online_players}")
-    logging.info(f"Max: {max_players}")
+    try:
+        server_status = ping_server(host, int(port))
+    except:
+        return func.HttpResponse(
+            json.dumps({
+                'errors': [
+                    {
+                        "code": ErrorCode.SERVER_PING_FAILED,
+                        "message": "Unable to ping server."
+                    }
+                ]
+            }),
+            status_code=404)
+    else:
+        online_players = server_status.online
+        max_players = server_status.max
 
-    return func.HttpResponse(
-        json.dumps({
-            'online': online_players,
-            'max': max_players
-        }),
-        status_code=200)
+        logging.info("Retrieved Purity Vanilla player data.")
+        logging.info(f"Online: {online_players}")
+        logging.info(f"Max: {max_players}")
+
+        return func.HttpResponse(
+            json.dumps({
+                'online': online_players,
+                'max': max_players
+            }),
+            status_code=200)
