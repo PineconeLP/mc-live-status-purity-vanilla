@@ -10,7 +10,7 @@ import azure.functions as func
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info("Executing Purity Vanilla ping from HTTP request.")
 
-    ip = os.environ["SERVER_IP"]
+    ip = os.environ["SERVER_HOST"]
 
     try:
         server_status = ping_server(ip)

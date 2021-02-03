@@ -11,7 +11,7 @@ import azure.functions as func
 def main(mytimer: func.TimerRequest, outMessage: func.Out[str]) -> None:
     logging.info("Executing Purity Vanilla ping.")
 
-    ip = os.environ["SERVER_IP"]
+    ip = os.environ["SERVER_HOST"]
 
     try:
         server_status = ping_server(ip)
