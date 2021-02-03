@@ -40,8 +40,7 @@ services:
       - pinger-functions-secrets.env
     environment:
       AzureWebJobsStorage: '${AZURE_STORAGE_CONNECTION_STRING}'
-      SERVER_HOST: 'purityvanilla.com'
-      SERVER_PORT: '25565'
+      SERVER_IP: 'purityvanilla.com'
       SERVER_NAME: 'Purity Vanilla'
       SERVER_HAS_QUEUE: 'true'
       SERVER_MAX_PLAYERS_EXCLUDING_QUEUE: '75'

@@ -10,11 +10,10 @@ import azure.functions as func
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info("Executing Purity Vanilla ping from HTTP request.")
 
-    host = os.environ["SERVER_HOST"]
-    port = os.environ["SERVER_PORT"]
+    ip = os.environ["SERVER_IP"]
 
     try:
-        server_status = ping_server(host, int(port))
+        server_status = ping_server(ip)
     except:
         return func.HttpResponse(
             json.dumps({

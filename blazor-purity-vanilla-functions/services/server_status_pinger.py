@@ -1,9 +1,9 @@
 from mcstatus import MinecraftServer
-from ..models.server_status import ServerStatus
+from models.server_status import ServerStatus
 
 
-def ping_server(host, port):
-    server = MinecraftServer(host, port)
+def ping_server(ip):
+    server = MinecraftServer.lookup(ip)
     info = server.status()
 
     online_players = info.players.online

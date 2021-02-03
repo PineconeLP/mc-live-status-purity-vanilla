@@ -11,11 +11,10 @@ import azure.functions as func
 def main(mytimer: func.TimerRequest, outMessage: func.Out[str]) -> None:
     logging.info("Executing Purity Vanilla ping.")
 
-    host = os.environ["SERVER_HOST"]
-    port = os.environ["SERVER_PORT"]
+    ip = os.environ["SERVER_IP"]
 
     try:
-        server_status = ping_server(host, int(port))
+        server_status = ping_server(ip)
     except:
         outMessage.set(json.dumps({
             'target': 'ping_failed',
