@@ -1,21 +1,14 @@
 name: Build
 
 on:
-  push:
-    branches:
-      - 'master'
-    tags-ignore:
-      - 'bpv-win/v*'
-      - 'bpv-osx/v*'
-      - 'bpv-wasm/v*'
-      - 'bpv-functions/v*'
-      - 'auth-functions/v*'
-      - 'settings-functions/v*'
-    paths-ignore:
-      - '**/README.md'
   pull_request:
     branches:
-      - '*'
+      - "master"
+    tags-ignore:
+      - "bpv-win/v*"
+      - "bpv-osx/v*"
+    paths-ignore:
+      - "**/README.md"
 
 env:
   PYTHON_PINGER_PROJECT_DIRECTORY: ./pinger/Scripts
@@ -35,12 +28,12 @@ jobs:
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '5.0.x'
+          dotnet-version: "5.0.x"
 
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '3.1.x'
+          dotnet-version: "3.1.x"
 
       # Python Pinger
       - name: Install pipenv
