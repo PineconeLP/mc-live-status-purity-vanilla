@@ -1,10 +1,11 @@
 using System;
 using System.Text;
 using Endpointer.Authentication.API.Extensions;
+using Endpointer.Authentication.API.Firebase.Extensions;
 using Endpointer.Authentication.API.Models;
+using Firebase.Database;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
@@ -14,6 +15,15 @@ namespace MCLiveStatus.Authentication
 {
     public class Startup : FunctionsStartup
     {
+        private readonly string _environment;
+
+        private bool IsDevelopment => _environment == "Development";
+
+        public Startup()
+        {
+            _environment = Environment.GetEnvironmentVariable("AZURE_FUNCTIONS_ENVIRONMENT");
+        }
+
         public override void Configure(IFunctionsHostBuilder builder)
         {
             IServiceCollection services = builder.Services;
@@ -38,11 +48,40 @@ namespace MCLiveStatus.Authentication
                 ValidateAudience = true
             };
 
-            string connectionString = Environment.GetEnvironmentVariable("SqlServerConnectionString");
+            FirebaseClient firebaseClient = CreateFirebaseClient();
             services.AddEndpointerAuthentication(authenticationConfiguration,
                 tokenValidationParameters,
-                o => o.WithDatabase(
-                    d => d.UseSqlServer(connectionString)));
+                o => o.WithFirebaseDataSource(firebaseClient));
+        }
+
+        private FirebaseClient CreateFirebaseClient()
+        {
+            return new FirebaseClient("https://mclivestatus-default-rtdb.firebaseio.com/",
+                new FirebaseOptions
+                {
+                    AuthTokenAsyncFactory = async () =>
+                    {
+                        GoogleCredential credential = GetGoogleCredential();
+
+                        return await credential.CreateScoped(
+                                "https://www.googleapis.com/auth/userinfo.email",
+                                "https://www.googleapis.com/auth/firebase.database")
+                            .UnderlyingCredential.GetAccessTokenForRequestAsync();
+                    },
+                    AsAccessToken = true
+                });
+        }
+
+        private GoogleCredential GetGoogleCredential()
+        {
+            if (IsDevelopment)
+            {
+                return GoogleCredential.FromFile("./firebase-credential.json");
+            }
+            else
+            {
+                return GoogleCredential.FromJson(Environment.GetEnvironmentVariable("FIREBASE_CONFIG"));
+            }
         }
     }
 }

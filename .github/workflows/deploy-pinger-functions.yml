@@ -1,13 +1,13 @@
-name: Deploy Settings Functions
+name: Deploy Pinger Functions
 
 on:
   push:
     branches:
-      - "release/settings-functions"
+      - "release/pinger-functions"
 
 env:
-  AZURE_FUNCTIONAPP_PATH: "./settings-functions"
-  AZURE_FUNCTIONAPP_NAME: "mc-live-status-settings-functions"
+  AZURE_FUNCTIONAPP_PATH: "./blazor-purity-vanilla-functions"
+  AZURE_FUNCTIONAPP_NAME: "mc-live-status-pinger-functions"
 
 jobs:
   build:
@@ -23,11 +23,6 @@ jobs:
           node-version: "12.x"
           registry-url: "https://registry.npmjs.org"
 
-      - name: "Setup .NET Core"
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: "3.1.x"
-
       - name: "Login to Azure CLI"
         uses: azure/login@v1
         with:
@@ -37,5 +32,5 @@ jobs:
         run: "npm i -g azure-functions-core-tools@3"
 
       - name: "Deploy to Azure Functions"
-        run: "func azure functionapp publish ${{ env.AZURE_FUNCTIONAPP_NAME }} --dotnet"
+        run: "func azure functionapp publish ${{ env.AZURE_FUNCTIONAPP_NAME }} --python"
         working-directory: ${{ env.AZURE_FUNCTIONAPP_PATH }}

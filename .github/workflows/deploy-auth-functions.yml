@@ -2,42 +2,40 @@ name: Deploy Authentication Functions
 
 on:
   push:
-    tags:
-      - 'auth-functions/v*'
-    paths-ignore:
-      - '**/README.md'
+    branches:
+      - "release/auth-functions"
 
 env:
-  AZURE_FUNCTIONAPP_PATH: './authentication-functions'
-  AZURE_FUNCTIONAPP_NAME: 'live-status-authentication'
+  AZURE_FUNCTIONAPP_PATH: "./authentication-functions"
+  AZURE_FUNCTIONAPP_NAME: "mc-live-status-authentication-functions"
 
 jobs:
   build:
     name: Deploy
     runs-on: ubuntu-latest
     steps:
-      - name: 'Checkout'
+      - name: "Checkout"
         uses: actions/checkout@master
 
-      - name: 'Setup Node'
+      - name: "Setup Node"
         uses: actions/setup-node@v1
         with:
-          node-version: '12.x'
-          registry-url: 'https://registry.npmjs.org'
+          node-version: "12.x"
+          registry-url: "https://registry.npmjs.org"
 
-      - name: 'Setup .NET Core'
+      - name: "Setup .NET Core"
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '3.1.x'
+          dotnet-version: "3.1.x"
 
-      - name: 'Login to Azure CLI'
+      - name: "Login to Azure CLI"
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_RBAC_CREDENTIALS }}
 
-      - name: 'Install Azure Function Core Tools'
-        run: 'npm i -g azure-functions-core-tools@3'
+      - name: "Install Azure Function Core Tools"
+        run: "npm i -g azure-functions-core-tools@3"
 
-      - name: 'Deploy to Azure Functions'
-        run: 'func azure functionapp publish ${{ env.AZURE_FUNCTIONAPP_NAME }} --dotnet'
+      - name: "Deploy to Azure Functions"
+        run: "func azure functionapp publish ${{ env.AZURE_FUNCTIONAPP_NAME }} --dotnet"
         working-directory: ${{ env.AZURE_FUNCTIONAPP_PATH }}
