@@ -3,9 +3,9 @@ name: Deploy Blazor Purity Vanilla (WASM)
 on:
   push:
     tags:
-      - 'bpv-wasm/v*'
+      - "bpv-wasm/v*"
     paths-ignore:
-      - '**/README.md'
+      - "**/README.md"
 
 env:
   STORAGE_ACCOUNT_KEY: ${{ secrets.WASM_STORAGE_ACCOUNT_KEY }}
@@ -37,14 +37,6 @@ jobs:
       - name: Publish
         run: dotnet publish --no-restore --no-build --configuration Release -o ${{ env.PUBLISH_PATH }}
         working-directory: ${{ env.WASM_PROJECT_DIRECTORY }}
-
-      - name: Deploy Azure
-        uses: azure/CLI@v1
-        with:
-          azcliversion: 2.0.72
-          inlineScript: |
-            az storage blob delete-batch -s '${{ env.STORAGE_CONTAINER_NAME }}' --account-name ${{ env.STORAGE_ACCOUNT_NAME }} --account-key ${{ env.STORAGE_ACCOUNT_KEY }}
-            az storage blob upload-batch -s '${{ env.UPLOAD_DIR_PATH }}' -d '${{ env.STORAGE_CONTAINER_NAME }}' --account-name ${{ env.STORAGE_ACCOUNT_NAME }} --account-key ${{ env.STORAGE_ACCOUNT_KEY }}
 
       - name: Update base tag
         run: sed -i 's/<base href="\/" \/>/<base href="\/mc-live-status-purity-vanilla\/" \/>/g' ${{ env.UPLOAD_DIR_PATH }}/index.html
