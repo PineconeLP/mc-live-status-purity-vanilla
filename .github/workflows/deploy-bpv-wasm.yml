@@ -2,10 +2,8 @@ name: Deploy Blazor Purity Vanilla (WASM)
 
 on:
   push:
-    tags:
-      - "bpv-wasm/v*"
-    paths-ignore:
-      - "**/README.md"
+    branches:
+      - "release/wasm"
 
 env:
   STORAGE_ACCOUNT_KEY: ${{ secrets.WASM_STORAGE_ACCOUNT_KEY }}

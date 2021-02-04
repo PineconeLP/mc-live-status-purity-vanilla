@@ -2,10 +2,8 @@ name: Deploy Authentication Functions
 
 on:
   push:
-    tags:
-      - "auth-functions/v*"
-    paths-ignore:
-      - "**/README.md"
+    branches:
+      - "release/auth-functions"
 
 env:
   AZURE_FUNCTIONAPP_PATH: "./authentication-functions"

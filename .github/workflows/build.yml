@@ -47,8 +47,6 @@ jobs:
         run: pipenv run build
         working-directory: ${{ env.PYTHON_PINGER_PROJECT_DIRECTORY }}
 
-      # Functions
-
       # .NET
       - name: Restore .NET packages
         run: dotnet restore

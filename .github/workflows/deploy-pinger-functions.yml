@@ -1,11 +1,9 @@
-name: Deploy Functions
+name: Deploy Pinger Functions
 
 on:
   push:
-    tags:
-      - "bpv-functions/v*"
-    paths-ignore:
-      - "**/README.md"
+    branches:
+      - "release/pinger-functions"
 
 env:
   AZURE_FUNCTIONAPP_PATH: "./blazor-purity-vanilla-functions"

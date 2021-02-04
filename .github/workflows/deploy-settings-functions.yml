@@ -2,10 +2,8 @@ name: Deploy Settings Functions
 
 on:
   push:
-    tags:
-      - "settings-functions/v*"
-    paths-ignore:
-      - "**/README.md"
+    branches:
+      - "release/settings-functions"
 
 env:
   AZURE_FUNCTIONAPP_PATH: "./settings-functions"
